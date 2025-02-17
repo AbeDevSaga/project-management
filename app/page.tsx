@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import SidebarSection from './components/SidebarSection';
 
-function page() {
+function App() {
   return (
-    <div>page</div>
-  )
+    <div className="">
+      <SidebarSection />
+    </div>
+  );
 }
 
-export default page
+export default App;

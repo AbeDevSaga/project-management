@@ -8,11 +8,16 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
       colors: {
         background: "var(--background)",
         forecolor: "var(--forecolor)",
         primary: "var(--primary)",
         dimmedforecolor: "var(--dimmedforecolor)",
+        foreground: "var(--foreground)",
+        sidebarcolor: "var(--sidebarcolor)",
         white: "var(--white)",
       },
     },
