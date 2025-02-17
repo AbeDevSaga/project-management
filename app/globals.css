@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FBF5FE;
+  --primary: #AA7D77;
+  --forecolor: #0A1B39;
+  --dimmedforecolor: #CACACA;
+  --white: #FFFFFF;
+}
+
+body {
+  color: var(--forecolor);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
