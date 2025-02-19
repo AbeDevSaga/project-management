@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Notifications() {
+function ManageAdmins() {
   return (
     <div className='bg-gray-500 w-full h-full text-white'>
-        Notifications
+        ManageAdmins
     </div>
   )
 }
 
-export default Notifications;
+export default ManageAdmins;

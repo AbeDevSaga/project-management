@@ -24,28 +24,24 @@ const iconMapping: IconMapping = {
 interface NavItemProps {
   icon?: string;
   text?: string; 
+  active?: boolean;
 }
 
-export default function NavItem({ icon, text }: NavItemProps) {
+export default function NavItem({ icon, text, active }: NavItemProps) {
   const IconComponent = icon ? iconMapping[icon] : null;
 
   return (
-    <div className=''
+    <div 
+    className={`flex items-center gap-4 px-4 py-2 rounded-md cursor-pointer transition-colors ${
+      active ? "bg-white text-primary" : "text-foreground hover:bg-white"
+    }`}
       style={{
         width: 210,
         height: 48,
-        top: 89,
-        left: 20,
-        borderRadius: 8,
-        paddingRight: 12,
-        paddingLeft: 16,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
       }}
     >
-      {IconComponent && <IconComponent className="w-4 h-4" />} {/* Render the icon if it exists */}
-      {text && <span className="font-inter font-bold text-sm leading-5 tracking-normal">{text}</span>} {/* Render the text if it exists */}
+      {IconComponent && <IconComponent className="w-4 h-4" />}
+      {text && <span className="font-inter font-bold text-sm leading-5 tracking-normal">{text}</span>} 
     </div>
   );
 }

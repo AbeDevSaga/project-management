@@ -1,0 +1,38 @@
+export const statsData = [
+  {
+    title: "Total Users",
+    icon: "users",
+    value: "40,689",
+    decision: "increment",
+    percentage: "+16.2%",
+    iconBg: "bg-totalUserBg",
+    iconFg: "text-totalUserFg",
+  },
+  {
+    title: "Active Users",
+    icon: "userCheck",
+    value: "1028",
+    decision: "increment",
+    percentage: "+12.08%",
+    iconBg: "bg-activeUserBg",
+    iconFg: "text-activeUserFg",
+  },
+  {
+    title: "Total Revenue",
+    icon: "dollarSign",
+    value: "$10,689",
+    decision: "decrement",
+    percentage: "-08.08%",
+    iconBg: "bg-totalRevenuBg",
+    iconFg: "text-totalRevenuFg",
+  },
+  {
+    title: "New Users",
+    icon: "userPlus",
+    value: "113",
+    decision: "increment",
+    percentage: "+12.80%",
+    iconBg: "bg-newUserBg",
+    iconFg: "text-newUserFg",
+  },
+];
