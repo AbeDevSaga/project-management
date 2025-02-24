@@ -1,9 +1,7 @@
 import React from "react";
 import { PiChartLineUpLight, PiChartLineDownLight } from "react-icons/pi";
 import {
-  FaUserShield,
   FaChartLine,
-  FaDollarSign,
   FaUserCheck,
   FaUserPlus,
 } from "react-icons/fa";
@@ -41,7 +39,7 @@ function CountCard({ stats }: { stats: StatsProp }) {
     stats.decision === "increment" ? PiChartLineUpLight : PiChartLineDownLight;
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 shadow-lg rounded-lg">
       <p className="text-foreground text-lg font-semibold">{stats.title}</p>
       <div className="flex items-center mt-2">
         <div

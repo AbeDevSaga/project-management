@@ -1,18 +1,48 @@
 import { StaticImageData } from "next/image";
+type TSection = {
+  section: string;
+  headline: string;
+};
+
 export type TProfile = {
     name: string;
     email: string;
     phone: string;
     image: StaticImageData;
     role: string;
+    password: string;
+    date: string;
 }
 
 export type TLanguage = {
     country: {
         image: StaticImageData;
-        lanuage: string;
+        language: string;
+        code: string;
     };
 }
+
+export type TUsers = {
+  id: number;
+  name:string;
+  email: string;
+  phone: string;
+  date: string;
+  status: string;
+  image: string;
+}
+
+export type TSections = {
+  dashboard: TSection;
+  users: TSection;
+  premium_users: TSection;
+  notifications: TSection;
+  messages: TSection;
+  photo_review: TSection;
+  reports_bans: TSection;
+  sales_agents: TSection;
+  manage_admins: TSection;
+};
 
 export type TInsights = {
     notifications: {

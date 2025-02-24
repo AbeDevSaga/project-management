@@ -6,5 +6,7 @@ export const profile: TProfile = {
     role: "Admin",
     image: ProfileImage,
     email: "admin@gmail.com",
-    phone: "0919755719"
+    phone: "0919755719",
+    password: "12345678",
+    date:"2/24/2025",
 };

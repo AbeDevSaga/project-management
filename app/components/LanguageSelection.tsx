@@ -1,37 +1,62 @@
-"use client";
+'use client';
 import React, { useState } from "react";
-import { GoTriangleDown } from "react-icons/go";
 import Image from "next/image";
-import { profile } from "../constants/userProfile";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { TLanguage } from "../constants/type";
+import { languages } from "../constants/languages";
 
 function LanguageSelection() {
-  const [showMenu, setShowMenu] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<TLanguage>(languages[0]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
+  const handleLanguageSelect = (language: TLanguage) => {
+    setSelectedLanguage(language);
+    setIsDropdownOpen(false); // Close dropdown after selection
   };
+
   return (
-    <div className="flex items-center space-x-2 relative">
-        <div className="w-9 h-9 rounded-lg overflow-hidden border-2 border-gray-300">
+    <div className="relative">
+      {/* Selected Language */}
+      <div
+        className="flex items-center gap-2 cursor-pointer p-2 border border-gray-300 rounded-lg"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      >
         <Image
-          src={profile.image}
-          alt="User Profile"
-          className="object-cover"
+          src={selectedLanguage.country.image}
+          alt={selectedLanguage.country.language}
+          width={24}
+          height={24}
+          className="w-6 h-6 rounded-full"
         />
-      </div>
-      {/* User Info */}
-      <div className="text-right">
-        <p className="text-titleFg">{profile.name.split(" ")[0]}</p>
-      </div>
-      {/* Dropdown Icon */}
-      <div className="cursor-pointer text-gray-600 hover:text-gray-800">
-        <GoTriangleDown className="w-5 h-5" onClick={toggleMenu} />
+        <span className="text-sm font-medium">
+          {selectedLanguage.country.language}
+        </span>
+        {isDropdownOpen?<FaChevronUp className="w-4 h-4" />:<FaChevronDown className="w-4 h-4" />}
       </div>
 
       {/* Dropdown Menu */}
-      {showMenu && (
-        <div className="absolute mt-[120px] bg-white border rounded-lg shadow-lg p-2">
-          Swith Super Amdin
+      {isDropdownOpen && (
+        <div className="absolute top-12 left-0 bg-white border border-gray-300 rounded-lg shadow-lg px-2 z-10">
+          <ul>
+            {languages.map((language, index) => (
+              <li
+                key={index}
+                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleLanguageSelect(language)}
+              >
+                <Image
+                  src={language.country.image}
+                  alt={language.country.language}
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 rounded-full"
+                />
+                <span className="text-sm font-medium">
+                  {language.country.language}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

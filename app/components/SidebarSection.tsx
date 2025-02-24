@@ -1,18 +1,34 @@
-import React from 'react';
-import Sidebar from './Sidebar';
-import LogoutBtn from './LogoutBtn';
+import React from "react";
+import Sidebar from "./Sidebar";
+import LogoutBtn from "./LogoutBtn";
+import ActionButton from "./ActionButton";
 
-export default function SidebarSection() {
+interface SidebarSectionProps {
+  isOpen: boolean; // Prop to control open/close state
+}
+
+export default function SidebarSection({ isOpen }: SidebarSectionProps) {
+  const handleLogOut = () => {
+    console.log("Logging out...");
+  };
+
   return (
-    <div className="w-[246px] bg-sidebarcolor h-screen flex flex-col">
+    <div
+      className={`fixed lg:static inset-y-0 left-0 w-[246px] bg-sidebarcolor h-screen flex flex-col transform transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}
+    >
       {/* Sidebar */}
-      <div className="flex-1 overflow-hidden"> 
+      <div className="flex-1 overflow-hidden">
         <Sidebar />
       </div>
-
       {/* Logout Button */}
       <div className="px-5 pb-5">
-        <LogoutBtn />
+        <ActionButton
+          label="Log Out"
+          icon="logout"
+          onClick={handleLogOut}
+        />
       </div>
     </div>
   );
