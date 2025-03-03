@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Service } from "../utils/type";
+import { Service } from "../../utils/type";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { TService } from "../constants/type";
+import { TService } from "../../constants/type";
 
 interface ServiceCardProps {
   service: TService;
@@ -23,11 +23,19 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onUpdate }) => {
       </div>
       {/* Actions */}
       {showActions && (
-        <div
-          onClick={() => onUpdate({ ...service, _id: service._id || "" })}
-          className="absolute top-10 right-2 bg-white py-2 px-4 rounded-lg shadow-md cursor-pointer hover:text-primary duration-300"
-        >
-          Update Service
+        <div className="absolute bg-white py-2 top-10 right-2 rounded-lg shadow-md">
+          <div
+            onClick={() => onUpdate({ ...service, _id: service._id || "" })}
+            className="right-2 bg-white px-4 pb-2  cursor-pointer hover:text-primary duration-300"
+          >
+            Update Service
+          </div>
+          <div
+            onClick={() => onUpdate({ ...service, _id: service._id || "" })}
+            className="right-2 bg-white px-4 cursor-pointer border-t border-gray-200 pt-2 hover:text-red-500 duration-300"
+          >
+            Delete Service
+          </div>
         </div>
       )}
       {/* Service Name and Type */}

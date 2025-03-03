@@ -23,13 +23,15 @@ export type TLanguage = {
 }
 
 export type TUsers = {
-  _id: number;
+  _id?: number;
   name:string;
+  role: string;
   email: string;
   phone: string;
   date: string;
-  status: string;
-  image: string;
+  status?: string;
+  password?: string;
+  image?: string;
 }
 
 export type TService = {

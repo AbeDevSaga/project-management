@@ -7,6 +7,7 @@ const generateUser = (): TUsers => {
     return {
       _id: count++,
       name: faker.person.fullName(), 
+      role: faker.helpers.arrayElement(["admin", "user", "manager", "staff"]),
       email: faker.internet.email(), 
       phone: faker.phone.number(), 
       date: faker.date.past().toISOString().split("T")[0], 

@@ -1,20 +1,13 @@
 "use client";
 
+import { TUsers } from "@/app/constants/type";
 import { FaEye, FaTrash } from "react-icons/fa";
 
-type User = {
-  _id: number;
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  status: string;
-};
 
 type UserActionsProps = {
-  user: User;
-  onView: (user: User) => void; // Callback for view action
-  onDelete: (user: User) => void; // Callback for delete action
+  user: TUsers;
+  onView: (user: TUsers) => void; // Callback for view action
+  onDelete: (user: TUsers) => void; // Callback for delete action
 };
 
 export const UserActions = ({ user, onView, onDelete }: UserActionsProps) => {

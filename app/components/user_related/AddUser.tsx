@@ -1,20 +1,12 @@
 import { StaticImageData } from "next/image";
 import React, { useState } from "react";
-import ActionButton from "./ActionButton";
+import ActionButton from "../ActionButton";
+import { TUsers } from "@/app/constants/type";
 
-interface User {
-  name: string;
-  email: string;
-  phone: string;
-  image?: StaticImageData;
-  role: string;
-  password: string;
-  date: string;
-}
 
 interface AddUserProps {
   closeAddUser: () => void; // Callback to close the modal
-  onAddUser: (userData: User) => void; // Callback to add a new user
+  onAddUser: (userData: TUsers) => void; // Callback to add a new user
 }
 
 const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
@@ -33,7 +25,7 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
       return;
     }
 
-    const newUser: User = {
+    const newUser: TUsers = {
       name,
       email,
       phone,

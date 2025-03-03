@@ -1,8 +1,8 @@
 "use client";
 import ActionButton from "@/app/components/ActionButton";
-import AddUser from "@/app/components/AddUser";
+import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
-import UserTable from "@/app/components/UsersTable";
+import UserTable from "@/app/components/user_related/UsersTable";
 import { User } from "@/app/utils/type";
 import React, { useState } from "react";
 

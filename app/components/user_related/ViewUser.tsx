@@ -1,17 +1,9 @@
+import { TUsers } from "@/app/constants/type";
 import React from "react";
 
-interface User {
-  _id: number;
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  status: string;
-  image?: string; // Optional image URL
-}
 
 interface ViewUserProps {
-  user: User;
+  user: TUsers;
   closeViewUser: () => void;
 }
 

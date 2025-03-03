@@ -1,26 +1,44 @@
-import React, { useState } from "react";
-import ActionButton from "./ActionButton";
-import { TService } from "../constants/type";
+import React, { useState, useEffect } from "react";
+import ActionButton from "../ActionButton";
+import { TService } from "../../constants/type";
 
-interface AddServiceProps {
-  closeAddService: () => void; // Updated prop name
-  onAddService: (serviceData: TService) => void; // Updated prop name and type
+interface UpdateServiceProps {
+  closeUpdateService: () => void; 
+  onUpdateService: (serviceData: TService) => void; 
+  serviceToUpdate: TService;
 }
 
-const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }) => {
-  // State for new service details
-  const [name, setName] = useState<TService["name"]>("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<TService["category"]>("Communication");
-  const [features, setFeatures] = useState<string[]>([]);
-  const [price, setPrice] = useState(0);
-  const [duration, setDuration] = useState(30);
-  const [type, setType] = useState<TService["type"]>("free");
-  const [status, setStatus] = useState<TService["status"]>("active");
+const UpdateService: React.FC<UpdateServiceProps> = ({
+  closeUpdateService,
+  onUpdateService,
+  serviceToUpdate,
+}) => {
+  // State for updated service details
+  const [name, setName] = useState<TService["name"]>(serviceToUpdate.name);
+  const [description, setDescription] = useState(serviceToUpdate.description);
+  const [category, setCategory] = useState<TService["category"]>(serviceToUpdate.category);
+  const [features, setFeatures] = useState<string[]>(serviceToUpdate.features);
+  const [price, setPrice] = useState(serviceToUpdate.price);
+  const [duration, setDuration] = useState(serviceToUpdate.duration);
+  const [type, setType] = useState<TService["type"]>(serviceToUpdate.type);
+  const [status, setStatus] = useState<TService["status"]>(serviceToUpdate.status);
 
-  // Handle adding a new service
-  const handleAddService = () => {
-    const newService: TService = {
+  // Pre-fill the form with the service data
+  useEffect(() => {
+    setName(serviceToUpdate.name);
+    setDescription(serviceToUpdate.description);
+    setCategory(serviceToUpdate.category);
+    setFeatures(serviceToUpdate.features);
+    setPrice(serviceToUpdate.price);
+    setDuration(serviceToUpdate.duration);
+    setType(serviceToUpdate.type);
+    setStatus(serviceToUpdate.status);
+  }, [serviceToUpdate]);
+
+  // Handle updating the service
+  const handleUpdateService = () => {
+    const updatedService: TService = {
+      ...serviceToUpdate, // Keep the existing fields like _id and createdAt
       name,
       description,
       category,
@@ -29,11 +47,10 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
       duration,
       type,
       status,
-      createdAt: new Date(), // Set the current date as the creation date
     };
 
-    onAddService(newService); // Pass the new service data to the parent component
-    closeAddService(); // Close the modal
+    onUpdateService(updatedService); // Pass the updated service data to the parent component
+    closeUpdateService(); // Close the modal
   };
 
   return (
@@ -42,29 +59,39 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
         {/* Close Button */}
         <div className="absolute top-2 right-2">
           <button
-            onClick={closeAddService}
+            onClick={closeUpdateService}
             className="flex text-2xl items-center justify-center w-6 h-6 rounded-full shadow-xl text-red-500 hover:text-red-700 bg-white"
           >
             &times;
           </button>
         </div>
 
-        {/* Add Service Form */}
+        {/* Update Service Form */}
         <div className="flex flex-col sm:flex-row gap-4 p-4">
           <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
             <h2 className="text-primary">Service Details</h2>
 
             {/* Floating Label Input for Name */}
-            <div className="relative mt-4">
-              <input
-                type="text"
+            <div className="relative">
+              <select
                 id="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value as TService["name"])}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Name"
-              />
-            </div> 
+              >
+                <option value="" disabled>Select Service Name</option>
+                <option value="Authentication">Authentication</option>
+                <option value="Chat">Chat</option>
+                <option value="Video Call">Video Call</option>
+                <option value="File Management">File Management</option>
+                <option value="Live Editor">Live Editor</option>
+                <option value="Project Manager">Project Manager</option>
+                <option value="Docker">Docker</option>
+                <option value="CLI">CLI</option>
+                <option value="Version Control">Version Control</option>
+              </select>
+            </div>
+
             {/* Floating Label Input for Description */}
             <div className="relative mt-4">
               <input
@@ -158,11 +185,11 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
               </select>
             </div>
 
-            {/* Add Service Button */}
+            {/* Update Service Button */}
             <ActionButton
-              label="Add Service"
+              label="Update Service"
               icon="service"
-              onClick={handleAddService}
+              onClick={handleUpdateService}
             />
           </div>
         </div>
@@ -171,4 +198,4 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
   );
 };
 
-export default AddService;
+export default UpdateService;

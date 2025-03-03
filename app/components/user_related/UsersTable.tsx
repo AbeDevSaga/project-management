@@ -1,28 +1,21 @@
 "use client";
 import React, { useState } from "react";
-import { users } from "../constants/usersList";
-import { UserActions } from "./UserActions";
-import ViewUser from "./ViewUser";
+import Pagination from "../Pagination";
 import DeleteUser from "./DeleteUser";
-import Pagination from "./Pagination";
+import ViewUser from "./ViewUser";
+import { UserActions } from "./UserActions";
+import { users } from "@/app/constants/usersList";
+import { TUsers } from "@/app/constants/type";
 
-interface User {
-  _id: number;
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  status: string;
-}
 
 const UserTable = () => {
-  const [viewedUser, setViewedUser] = useState<User | null>(null); // State to track the viewed user
-  const [deletedUser, setDeletedUser] = useState<User | null>(null); // State to track the deleted user
+  const [viewedUser, setViewedUser] = useState<TUsers | null>(null); // State to track the viewed user
+  const [deletedUser, setDeletedUser] = useState<TUsers | null>(null); // State to track the deleted user
   const [currentPage, setCurrentPage] = useState(1); // State to track the current page
   const usersPerPage = 6; // Number of users to display per page
 
   // Function to handle view action
-  const handleView = (user: User) => {
+  const handleView = (user: TUsers) => {
     setViewedUser(user); // Set the viewed user
   };
 
@@ -32,7 +25,7 @@ const UserTable = () => {
   };
 
   // Function to handle delete action
-  const handleDelete = (user: User) => {
+  const handleDelete = (user: TUsers) => {
     setDeletedUser(user); // Set the deleted user
   };
 
