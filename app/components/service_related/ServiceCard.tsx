@@ -5,10 +5,11 @@ import { TService } from "../../constants/type";
 
 interface ServiceCardProps {
   service: TService;
-  onUpdate: (service: Service) => void; // Callback for update action
+  onUpdate: (service: Service) => void;
+  onDelete: (service: Service) => void;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, onUpdate }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ service, onUpdate, onDelete }) => {
   const [showFeatures, setShowFeatures] = useState(false); // State to toggle features visibility
   const [showActions, setShowActions] = useState(false); // State to toggle actions visibility
 
@@ -31,7 +32,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onUpdate }) => {
             Update Service
           </div>
           <div
-            onClick={() => onUpdate({ ...service, _id: service._id || "" })}
+            onClick={() => onDelete({ ...service, _id: service._id || "" })}
             className="right-2 bg-white px-4 cursor-pointer border-t border-gray-200 pt-2 hover:text-red-500 duration-300"
           >
             Delete Service
