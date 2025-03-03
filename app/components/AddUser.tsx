@@ -12,39 +12,38 @@ interface User {
   date: string;
 }
 
-interface ViewUserProps {
-  user: User;
-  closeViewUser: () => void;
+interface AddUserProps {
+  closeAddUser: () => void; // Callback to close the modal
+  onAddUser: (userData: User) => void; // Callback to add a new user
 }
 
-const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
-  // State for user details
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-
-  // State for password update
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
+  // State for new user details
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [role, setRole] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Handle updating user details
-  const handleUpdateDetails = () => {
-    console.log("Updating Details...");
-    console.log("New Name:", name);
-    console.log("New Email:", email);
-    // Add logic to update user details
-  };
-
-  // Handle updating password
-  const handleUpdatePassword = () => {
-    if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match!");
+  // Handle adding a new user
+  const handleAddUser = () => {
+    if (password !== confirmPassword) {
+      alert("Password and confirm password do not match!");
       return;
     }
-    console.log("Updating Password...");
-    console.log("Current Password:", currentPassword);
-    console.log("New Password:", newPassword);
-    // Add logic to update password
+
+    const newUser: User = {
+      name,
+      email,
+      phone,
+      role,
+      password,
+      date: new Date().toLocaleDateString(), // Set the current date as the registration date
+    };
+
+    onAddUser(newUser); // Pass the new user data to the parent component
+    closeAddUser(); // Close the modal
   };
 
   return (
@@ -53,31 +52,14 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
         {/* Close Button */}
         <div className="absolute top-2 right-2">
           <button
-            onClick={closeViewUser}
+            onClick={closeAddUser}
             className="flex text-2xl items-center justify-center w-6 h-6 rounded-full shadow-xl text-red-500 hover:text-red-700 bg-white"
           >
             &times;
           </button>
         </div>
 
-        {/* User Details */}
-        <div className="flex flex-col items-center space-y-4">
-          {/* User Image */}
-          <img
-            src={user.image?.src}
-            alt={user.name}
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-          />
-          {/* User Date and Role */}
-          <div className="flex items-center space-x-3">
-            <p className="px-4 py-2 text-white text-sm font-semibold rounded-full bg-primary">
-              {user.date}
-            </p>
-            <span className={`px-6 py-2 text-sm font-semibold rounded-full`}>
-              {user.role}
-            </span>
-          </div>
-        </div>
+        {/* Add User Form */}
         <div className="flex flex-col sm:flex-row gap-4 p-4">
           <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
             <h2 className="text-primary">User Details</h2>
@@ -105,37 +87,46 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
               />
             </div>
 
-            <ActionButton
-              label="Save Changes"
-              icon="update"
-              onClick={handleUpdateDetails}
-            />
+            {/* Floating Label Input for Phone */}
+            <div className="relative mt-4">
+              <input
+                type="text"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
+                placeholder="Phone"
+              />
+            </div>
+
+            {/* Floating Label Input for Role */}
+            <div className="relative mt-4">
+              <input
+                type="text"
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
+                placeholder="Role"
+              />
+            </div>
           </div>
 
           <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
-            <h2 className="text-primary">Update Password</h2>
+            <h2 className="text-primary">Set Password</h2>
+            {/* Floating Label Input for Password */}
             <div className="relative">
               <input
                 type="password"
-                id="currentPassword"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Current Password"
+                placeholder="Password"
               />
             </div>
 
-            <div className="relative mt-4">
-              <input
-                type="password"
-                id="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="New Password"
-              />
-            </div>
-
+            {/* Floating Label Input for Confirm Password */}
             <div className="relative mt-4">
               <input
                 type="password"
@@ -147,10 +138,11 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
               />
             </div>
 
+            {/* Add User Button */}
             <ActionButton
-              label="Save Changes"
-              icon="update"
-              onClick={handleUpdatePassword}
+              label="Add User"
+              icon="add_user"
+              onClick={handleAddUser}
             />
           </div>
         </div>
@@ -159,4 +151,4 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
   );
 };
 
-export default ViewProfile;
+export default AddUser;

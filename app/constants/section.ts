@@ -13,6 +13,10 @@ export const sections: TSections = {
     section: "Premium Users",
     headline: "View and manage premium users. Track subscriptions and benefits.",
   },
+  services: {
+    section: "All Services",
+    headline: "Manage all services on the platform. View, edit, or delete services",
+  },
   notifications: {
     section: "Notifications",
     headline: "Send and manage notifications for users. Keep everyone informed.",

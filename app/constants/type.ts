@@ -23,7 +23,7 @@ export type TLanguage = {
 }
 
 export type TUsers = {
-  id: number;
+  _id: number;
   name:string;
   email: string;
   phone: string;
@@ -32,10 +32,25 @@ export type TUsers = {
   image: string;
 }
 
+export type TService = {
+  _id?: string;
+  name: string;
+  description: string;
+  category: string;
+  features: string[];
+  price: number;
+  duration: number;
+  type: string;
+  status?: 'active' | 'inactive';
+  createdAt?: Date; 
+  updatedAt?: Date;
+};
+
 export type TSections = {
   dashboard: TSection;
   users: TSection;
   premium_users: TSection;
+  services: TSection;
   notifications: TSection;
   messages: TSection;
   photo_review: TSection;

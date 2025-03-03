@@ -1,7 +1,7 @@
 import React from "react";
 
 interface User {
-  id: number;
+  _id: number;
   name: string;
   email: string;
   phone: string;
@@ -17,7 +17,7 @@ interface ViewUserProps {
 
 const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
       <div className="relative bg-white rounded-lg shadow-lg py-6 w-full max-w-md">
         {/* Close Button */}
         <div className="absolute top-2 right-2">

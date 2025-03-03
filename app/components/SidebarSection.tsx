@@ -1,6 +1,6 @@
+'use client';
 import React from "react";
 import Sidebar from "./Sidebar";
-import LogoutBtn from "./LogoutBtn";
 import ActionButton from "./ActionButton";
 
 interface SidebarSectionProps {

@@ -3,7 +3,7 @@
 import { FaEye, FaTrash } from "react-icons/fa";
 
 type User = {
-  id: number;
+  _id: number;
   name: string;
   email: string;
   phone: string;

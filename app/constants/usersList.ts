@@ -5,7 +5,7 @@ let count = 0;
 
 const generateUser = (): TUsers => {
     return {
-      id: count++,
+      _id: count++,
       name: faker.person.fullName(), 
       email: faker.internet.email(), 
       phone: faker.phone.number(), 

@@ -1,10 +1,12 @@
+'use client';
 import React from "react";
-import { BiLogOut, BiUser, BiEdit, BiTrash, BiUpload } from "react-icons/bi"; // Import icons
+import { BiLogOut, BiUser, BiEdit, BiTrash, BiUpload, BiPlusCircle } from "react-icons/bi"; // Import icons
+import { MdOutlinePersonAddAlt } from "react-icons/md";
 
 // Define the type for the props
 interface ActionButtonProps {
   label: string; // Button label
-  icon?: "logout" | "user" | "edit" | "delete" | "update"; // Icon name (optional)
+  icon?: "logout" | "user" | "edit" | "delete" | "update" | "add_user" | "service"; // Icon name (optional)
   onClick: () => void; // Action to perform on click
 }
 
@@ -15,6 +17,8 @@ const iconMap = {
   edit: BiEdit,
   delete: BiTrash,
   update: BiUpload,
+  add_user: MdOutlinePersonAddAlt,
+  service: BiPlusCircle,
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({

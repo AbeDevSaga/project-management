@@ -7,7 +7,7 @@ import DeleteUser from "./DeleteUser";
 import Pagination from "./Pagination";
 
 interface User {
-  id: number;
+  _id: number;
   name: string;
   email: string;
   phone: string;
@@ -19,7 +19,7 @@ const UserTable = () => {
   const [viewedUser, setViewedUser] = useState<User | null>(null); // State to track the viewed user
   const [deletedUser, setDeletedUser] = useState<User | null>(null); // State to track the deleted user
   const [currentPage, setCurrentPage] = useState(1); // State to track the current page
-  const usersPerPage = 11; // Number of users to display per page
+  const usersPerPage = 6; // Number of users to display per page
 
   // Function to handle view action
   const handleView = (user: User) => {
@@ -103,7 +103,7 @@ const UserTable = () => {
           {/* Table Body */}
           <tbody className="bg-white divide-y divide-gray-200">
             {currentUsers.map((user) => (
-              <tr key={user.id}>
+              <tr key={user._id}>
                 <td className="px-4 py-4 whitespace-nowrap text-sm">
                   {user.name}
                 </td>

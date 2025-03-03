@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import CountCard from "../components/CountCard";
 import { statsData } from "../constants/dashboardStats";
