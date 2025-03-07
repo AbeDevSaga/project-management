@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Defaults to localStorage for web
 import authReducer from "./slices/authSlice";
 import serviceReducer from "./slices/serviceSlice";
+import organizationReducer from "./slices/orgSlice";
 
 // Persist configuration
 const persistConfig = {
@@ -17,6 +18,7 @@ const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     service: serviceReducer,
+    organization: organizationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

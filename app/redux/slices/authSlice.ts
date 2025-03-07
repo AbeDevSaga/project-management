@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_SERVICE_API;
+const API_URL = process.env.NEXT_PUBLIC_AUTH_API;
 
 // Define types for user data
 interface User {
+  _id?: number;
   username?: string;
   email: string;
   password: string;
@@ -33,9 +34,11 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (userData: User, { rejectWithValue }) => {
+    console.log("userData: ", userData);
     try {
       const response = await axios.post(`${API_URL}/login`, userData);
       localStorage.setItem("token", response.data.token); // Save token to localStorage
+      console.log("response.data: ", response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);

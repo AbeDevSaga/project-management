@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const { loading, error } = useSelector((state: RootState) => state.auth); // Get loading and error state
 
   const handleLogin = async () => {
-    const resultAction = dispatch(loginUser({ email, password })); // Dispatch loginUser action
+    const resultAction = await dispatch(loginUser({ email, password })); // Dispatch loginUser action
     if (loginUser.fulfilled.match(resultAction)) {
       router.push("/dashboard"); // Redirect to dashboard on successful login
     } else {

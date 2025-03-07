@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Service } from "../../utils/type";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { TService } from "../../constants/type";
 
 interface ServiceCardProps {
   service: TService;
-  onUpdate: (service: Service) => void;
-  onDelete: (service: Service) => void;
+  onUpdate: (service: TService) => void;
+  onDelete: (service: TService) => void;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onUpdate, onDelete }) => {

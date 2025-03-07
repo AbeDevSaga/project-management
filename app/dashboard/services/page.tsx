@@ -9,11 +9,13 @@ import React, { useEffect, useState } from "react";
 import DeleteService from "@/app/components/service_related/DeleteService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
-import { fetchServices } from "@/app/redux/slices/serviceSlice";
+import { fetchServices, updateService, createService, deleteService } from "@/app/redux/slices/serviceSlice";
 
 function Services() {
   const dispatch = useDispatch<AppDispatch>();
-  const servicesList = useSelector((state: RootState) => state.service.services); // Access services from Redux store
+  const servicesList = useSelector(
+    (state: RootState) => state.service.services
+  ); // Access services from Redux store
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -38,17 +40,42 @@ function Services() {
   };
 
   // Handle modal actions
-  const handleAddServices = () => {
-    console.log("Adding new Services...");
-    setIsAddModalOpen(false);
+  const handleAddServices = async (newService: TService) => {
+    console.log("Adding new Services...", newService);
+    const resultAction = await dispatch(createService(newService));
+    if (createService.fulfilled.match(resultAction)) {
+      console.log("Service added successfully:", resultAction.payload);
+      setIsAddModalOpen(false);
+    } else {
+      console.error("Failed to add service:", resultAction.payload);
+    }
   };
-  const handleUpdateService = () => {
-    console.log("Updating service:", selectedService);
-    setIsUpdateModalOpen(false);
+  const handleUpdateService = async (updatedService: TService) => {
+    console.log("updatedService: ", updatedService)
+    if (selectedService) {
+      const resultAction = await dispatch(
+        updateService({
+          id: selectedService._id || "",
+          serviceData: updatedService,
+        })
+      );
+      if (updateService.fulfilled.match(resultAction)) {
+        console.log("Service updated successfully:", resultAction.payload);
+        setIsUpdateModalOpen(false);
+      } else {
+        console.error("Failed to update service:", resultAction.payload);
+      }
+    }
   };
-  const handleDeleteService = () => {
+  const handleDeleteService = async() => {
     console.log("Deleting service:", selectedService);
-    setIsDeleteModalOpen(false);
+    const resultAction = await dispatch(deleteService(selectedService?._id || ""));
+    if (deleteService.fulfilled.match(resultAction)) {
+      console.log("Service deleted successfully:", resultAction.payload);
+      setIsDeleteModalOpen(false);
+    } else {
+      console.error("Failed to delete service:", resultAction.payload);
+    }
   };
 
   // Close the modals

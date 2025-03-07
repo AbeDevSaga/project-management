@@ -48,10 +48,26 @@ export type TService = {
   updatedAt?: Date;
 };
 
+export type TOrganization = {
+  _id?: string;
+  name: string;
+  description: string;
+  address: string;
+  phone: string;
+  email: string;
+  website: string;
+  logo: string;
+  superAdmin?: TUsers;
+  users?: TUsers[];
+  projects?: string[];
+  createdAt?: Date;
+};
+
 export type TSections = {
   dashboard: TSection;
   users: TSection;
   premium_users: TSection;
+  organizations: TSection;
   services: TSection;
   notifications: TSection;
   messages: TSection;

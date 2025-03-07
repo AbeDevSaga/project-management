@@ -2,11 +2,12 @@
 import React from "react";
 import { BiLogOut, BiUser, BiEdit, BiTrash, BiUpload, BiPlusCircle } from "react-icons/bi"; // Import icons
 import { MdOutlinePersonAddAlt } from "react-icons/md";
+import { FaBuildingColumns } from "react-icons/fa6";
 
 // Define the type for the props
 interface ActionButtonProps {
   label: string; // Button label
-  icon?: "logout" | "user" | "edit" | "delete" | "update" | "add_user" | "service"; // Icon name (optional)
+  icon?: "logout" | "user" | "edit" | "delete" | "update" | "add_user" | "service" | "organization"; // Icon name (optional)
   onClick: () => void; // Action to perform on click
 }
 
@@ -19,6 +20,7 @@ const iconMap = {
   update: BiUpload,
   add_user: MdOutlinePersonAddAlt,
   service: BiPlusCircle,
+  organization: FaBuildingColumns,
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({

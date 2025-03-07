@@ -1,12 +1,12 @@
-import { TService } from "@/app/constants/type";
+import { TOrganization } from "@/app/constants/type";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_SERVICE_API;
+const API_URL = process.env.NEXT_PUBLIC_ORG_API;
 
-interface ServiceState {
-  services: TService[];
-  currentService: TService | null;
+interface OrganizationState {
+  organizations: TOrganization[];
+  currentOrganization: TOrganization | null;
   loading: boolean;
   error: string | null;
 }
@@ -16,11 +16,11 @@ const getAuthToken = () => {
 };
 
 // Async Thunks
-export const fetchServices = createAsyncThunk(
-  "services/fetchAll",
+export const fetchOrganizations = createAsyncThunk(
+  "organizations/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get<TService[]>(`${API_URL}`, {
+      const response = await axios.get<TOrganization[]>(`${API_URL}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
@@ -37,11 +37,11 @@ export const fetchServices = createAsyncThunk(
   }
 );
 
-export const fetchServiceById = createAsyncThunk(
-  "services/fetchById",
+export const fetchOrganizationById = createAsyncThunk(
+  "organizations/fetchById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get<TService>(`${API_URL}/${id}`, {
+      const response = await axios.get<TOrganization>(`${API_URL}/${id}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
@@ -53,13 +53,13 @@ export const fetchServiceById = createAsyncThunk(
   }
 );
 
-export const createService = createAsyncThunk(
-  "services/create",
-  async (serviceData: Omit<TService, "_id">, { rejectWithValue }) => {
+export const createOrganization = createAsyncThunk(
+  "organizations/create",
+  async (organizationData: Omit<TOrganization, "_id">, { rejectWithValue }) => {
     try {
-      const response = await axios.post<TService>(
-        `${API_URL}/create`,
-        serviceData,
+      const response = await axios.post<TOrganization>(
+        `${API_URL}/create_org`,
+        organizationData,
         {
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
@@ -73,16 +73,16 @@ export const createService = createAsyncThunk(
   }
 );
 
-export const updateService = createAsyncThunk(
-  "services/update",
+export const updateOrganization = createAsyncThunk(
+  "organizations/update",
   async (
-    { id, serviceData }: { id: string; serviceData: Partial<TService> },
+    { id, organizationData }: { id: string; organizationData: Partial<TOrganization> },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put<TService>(
-        `${API_URL}/update/${id}`,
-        serviceData,
+      const response = await axios.put<TOrganization>(
+        `${API_URL}/update_org/${id}`,
+        organizationData,
         {
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
@@ -96,11 +96,11 @@ export const updateService = createAsyncThunk(
   }
 );
 
-export const deleteService = createAsyncThunk(
-  "services/delete",
+export const deleteOrganization = createAsyncThunk(
+  "organizations/delete",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/delete/${id}`, {
+      await axios.delete(`${API_URL}/delete_org/${id}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
@@ -113,78 +113,78 @@ export const deleteService = createAsyncThunk(
 );
 
 // Slice
-const initialState: ServiceState = {
-  services: [],
-  currentService: null,
+const initialState: OrganizationState = {
+  organizations: [],
+  currentOrganization: null,
   loading: false,
   error: null,
 };
 
-const serviceSlice = createSlice({
-  name: "services",
+const organizationSlice = createSlice({
+  name: "organizations",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchServices.pending, (state) => {
+      .addCase(fetchOrganizations.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        fetchServices.fulfilled,
-        (state, action: PayloadAction<TService[]>) => {
+        fetchOrganizations.fulfilled,
+        (state, action: PayloadAction<TOrganization[]>) => {
           state.loading = false;
-          state.services = action.payload;
+          state.organizations = action.payload;
         }
       )
-      .addCase(fetchServices.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(fetchOrganizations.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchServiceById.pending, (state) => {
+      .addCase(fetchOrganizationById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        fetchServiceById.fulfilled,
-        (state, action: PayloadAction<TService>) => {
+        fetchOrganizationById.fulfilled,
+        (state, action: PayloadAction<TOrganization>) => {
           state.loading = false;
-          state.currentService = action.payload;
+          state.currentOrganization = action.payload;
         }
       )
       .addCase(
-        fetchServiceById.rejected,
+        fetchOrganizationById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         }
       )
       .addCase(
-        createService.fulfilled,
-        (state, action: PayloadAction<TService>) => {
-          state.services.push(action.payload);
+        createOrganization.fulfilled,
+        (state, action: PayloadAction<TOrganization>) => {
+          state.organizations.push(action.payload);
         }
       )
       .addCase(
-        updateService.fulfilled,
-        (state, action: PayloadAction<TService>) => {
-          const index = state.services.findIndex(
-            (service) => service._id === action.payload._id
+        updateOrganization.fulfilled,
+        (state, action: PayloadAction<TOrganization>) => {
+          const index = state.organizations.findIndex(
+            (organization) => organization._id === action.payload._id
           );
           if (index !== -1) {
-            state.services[index] = action.payload;
+            state.organizations[index] = action.payload;
           }
         }
       )
       .addCase(
-        deleteService.fulfilled,
+        deleteOrganization.fulfilled,
         (state, action: PayloadAction<string>) => {
-          state.services = state.services.filter(
-            (service) => service._id !== action.payload
+          state.organizations = state.organizations.filter(
+            (organization) => organization._id !== action.payload
           );
         }
       );
   },
 });
 
-export default serviceSlice.reducer;
+export default organizationSlice.reducer;

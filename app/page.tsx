@@ -26,7 +26,7 @@ const LandingPage: React.FC = () => {
           Login
         </button>
         <button
-          onClick={() => router.push("/auth/signup")}
+          onClick={() => router.push("/auth/register")}
           className="px-4 py-2 bg-green-500 text-white rounded-md"
         >
           Sign Up

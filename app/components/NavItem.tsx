@@ -4,6 +4,7 @@ import {
     MdReport, MdSupervisorAccount 
   } from "react-icons/md"; 
   import { FaUserShield } from "react-icons/fa";
+  import { FaBuildingColumns } from "react-icons/fa6";
 
 type IconMapping = {
   [key: string]: React.ComponentType<{ className?: string }>;
@@ -19,6 +20,7 @@ const iconMapping: IconMapping = {
   reportsBans: MdReport,
   salesAgents: MdSupervisorAccount,
   manageAdmins: FaUserShield,
+  oraganizations: FaBuildingColumns,
 };
 
 interface NavItemProps {

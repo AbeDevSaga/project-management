@@ -60,6 +60,7 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
                 type="text"
                 id="name"
                 value={name}
+                required
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
                 placeholder="Name"
@@ -70,6 +71,7 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
               <input
                 type="text"
                 id="description"
+                required
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
@@ -97,6 +99,7 @@ const AddService: React.FC<AddServiceProps> = ({ closeAddService, onAddService }
               <input
                 type="text"
                 id="features"
+                required
                 value={features.join(", ")} // Convert array to comma-separated string
                 onChange={(e) => setFeatures(e.target.value.split(", "))} // Convert string back to array
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
