@@ -1,115 +1,76 @@
-import React, { useState } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import React from "react";
 import { TOrganization } from "../../constants/type";
+import { FaUsers, FaProjectDiagram } from "react-icons/fa";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 
 interface OrganizationCardProps {
   organization: TOrganization;
-  onUpdate: (organization: TOrganization) => void;
-  onDelete: (organization: TOrganization) => void;
+  onCardClick?: () => void;
 }
 
 const OrganizationCard: React.FC<OrganizationCardProps> = ({
   organization,
-  onUpdate,
-  onDelete,
+  onCardClick,
 }) => {
-  const [showActions, setShowActions] = useState(false); // State to toggle actions visibility
-
   return (
-    <div className="bg-white relative rounded-lg shadow-md p-6 pb-3 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full min-h-[300px]">
-      {/* Three dots menu */}
-      <div className="absolute top-2 right-2">
-        <BsThreeDotsVertical
-          onClick={() => setShowActions(!showActions)}
-          className="text-gray-600 cursor-pointer"
-        />
-      </div>
-      {/* Actions */}
-      {showActions && (
-        <div className="absolute bg-white py-2 top-10 right-2 rounded-lg shadow-md">
-          <div
-            onClick={() => onUpdate({ ...organization, _id: organization._id || "" })}
-            className="right-2 bg-white px-4 pb-2 cursor-pointer hover:text-primary duration-300"
-          >
-            Update Organization
-          </div>
-          <div
-            onClick={() => onDelete({ ...organization, _id: organization._id || "" })}
-            className="right-2 bg-white px-4 cursor-pointer border-t border-gray-200 pt-2 hover:text-red-500 duration-300"
-          >
-            Delete Organization
-          </div>
-        </div>
-      )}
-
+    <div className="bg-white relative rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full min-h-[300px]">
       {/* Organization Logo and Name */}
       <div className="flex items-center mb-4">
-        {organization.logo && (
+        {organization.logo ? (
           <img
             src={organization.logo}
             alt={`${organization.name} Logo`}
-            className="w-12 h-12 rounded-full object-cover mr-4"
+            className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-gray-200 shadow-sm"
           />
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4 border-2 border-gray-200 shadow-sm">
+            <HiOutlineBuildingOffice2 className="w-6 h-6 text-gray-500" />
+          </div>
         )}
-        <h2 className="text-xl font-semibold text-gray-800">{organization.name}</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          {organization.name}
+        </h2>
       </div>
 
       {/* Organization Description */}
       {organization.description && (
-        <p className="text-gray-600 mb-4">{organization.description}</p>
+        <p className="text-gray-600 mb-6 line-clamp-2">
+          {organization.description}
+        </p>
       )}
 
-      {/* Organization Details */}
-      <div className="space-y-2 text-sm text-gray-600">
-        {organization.address && (
-          <p>
-            <span className="font-medium">Address:</span> {organization.address}
-          </p>
-        )}
-        {organization.phone && (
-          <p>
-            <span className="font-medium">Phone:</span> {organization.phone}
-          </p>
-        )}
-        {organization.email && (
-          <p>
-            <span className="font-medium">Email:</span> {organization.email}
-          </p>
-        )}
-        {organization.website && (
-          <p>
-            <span className="font-medium">Website:</span>{" "}
-            <a
-              href={organization.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              {organization.website}
-            </a>
-          </p>
-        )}
-        {organization.superAdmin && (
-          <p>
-            <span className="font-medium">Super Admin:</span>{" "}
-            {organization.superAdmin.name}
-          </p>
-        )}
-        <p>
-          <span className="font-medium">Total Users:</span>{" "}
-          {22}
-        </p>
-        <p>
-          <span className="font-medium">Total Projects:</span>{" "}
-          {32}
-        </p>
-        {organization.createdAt && (
-          <p>
-            <span className="font-medium">Created At:</span>{" "}
-            {new Date(organization.createdAt).toLocaleDateString()}
-          </p>
-        )}
+      {/* Organization Stats */}
+      <div className="flex space-x-6 mb-6">
+        {/* Users Count */}
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-blue-50 rounded-full">
+            <FaUsers className="w-7 h-7 text-blue-600" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold text-gray-800">212</span>
+            <span className="text-sm text-gray-500">Users</span>
+          </div>
+        </div>
+
+        {/* Projects Count */}
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-purple-50 rounded-full">
+            <FaProjectDiagram className="w-6 h-6 text-purple-600" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold text-gray-800">27</span>
+            <span className="text-sm text-gray-500">Projects</span>
+          </div>
+        </div>
       </div>
+
+      {/* Organization View Button */}
+      <button
+        className="mt-auto w-full py-2 px-4 text-primary rounded-md hover:text-blue-600 transition-colors duration-300"
+        onClick={onCardClick}
+      >
+        View Organization
+      </button>
     </div>
   );
 };

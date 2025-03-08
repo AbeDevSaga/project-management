@@ -49,7 +49,7 @@ export const loginUser = createAsyncThunk(
 // Slice
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem("token") || null, // Initialize token from localStorage
+  token: typeof window !== "undefined" ? localStorage.getItem("token") || null : null,
   loading: false,
   error: null,
 };

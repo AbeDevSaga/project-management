@@ -52,7 +52,7 @@ const UpdateOrganization: React.FC<UpdateOrganizationProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="relative p-6 bg-white rounded-lg shadow-lg w-auto">
+      <div className="relative p-6 bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4">
         {/* Close Button */}
         <div className="absolute top-2 right-2">
           <button
@@ -64,95 +64,104 @@ const UpdateOrganization: React.FC<UpdateOrganizationProps> = ({
         </div>
 
         {/* Update Organization Form */}
-        <div className="flex flex-col sm:flex-row gap-4 p-4">
-          <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
-            <h2 className="text-primary">Organization Details</h2>
+        <div className="mt-6">
+          <h2 className="text-primary text-xl font-semibold mb-4">Organization Details</h2>
 
-            {/* Floating Label Input for Name */}
-            <div className="relative">
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Name"
-              />
+          {/* Grid Layout for Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Column 1 */}
+            <div className="space-y-4">
+              {/* Name */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Name"
+                />
+              </div>
+
+              {/* Description */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Description"
+                />
+              </div>
+
+              {/* Address */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Address"
+                />
+              </div>
             </div>
 
-            {/* Floating Label Input for Description */}
-            <div className="relative mt-4">
-              <input
-                type="text"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Description"
-              />
-            </div>
+            {/* Column 2 */}
+            <div className="space-y-4">
+              {/* Phone */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Phone"
+                />
+              </div>
 
-            {/* Floating Label Input for Address */}
-            <div className="relative mt-4">
-              <input
-                type="text"
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Address"
-              />
-            </div>
+              {/* Email */}
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Email"
+                />
+              </div>
 
-            {/* Floating Label Input for Phone */}
-            <div className="relative mt-4">
-              <input
-                type="text"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Phone"
-              />
-            </div>
+              {/* Website */}
+              <div className="relative">
+                <input
+                  type="url"
+                  id="website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Website"
+                />
+              </div>
 
-            {/* Floating Label Input for Email */}
-            <div className="relative mt-4">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Email"
-              />
+              {/* Logo */}
+              <div className="relative">
+                <input
+                  type="url"
+                  id="logo"
+                  value={logo}
+                  onChange={(e) => setLogo(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Logo URL"
+                />
+              </div>
             </div>
+          </div>
 
-            {/* Floating Label Input for Website */}
-            <div className="relative mt-4">
-              <input
-                type="url"
-                id="website"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Website"
-              />
-            </div>
-
-            {/* Floating Label Input for Logo */}
-            <div className="relative mt-4">
-              <input
-                type="url"
-                id="logo"
-                value={logo}
-                onChange={(e) => setLogo(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Logo URL"
-              />
-            </div>
-
-            {/* Update Organization Button */}
+          {/* Update Organization Button */}
+          <div className="mt-6 flex items-center justify-center">
             <ActionButton
               label="Update Organization"
               icon="organization"

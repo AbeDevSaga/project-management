@@ -68,6 +68,7 @@ export type TSections = {
   users: TSection;
   premium_users: TSection;
   organizations: TSection;
+  projects: TSection;
   services: TSection;
   notifications: TSection;
   messages: TSection;

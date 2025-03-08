@@ -17,6 +17,10 @@ export const sections: TSections = {
     section: "All Organizations",
     headline: "Manage all organizations on the platform. View, edit, or delete organizations",
   },
+  projects: {
+    section: "All Projects",
+    headline: "Manage all organizations projects on the platform. View, edit, or delete organizations",
+  },
   services: {
     section: "All Services",
     headline: "Manage all services on the platform. View, edit, or delete services",
