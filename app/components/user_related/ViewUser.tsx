@@ -1,9 +1,9 @@
-import { TUsers } from "@/app/constants/type";
+import { TUser } from "@/app/constants/type";
 import React from "react";
 
 
 interface ViewUserProps {
-  user: TUsers;
+  user: TUser;
   closeViewUser: () => void;
 }
 
@@ -25,16 +25,16 @@ const ViewUser: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
         <div className="flex flex-col items-center space-y-4">
           {/* User Image */}
           <img
-            src={user.image }
-            alt={user.name}
+            src={user.profileImage }
+            alt={user.username}
             className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
           />
           {/* User Name */}
-          <h2 className="text-2xl font-semibold text-gray-800">{user.name}</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">{user.username}</h2>
           {/* User Date and Status */}
           <div className="flex items-center space-x-3">
             <p className="px-4 py-2 text-white text-sm font-semibold rounded-full bg-primary">
-              {user.date}
+              {user.isPremium?"Premium":"Standard"}
             </p>
             <span
               className={`px-6 py-2 text-sm font-semibold rounded-full ${
@@ -56,7 +56,7 @@ const ViewUser: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
           <p className="font-medium text-primary">Phone:</p>
           <p className="text-gray-600">{user.phone}</p>
           <p className="font-medium text-primary">Joined:</p>
-          <p className="text-gray-600">{user.date}</p>
+          <p className="text-gray-600">{user.created_at}</p>
         </div>
       </div>
     </div>

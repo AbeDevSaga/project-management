@@ -47,7 +47,7 @@ const OrganizationCard: React.FC<OrganizationCardProps> = ({
             <FaUsers className="w-7 h-7 text-blue-600" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-semibold text-gray-800">212</span>
+            <span className="text-lg font-semibold text-gray-800">{organization.users?.length}</span>
             <span className="text-sm text-gray-500">Users</span>
           </div>
         </div>

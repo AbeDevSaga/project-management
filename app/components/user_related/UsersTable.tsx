@@ -8,10 +8,13 @@ import { TUser } from "@/app/constants/type";
 import StatusBadge from "./StatusBadge";
 
 interface UserTableProps {
+  onViewUser: (userData: TUser) => void;
   users: TUser[]; // Define the users prop
+  px: string,
+  py: string,
 }
 
-const UserTable : React.FC<UserTableProps> = ({ users }) => {
+const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => {
   const [viewedUser, setViewedUser] = useState<TUser | null>(null); // State to track the viewed user
   const [deletedUser, setDeletedUser] = useState<TUser | null>(null); // State to track the deleted user
   const [currentPage, setCurrentPage] = useState(1); // State to track the current page
@@ -20,6 +23,7 @@ const UserTable : React.FC<UserTableProps> = ({ users }) => {
   // Function to handle view action
   const handleView = (user: TUser) => {
     setViewedUser(user); // Set the viewed user
+    onViewUser(user); // Call the onViewUser prop function
   };
 
   // Function to close the ViewUser modal
@@ -64,9 +68,9 @@ const UserTable : React.FC<UserTableProps> = ({ users }) => {
   return (
     <div className="min-h-screen">
       {/* Render the ViewUser component if a user is being viewed */}
-      {viewedUser && (
+      {/* {viewedUser && (
         <ViewUser user={viewedUser} closeViewUser={closeViewUser} />
-      )}
+      )} */}
       {deletedUser && (
         <DeleteUser user={deletedUser} closeDeleteUser={closeDeleteUser} />
       )}
@@ -100,16 +104,16 @@ const UserTable : React.FC<UserTableProps> = ({ users }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentUsers.map((user) => (
               <tr key={user._id}>
-                <td className="px-4 py-4 whitespace-nowrap text-sm">
+                <td className={`px-${px} py-${py} whitespace-nowrap text-sm`}>
                   {user.username}
                 </td>
-                <td className="hidden sm:table-cell px-4 py-4 whitespace-nowrap text-sm">
+                <td className={`hidden sm:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}>
                   {user.email}
                 </td>
-                <td className="hidden md:table-cell px-4 py-4 whitespace-nowrap text-sm">
+                <td className={`hidden md:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}>
                   {user.phone}
                 </td>
-                <td className="hidden lg:table-cell px-4 py-4 whitespace-nowrap text-sm">
+                <td className={`hidden lg:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}>
                   {user.created_at}
                 </td>
                 <td className="hidden xl:table-cell px-2 py-2 whitespace-nowrap">

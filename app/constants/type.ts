@@ -28,8 +28,8 @@ export type TUser = {
   email: string;
   password: string;
   phone?: string;
-  role: string;
-  organization?: TOrganization;
+  role?: string;
+  organization?: string;
   isPremium?: boolean;
   profileImage?: string;
   services?: TService[];

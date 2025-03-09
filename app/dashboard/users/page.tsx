@@ -8,8 +8,10 @@ import { createUser, fetchAllUsers } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
+import { useRouter } from "next/navigation";
 
 function users() {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const usersList = useSelector((state: RootState) => state.user.users);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
@@ -24,6 +26,10 @@ function users() {
   };
   const handleCloseAddUser = () => {
     setIsAddUserOpen(false); // Close the modal
+  };
+
+  const handleViewUser = (user: TUser) => {
+    router.push(`users/${user._id}`);
   };
 
   const handleSaveUser = async (newUser: TUser) => {
@@ -49,9 +55,9 @@ function users() {
           />
         </div>
       </div>
-      <UserTable users = {usersList} />
+      <UserTable onViewUser={handleViewUser} users = {usersList} px="4" py="4"/>
       {isAddUserOpen && (
-        <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} />
+        <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} role="User"/>
       )}
     </div>
   );

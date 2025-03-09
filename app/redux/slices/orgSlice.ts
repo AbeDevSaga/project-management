@@ -25,6 +25,7 @@ export const fetchOrganizations = createAsyncThunk(
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
+      console.log("organizations", response.data)
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {

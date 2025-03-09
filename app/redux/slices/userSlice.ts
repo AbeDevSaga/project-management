@@ -16,6 +16,15 @@ const getAuthToken = () => {
   return localStorage.getItem("token");
 };
 
+const handleApiError = (error: any) => {
+  if (error.response?.status === 401) {
+    // localStorage.removeItem("token"); 
+    // window.location.href = "/auth/login";
+  }
+  return error.response?.data || "An unexpected error occurred";
+};
+
+
 // Async Thunks
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAll",
@@ -29,12 +38,7 @@ export const fetchAllUsers = createAsyncThunk(
       console.log("response: ", response);
       return response.data;
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        // Token is invalid or expired
-        localStorage.removeItem("token"); // Clear the token
-        window.location.href = "/auth/login"; // Redirect to login page
-      }
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -50,7 +54,7 @@ export const fetchUserById = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -66,7 +70,7 @@ export const fetchUsersByOrganizationId = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -82,7 +86,7 @@ export const fetchPremiumUsers = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -98,7 +102,7 @@ export const createUser = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -117,7 +121,7 @@ export const updateUser = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );
@@ -133,7 +137,7 @@ export const deleteUser = createAsyncThunk(
       });
       return id;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(handleApiError(error));
     }
   }
 );

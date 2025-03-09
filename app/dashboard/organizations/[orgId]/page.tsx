@@ -1,11 +1,10 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TOrganization } from "@/app/constants/type";
+import { TOrganization, TUser } from "@/app/constants/type";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
 import {
-  createOrganization,
   deleteOrganization,
   fetchOrganizationById,
   updateOrganization,
@@ -15,23 +14,33 @@ import ActionButton from "@/app/components/ActionButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import UpdateOrganization from "@/app/components/org_related/UpdateOrganization";
 import DeleteOrganization from "@/app/components/org_related/DeleteOrganization";
+import { fetchUsersByOrganizationId } from "@/app/redux/slices/userSlice";
+import UserTable from "@/app/components/user_related/UsersTable";
+import AddUser from "@/app/components/user_related/AddUser";
+import { useRouter } from "next/navigation";
 
 const OrganizationDetailsPage = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { orgId } = useParams() as { orgId: string };
   const [organization, setOrganization] = useState<TOrganization | null>(null);
+  const [usersList, setUserList] = useState<TUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showActions, setShowActions] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
+  const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedOrganization, setSelectedOrganization] =
     useState<TOrganization | null>(null);
   // Open the modals
-  const openAddModal = () => {
-    setIsAddModalOpen(true);
+  const openAddAdminModal = () => {
+    setAddAdminModalOpen(true);
+  };
+  const openAddUserModal = () => {
+    setAddUserModalOpen(true);
   };
   const openUpdateModal = (service: TOrganization) => {
     setIsUpdateModalOpen(true);
@@ -43,16 +52,19 @@ const OrganizationDetailsPage = () => {
   };
 
   // Handle modal actions
-  const handleAddOrganization = async (newService: TOrganization) => {
-    console.log("Adding new Organization...", newService);
-    const resultAction = await dispatch(createOrganization(newService));
-    if (createOrganization.fulfilled.match(resultAction)) {
-      console.log("Organization added successfully:", resultAction.payload);
-      setIsAddModalOpen(false);
-    } else {
-      console.error("Failed to add Organization:", resultAction.payload);
-    }
+  const handleAddAdmin = (newUser: TUser) => {
+    console.log("New User Data:", newUser);
+    // Add admin logic here
+    // const resultAction = await dispatch(createUser(newUser));
+    // if (createUser.fulfilled.match(resultAction)) {
+    //   console.log("User added successfully:", resultAction.payload);
+    //   setIsAddUserOpen(false); // Close the modal after saving
+    // } else {
+    //   console.error("Failed to add user:", resultAction.payload);
+    // }
+    setAddAdminModalOpen(false);
   };
+
   const handleUpdateOrganization = async (updatedService: TOrganization) => {
     console.log("updatedOrganization: ", updatedService);
     if (selectedOrganization) {
@@ -83,9 +95,16 @@ const OrganizationDetailsPage = () => {
     }
   };
 
+  const handleViewUser = (user: TUser) => {
+    router.push(`${orgId}/${user._id}`);
+  };
+
   // Close the modals
-  const closeAddModal = () => {
-    setIsAddModalOpen(false);
+  const closeAddAdminModal = () => {
+    setAddAdminModalOpen(false);
+  };
+  const closeAddUserModal = () => {
+    setAddUserModalOpen(false);
   };
   const closeUpdateModal = () => {
     setIsUpdateModalOpen(false);
@@ -100,11 +119,22 @@ const OrganizationDetailsPage = () => {
       if (orgId) {
         try {
           setLoading(true);
-          const response = await dispatch(fetchOrganizationById(orgId));
-          if (fetchOrganizationById.fulfilled.match(response)) {
-            setOrganization(response.payload);
-          } else if (fetchOrganizationById.rejected.match(response)) {
+          setError(null);
+
+          const orgResponse = await dispatch(fetchOrganizationById(orgId));
+          if (fetchOrganizationById.fulfilled.match(orgResponse)) {
+            setOrganization(orgResponse.payload);
+          } else if (fetchOrganizationById.rejected.match(orgResponse)) {
             setError("Failed to fetch organization data");
+          }
+
+          const userResponse = await dispatch(
+            fetchUsersByOrganizationId(orgId)
+          );
+          if (fetchUsersByOrganizationId.fulfilled.match(userResponse)) {
+            setUserList(userResponse.payload);
+          } else {
+            setError("Failed to fetch user list");
           }
         } catch (err) {
           setError("An unexpected error occurred");
@@ -229,12 +259,56 @@ const OrganizationDetailsPage = () => {
           )}
 
           {/* Super Admin */}
-          {organization.superAdmin && (
+          {organization.superAdmin ? (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-gray-500">
                 Super Admin
               </h2>
-              <p className="text-gray-800">{organization.superAdmin.username}</p>
+              <p className="text-gray-800">
+                {organization.superAdmin.username}
+              </p>
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-4 flex items-center space-x-3 rounded-lg">
+              {/* User Icon with Question Mark */}
+              <div className="relative w-8 h-8 flex items-center justify-center bg-gray-300 rounded-full">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {/* Question Mark */}
+                <div className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="text-xs text-white font-bold">?</span>
+                </div>
+              </div>
+
+              {/* Add Super Admin Button */}
+              <button
+                onClick={() => openAddAdminModal()}
+                className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
+              >
+                <span>Add Super Admin</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
             </div>
           )}
 
@@ -252,37 +326,25 @@ const OrganizationDetailsPage = () => {
         </div>
       </div>
       {/* Users Section */}
-      <div className="p-6 bg-white rounded-lg shadow-md">
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
           <SectionHeader sectionKey="users" />
           <div className="w-auto">
             <ActionButton
               label="Add Users"
-              onClick={openAddModal}
+              onClick={openAddUserModal}
               icon="user"
             />
           </div>
         </div>
-        {/* <div className="mt-8">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Users</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {organization.users.map((user) => (
-                <div
-                  key={user._id}
-                  className="bg-gray-50 p-4 rounded-lg flex items-center space-x-3"
-                >
-                  <img
-                    src={user.avatar} // Assuming user has an avatar field
-                    alt={`${user.name} Avatar`}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <p className="text-gray-800">{user.name}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div> */}
+        {usersList && usersList.length > 0 && (
+          <UserTable
+            onViewUser={handleViewUser}
+            users={usersList}
+            px="2"
+            py="2"
+          />
+        )}
       </div>
       {/* Projects Section */}
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -291,7 +353,7 @@ const OrganizationDetailsPage = () => {
           <div className="w-auto">
             <ActionButton
               label="Add Project"
-              onClick={openAddModal}
+              onClick={openAddUserModal}
               icon="user"
             />
           </div>
@@ -314,6 +376,14 @@ const OrganizationDetailsPage = () => {
           </div>
         </div> */}
       </div>
+      {addAdminModalOpen && (
+        <AddUser
+          closeAddUser={closeAddAdminModal}
+          onAddUser={handleAddAdmin}
+          orgId={orgId}
+          role="Super Admin"
+        />
+      )}
       {isUpdateModalOpen && selectedOrganization && (
         <UpdateOrganization
           closeUpdateOrganization={closeUpdateModal}

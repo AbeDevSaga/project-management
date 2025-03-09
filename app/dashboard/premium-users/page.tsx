@@ -4,12 +4,14 @@ import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
 import UserTable from "@/app/components/user_related/UsersTable";
 import React, { useEffect, useState } from "react";
-import { createUser,  fetchPremiumUsers } from "@/app/redux/slices/userSlice";
+import { createUser, fetchPremiumUsers } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
+import { useRouter } from "next/navigation";
 
 function PremiumUsers() {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const usersList = useSelector((state: RootState) => state.user.premiumUsers);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
@@ -21,6 +23,9 @@ function PremiumUsers() {
   const handleAddUser = () => {
     console.log("Opening Add User modal...");
     setIsAddUserOpen(true); // Open the modal
+  };
+  const handleViewUser = (user: TUser) => {
+    router.push(`premium-users/${user._id}`);
   };
   const handleCloseAddUser = () => {
     setIsAddUserOpen(false); // Close the modal
@@ -49,9 +54,13 @@ function PremiumUsers() {
           />
         </div>
       </div>
-      <UserTable users = {usersList} />
+      <UserTable onViewUser={handleViewUser} users={usersList} px="4" py="4" />
       {isAddUserOpen && (
-        <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} />
+        <AddUser
+          closeAddUser={handleCloseAddUser}
+          onAddUser={handleSaveUser}
+          role="Premuim User"
+        />
       )}
     </div>
   );

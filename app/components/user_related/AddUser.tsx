@@ -1,22 +1,29 @@
 import { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import ActionButton from "../ActionButton";
-import { TUsers } from "@/app/constants/type";
-
+import { TUser } from "@/app/constants/type";
 
 interface AddUserProps {
+  orgId?: string; // Make orgId optional
+  role?: string;
   closeAddUser: () => void; // Callback to close the modal
-  onAddUser: (userData: TUsers) => void; // Callback to add a new user
+  onAddUser: (userData: TUser) => void; // Callback to add a new user
 }
 
-const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
+const AddUser: React.FC<AddUserProps> = ({
+  orgId,
+  role,
+  closeAddUser,
+  onAddUser,
+}) => {
   // State for new user details
-  const [name, setName] = useState("");
+  const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const buttonLabel = role ? `Add ${role}` : "Add User";
+  const headerText = role ? `Create New ${role} Account`: "Create New User Account";
 
   // Handle adding a new user
   const handleAddUser = () => {
@@ -25,14 +32,22 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
       return;
     }
 
-    const newUser: TUsers = {
-      name,
+    // Create a new user object
+    const newUser: TUser = {
+      username,
       email,
       phone,
-      role,
       password,
-      date: new Date().toLocaleDateString(), // Set the current date as the registration date
+      created_at: new Date().toLocaleDateString(), // Set the current date as the registration date
     };
+
+    // Add organization ID only if it is provided
+    if (orgId) {
+      newUser.organization = orgId;
+    }
+    if (role) {
+      newUser.role = role;
+    }
 
     onAddUser(newUser); // Pass the new user data to the parent component
     closeAddUser(); // Close the modal
@@ -41,6 +56,9 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="relative p-6 bg-white rounded-lg shadow-lg w-auto">
+        <div className="flex items-center justify-center px-4">
+          <p className="text-primary text-lg">{headerText}</p>
+        </div>
         {/* Close Button */}
         <div className="absolute top-2 right-2">
           <button
@@ -53,15 +71,15 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
 
         {/* Add User Form */}
         <div className="flex flex-col sm:flex-row gap-4 p-4">
-          <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
+          <div className="space-y-4 w-full mx-auto p-2 border rounded-lg">
             <h2 className="text-primary">User Details</h2>
             {/* Floating Label Input for Name */}
             <div className="relative">
               <input
                 type="text"
                 id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
                 placeholder="Name"
               />
@@ -90,21 +108,9 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
                 placeholder="Phone"
               />
             </div>
-
-            {/* Floating Label Input for Role */}
-            <div className="relative mt-4">
-              <input
-                type="text"
-                id="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary peer"
-                placeholder="Role"
-              />
-            </div>
           </div>
 
-          <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
+          <div className="space-y-4 w-full mx-auto p-2 border rounded-lg">
             <h2 className="text-primary">Set Password</h2>
             {/* Floating Label Input for Password */}
             <div className="relative">
@@ -132,7 +138,7 @@ const AddUser: React.FC<AddUserProps> = ({ closeAddUser, onAddUser }) => {
 
             {/* Add User Button */}
             <ActionButton
-              label="Add User"
+              label={buttonLabel}
               icon="add_user"
               onClick={handleAddUser}
             />
