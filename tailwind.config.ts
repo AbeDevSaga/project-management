@@ -29,6 +29,8 @@ export default {
         totalRevenuBg: "var(--totalRevenuBg)",
         newUserFg: "var(--newUserFg)",
         newUserBg: "var(--newUserBg)",
+        premiumUserFg: "var(--premiumUserFg)",
+        premiumUserBg: "var(--premiumUserBg)",
       },
     },
   },

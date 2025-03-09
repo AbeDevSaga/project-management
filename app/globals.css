@@ -18,10 +18,12 @@
   --totalUserBg: #98b1fb3a;
   --activeUserFg: #1fa04e;
   --activeUserBg: #90faa285;
-  --totalRevenuFg: #2e82c2;
-  --totalRevenuBg: #9bd2fd77;
-  --newUserFg: #f1aa2f;
-  --newUserBg: #fedea58f;
+  --totalRevenuFg: #f1aa2f;
+  --totalRevenuBg: #fedea58f;
+  --premiumUserFg: #f1aa2f;
+  --premiumUserBg: #fedea58f;
+  --newUserFg: #2e82c2;
+  --newUserBg: #9bd2fd77;
   --titleFg: #212B36;
 }
 

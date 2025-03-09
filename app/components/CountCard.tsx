@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa6";
 import { HiCurrencyDollar } from "react-icons/hi2";
+import { MdOutlineWorkspacePremium } from "react-icons/md";
 
 type IconMapping = {
   [key: string]: React.ComponentType<{ className?: string }>;
@@ -19,6 +20,7 @@ const iconMapping: IconMapping = {
   dollarSign: HiCurrencyDollar,
   userPlus: FaUserPlus,
   userCheck:FaUserCheck,
+  premium: MdOutlineWorkspacePremium,
 };
 
 // Define the StatsProp interface where icon is a key of the iconMapping object
