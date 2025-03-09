@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage"; // Defaults to localStorage for
 import authReducer from "./slices/authSlice";
 import serviceReducer from "./slices/serviceSlice";
 import organizationReducer from "./slices/orgSlice";
+import userReducer from "./slices/userSlice";
 
 // Persist configuration
 const persistConfig = {
@@ -19,6 +20,7 @@ const store = configureStore({
     auth: persistedAuthReducer,
     service: serviceReducer,
     organization: organizationReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

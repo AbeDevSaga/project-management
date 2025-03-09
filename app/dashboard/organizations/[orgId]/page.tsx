@@ -234,7 +234,7 @@ const OrganizationDetailsPage = () => {
               <h2 className="text-sm font-semibold text-gray-500">
                 Super Admin
               </h2>
-              <p className="text-gray-800">{organization.superAdmin.name}</p>
+              <p className="text-gray-800">{organization.superAdmin.username}</p>
             </div>
           )}
 

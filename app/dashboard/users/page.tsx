@@ -3,11 +3,20 @@ import ActionButton from "@/app/components/ActionButton";
 import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
 import UserTable from "@/app/components/user_related/UsersTable";
-import { User } from "@/app/utils/type";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { createUser, fetchAllUsers } from "@/app/redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { TUser } from "@/app/constants/type";
 
 function users() {
+  const dispatch = useDispatch<AppDispatch>();
+  const usersList = useSelector((state: RootState) => state.user.users);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
 
   const handleAddUser = () => {
     console.log("Opening Add User modal...");
@@ -17,10 +26,15 @@ function users() {
     setIsAddUserOpen(false); // Close the modal
   };
 
-  const handleSaveUser = (newUser: User) => {
+  const handleSaveUser = async (newUser: TUser) => {
     console.log("New User Data:", newUser);
-    // Here you can call an API to save the new user
-    setIsAddUserOpen(false); // Close the modal after saving
+    const resultAction = await dispatch(createUser(newUser));
+    if (createUser.fulfilled.match(resultAction)) {
+      console.log("User added successfully:", resultAction.payload);
+      setIsAddUserOpen(false); // Close the modal after saving
+    } else {
+      console.error("Failed to add user:", resultAction.payload);
+    }
   };
 
   return (
@@ -35,7 +49,7 @@ function users() {
           />
         </div>
       </div>
-      <UserTable />
+      <UserTable users = {usersList} />
       {isAddUserOpen && (
         <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} />
       )}

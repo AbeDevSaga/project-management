@@ -4,18 +4,21 @@ import Pagination from "../Pagination";
 import DeleteUser from "./DeleteUser";
 import ViewUser from "./ViewUser";
 import { UserActions } from "./UserActions";
-import { users } from "@/app/constants/usersList";
-import { TUsers } from "@/app/constants/type";
+import { TUser } from "@/app/constants/type";
+import StatusBadge from "./StatusBadge";
 
+interface UserTableProps {
+  users: TUser[]; // Define the users prop
+}
 
-const UserTable = () => {
-  const [viewedUser, setViewedUser] = useState<TUsers | null>(null); // State to track the viewed user
-  const [deletedUser, setDeletedUser] = useState<TUsers | null>(null); // State to track the deleted user
+const UserTable : React.FC<UserTableProps> = ({ users }) => {
+  const [viewedUser, setViewedUser] = useState<TUser | null>(null); // State to track the viewed user
+  const [deletedUser, setDeletedUser] = useState<TUser | null>(null); // State to track the deleted user
   const [currentPage, setCurrentPage] = useState(1); // State to track the current page
   const usersPerPage = 6; // Number of users to display per page
 
   // Function to handle view action
-  const handleView = (user: TUsers) => {
+  const handleView = (user: TUser) => {
     setViewedUser(user); // Set the viewed user
   };
 
@@ -25,7 +28,7 @@ const UserTable = () => {
   };
 
   // Function to handle delete action
-  const handleDelete = (user: TUsers) => {
+  const handleDelete = (user: TUser) => {
     setDeletedUser(user); // Set the deleted user
   };
 
@@ -98,7 +101,7 @@ const UserTable = () => {
             {currentUsers.map((user) => (
               <tr key={user._id}>
                 <td className="px-4 py-4 whitespace-nowrap text-sm">
-                  {user.name}
+                  {user.username}
                 </td>
                 <td className="hidden sm:table-cell px-4 py-4 whitespace-nowrap text-sm">
                   {user.email}
@@ -107,20 +110,10 @@ const UserTable = () => {
                   {user.phone}
                 </td>
                 <td className="hidden lg:table-cell px-4 py-4 whitespace-nowrap text-sm">
-                  {user.date}
+                  {user.created_at}
                 </td>
                 <td className="hidden xl:table-cell px-2 py-2 whitespace-nowrap">
-                  <span
-                    className={`py-2 flex items-center justify-center text-xs font-semibold rounded-lg ${
-                      user.status === "active"
-                        ? "bg-green-100 text-green-800"
-                        : user.status === "inactive"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {user.status}
-                  </span>
+                  <StatusBadge status={user.status || "pending"}/>
                 </td>
                 <td className="px-6 py-4 flex items-center justify-center whitespace-nowrap text-sm">
                   <UserActions

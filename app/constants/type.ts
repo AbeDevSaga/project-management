@@ -22,16 +22,23 @@ export type TLanguage = {
     };
 }
 
-export type TUsers = {
-  _id?: number;
-  name:string;
-  role: string;
+export type TUser = {
+  _id?: string;
+  username:string;
   email: string;
-  phone: string;
-  date: string;
-  status?: string;
-  password?: string;
-  image?: string;
+  password: string;
+  phone?: string;
+  role: string;
+  organization?: TOrganization;
+  isPremium?: boolean;
+  profileImage?: string;
+  services?: TService[];
+  chatGroups?: TChatGroups[];
+  file?: TFile[];
+  projects?: TProject[];
+  tasks?: TTask[];
+  created_at: string;
+  status?: "active" | "inactive" | "banned" | "pending";
 }
 
 export type TService = {
@@ -57,11 +64,28 @@ export type TOrganization = {
   email: string;
   website: string;
   logo: string;
-  superAdmin?: TUsers;
-  users?: TUsers[];
+  superAdmin?: TUser;
+  users?: TUser[];
   projects?: string[];
   createdAt?: Date;
 };
+
+export type TFile = {
+  _id: string;
+  name: string;
+}
+export type TProject = {
+  _id: string;
+  name: string;
+}
+export type TTask = {
+  _id: string;
+  name: string;
+}
+export type TChatGroups = {
+  _id: string;
+  name: string;
+}
 
 export type TSections = {
   dashboard: TSection;
