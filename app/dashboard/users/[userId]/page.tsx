@@ -238,12 +238,12 @@ const UserDetailsPage = () => {
       {/* Chat Groups Section */}
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
+          <SectionHeader sectionKey="chat_group" />
           <div className="w-auto">
             <ActionButton
               label="Add Chat Group"
               onClick={() => {}}
-              icon="user"
+              icon="chat"
             />
           </div>
         </div>
@@ -266,12 +266,12 @@ const UserDetailsPage = () => {
       {/* Files Section */}
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
+          <SectionHeader sectionKey="files" />
           <div className="w-auto">
             <ActionButton
               label="Add File"
               onClick={() => {}}
-              icon="user"
+              icon="file"
             />
           </div>
         </div>
@@ -299,7 +299,7 @@ const UserDetailsPage = () => {
             <ActionButton
               label="Add Project"
               onClick={() => {}}
-              icon="user"
+              icon="project"
             />
           </div>
         </div>
@@ -322,12 +322,12 @@ const UserDetailsPage = () => {
       {/* Tasks Section */}
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
+          <SectionHeader sectionKey="tasks" />
           <div className="w-auto">
             <ActionButton
               label="Add Task"
               onClick={() => {}}
-              icon="user"
+              icon="task"
             />
           </div>
         </div>

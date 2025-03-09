@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Pagination from "../Pagination";
 import DeleteUser from "./DeleteUser";
-import ViewUser from "./ViewUser";
 import { UserActions } from "./UserActions";
 import { TUser } from "@/app/constants/type";
 import StatusBadge from "./StatusBadge";
@@ -15,20 +14,13 @@ interface UserTableProps {
 }
 
 const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => {
-  const [viewedUser, setViewedUser] = useState<TUser | null>(null); // State to track the viewed user
   const [deletedUser, setDeletedUser] = useState<TUser | null>(null); // State to track the deleted user
   const [currentPage, setCurrentPage] = useState(1); // State to track the current page
   const usersPerPage = 6; // Number of users to display per page
 
   // Function to handle view action
   const handleView = (user: TUser) => {
-    setViewedUser(user); // Set the viewed user
     onViewUser(user); // Call the onViewUser prop function
-  };
-
-  // Function to close the ViewUser modal
-  const closeViewUser = () => {
-    setViewedUser(null); // Clear the viewed user
   };
 
   // Function to handle delete action
@@ -67,10 +59,6 @@ const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => 
 
   return (
     <div className="min-h-screen">
-      {/* Render the ViewUser component if a user is being viewed */}
-      {/* {viewedUser && (
-        <ViewUser user={viewedUser} closeViewUser={closeViewUser} />
-      )} */}
       {deletedUser && (
         <DeleteUser user={deletedUser} closeDeleteUser={closeDeleteUser} />
       )}

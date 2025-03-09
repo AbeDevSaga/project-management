@@ -94,6 +94,9 @@ export type TSections = {
   organizations: TSection;
   projects: TSection;
   services: TSection;
+  chat_group: TSection;
+  tasks: TSection;
+  files: TSection;
   notifications: TSection;
   messages: TSection;
   photo_review: TSection;

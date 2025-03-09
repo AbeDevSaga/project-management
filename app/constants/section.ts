@@ -21,6 +21,18 @@ export const sections: TSections = {
     section: "All Projects",
     headline: "Manage all organizations projects on the platform. View, edit, or delete organizations",
   },
+  files: {
+    section: "All Files",
+    headline: "Manage all organizations projects on the platform. View, edit, or delete organizations",
+  },
+  tasks: {
+    section: "All Tasks",
+    headline: "Manage all organizations projects on the platform. View, edit, or delete organizations",
+  },
+  chat_group: {
+    section: "All Chat Groups",
+    headline: "Manage all organizations projects on the platform. View, edit, or delete organizations",
+  },
   services: {
     section: "All Services",
     headline: "Manage all services on the platform. View, edit, or delete services",
