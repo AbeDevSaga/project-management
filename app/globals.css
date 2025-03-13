@@ -29,12 +29,12 @@
 
 
 .dark {
-  --background: #4e4d4d;
+  --background: #222222;
   --primary: #AA7D77;
   --forecolor: #FFFFFF;
   --dimmedforecolor: #ffffff;
   --foreground: #CCCCCC;
-  --white: #4f4d4d;
+  --white: #333333;
   --sidebarcolor: #2D2D2D;
   --navbarbg: #333333;
   --totalUserFg: #98b1fb;

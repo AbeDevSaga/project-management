@@ -13,7 +13,7 @@ function SearchBar() {
   return (
     <form
       onSubmit={handleSearch}
-      className="w-full flex border bg-white items-center rounded-l-lg"
+      className="w-full flex border bg-white items-center rounded-l-lg pr-4"
     >
       {/* Search Button */}
       <button
@@ -28,7 +28,7 @@ function SearchBar() {
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="py-2 focus:outline-none"
+        className="py-2 bg-white w-full focus:outline-none"
       />
     </form>
   );
