@@ -3,6 +3,7 @@ import UserCard from "./UserCard";
 import Notification from "./Notification";
 import LanguageSelection from "./LanguageSelection";
 import SearchBar from "./SearchBar";
+import Theme from "./Theme";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -24,6 +25,7 @@ function Navbar({ onToggleSidebar }: NavbarProps) {
       <div className="w-full flex items-center justify-between lg:w-auto space-x-2 lg:space-x-7">
         <LanguageSelection />
         <Notification />
+        <Theme />
         <UserCard />
       </div>
     </div>

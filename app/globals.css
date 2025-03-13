@@ -27,6 +27,30 @@
   --titleFg: #212B36;
 }
 
+
+.dark {
+  --background: #4e4d4d;
+  --primary: #AA7D77;
+  --forecolor: #FFFFFF;
+  --dimmedforecolor: #ffffff;
+  --foreground: #CCCCCC;
+  --white: #4f4d4d;
+  --sidebarcolor: #2D2D2D;
+  --navbarbg: #333333;
+  --totalUserFg: #98b1fb;
+  --totalUserBg: #2646a73a;
+  --activeUserFg: #90faa2;
+  --activeUserBg: #1fa04e85;
+  --totalRevenuFg: #fedea5;
+  --totalRevenuBg: #f1aa2f8f;
+  --premiumUserFg: #fedea5;
+  --premiumUserBg: #f1aa2f8f;
+  --newUserFg: #9bd2fd;
+  --newUserBg: #2e82c277;
+  --titleFg: #FFFFFF;
+}
+
+
 body {
   color: var(--foreground);
   background: var(--background);

@@ -5,6 +5,7 @@ import authReducer from "./slices/authSlice";
 import serviceReducer from "./slices/serviceSlice";
 import organizationReducer from "./slices/orgSlice";
 import userReducer from "./slices/userSlice";
+import themeReducer from './slices/themeSlice';
 
 // Persist configuration
 const persistConfig = {
@@ -21,6 +22,7 @@ const store = configureStore({
     service: serviceReducer,
     organization: organizationReducer,
     user: userReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
