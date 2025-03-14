@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage"; // Defaults to localStorage for
 import authReducer from "./slices/authSlice";
 import serviceReducer from "./slices/serviceSlice";
 import organizationReducer from "./slices/orgSlice";
+import projectReducer from "./slices/projectSlice";
 import userReducer from "./slices/userSlice";
 import themeReducer from './slices/themeSlice';
 
@@ -21,6 +22,7 @@ const store = configureStore({
     auth: persistedAuthReducer,
     service: serviceReducer,
     organization: organizationReducer,
+    project:projectReducer,
     user: userReducer,
     theme: themeReducer,
   },

@@ -66,8 +66,9 @@ export type TOrganization = {
   logo: string;
   superAdmin?: TUser;
   users?: TUser[];
-  projects?: string[];
+  projects?: TProject[];
   createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type TFile = {
@@ -75,9 +76,29 @@ export type TFile = {
   name: string;
 }
 export type TProject = {
-  _id: string;
+  _id?: string;
   name: string;
-}
+  description?: string;
+  status?: "active" | "inactive" | "completed" | "archived";
+  createdBy: TUser; 
+  organization: TOrganization;
+  teamMembers?: {
+    user: TUser; 
+    role: "admin" | "manager" | "developer" | "viewer"; 
+    addedAt: Date; 
+    addedBy: TUser; 
+  }[];
+  files?: TFile[]; 
+  tasks?: TTask[]; 
+  createdAt?: Date;
+  updatedAt?: Date; 
+  startDate?: Date; 
+  endDate?: Date; 
+  tags?: string[]; 
+  labels?: string[];
+  isPublic?: boolean; 
+  allowExternalContributors?: boolean; 
+};
 export type TTask = {
   _id: string;
   name: string;
