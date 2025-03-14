@@ -4,6 +4,7 @@ export const sidebarItems = [
     { path: "/dashboard/premium-users", icons: "premiumUsers", label: "Premium Users" },
     { path: "/dashboard/organizations", icons: "oraganizations", label: "Organizations" },
     { path: "/dashboard/services", icons: "users", label: "Services" },
+    { path: "/dashboard/projects", icons: "projects", label: "Projects" },
     { path: "/dashboard/notifications", icons: "notifications", label: "Notifications" },
     { path: "/dashboard/messages", icons: "messages", label: "Messages" },
     { path: "/dashboard/photo-review", icons: "photoReview", label: "Photo Review" },

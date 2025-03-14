@@ -3,7 +3,7 @@ import {
     MdDashboard, MdPeople, MdOutlineWorkspacePremium, MdNotifications, MdMessage, MdPhoto, 
     MdReport, MdSupervisorAccount 
   } from "react-icons/md"; 
-  import { FaUserShield } from "react-icons/fa";
+  import { FaUserShield, FaProjectDiagram } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
 
 type IconMapping = {
@@ -21,6 +21,7 @@ const iconMapping: IconMapping = {
   salesAgents: MdSupervisorAccount,
   manageAdmins: FaUserShield,
   oraganizations: FaBuildingColumns,
+  projects: FaProjectDiagram,
 };
 
 interface NavItemProps {
