@@ -4,7 +4,6 @@ import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_AUTH_API;
 
-
 interface AuthState {
   user: TUser | null;
   token: string | null;
@@ -32,6 +31,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post(`${API_URL}/login`, userData);
       localStorage.setItem("token", response.data.token); // Save token to localStorage
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       console.log("response.data: ", response.data);
       return response.data;
     } catch (error: any) {
@@ -42,8 +42,14 @@ export const loginUser = createAsyncThunk(
 
 // Slice
 const initialState: AuthState = {
-  user: null,
-  token: typeof window !== "undefined" ? localStorage.getItem("token") || null : null,
+  user:
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user") || "null")
+      : null,
+  token:
+    typeof window !== "undefined"
+      ? localStorage.getItem("token") || null
+      : null,
   loading: false,
   error: null,
 };
@@ -54,6 +60,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem("token"); // Remove token on logout
+      localStorage.removeItem("user"); // Remove user data on logout
       state.user = null;
       state.token = null;
     },

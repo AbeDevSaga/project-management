@@ -1,12 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sidebarItems } from "../constants/sidebarItems";
 import NavItem from "./NavItem";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { getFilteredSidebarItems } from "../lib/sidebarUtils";
+import { TRole } from "../constants/type";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const userRole = useSelector((state: RootState) => state.auth.user?.role);
+
+  // Redirect unauthenticated users to the login page
+  useEffect(() => {
+    if (!userRole) {
+      router.push("/auth/login");
+    }
+  }, [userRole, router]);
+
+  console.log("userRole: ", userRole)
+
+  // Get filtered sidebar items based on the user's role
+  // const filteredSidebarItems = getFilteredSidebarItems(userRole as TRole);
 
   return (
     <div className="flex w-full flex-col h-full">

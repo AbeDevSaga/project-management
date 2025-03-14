@@ -5,26 +5,26 @@ type TSection = {
 };
 
 export type TProfile = {
-    name: string;
-    email: string;
-    phone: string;
-    image: StaticImageData;
-    role: string;
-    password: string;
-    date: string;
-}
+  name: string;
+  email: string;
+  phone: string;
+  image: StaticImageData;
+  role: string;
+  password: string;
+  date: string;
+};
 
 export type TLanguage = {
-    country: {
-        image: StaticImageData;
-        language: string;
-        code: string;
-    };
-}
+  country: {
+    image: StaticImageData;
+    language: string;
+    code: string;
+  };
+};
 
 export type TUser = {
   _id?: string;
-  username:string;
+  username: string;
   email: string;
   password: string;
   phone?: string;
@@ -39,7 +39,14 @@ export type TUser = {
   tasks?: TTask[];
   created_at: string;
   status?: "active" | "inactive" | "banned" | "pending";
-}
+};
+
+export type TRole =
+  | "admin"
+  | "super_admin"
+  | "manager"
+  | "developer"
+  | "viewer";
 
 export type TService = {
   _id?: string;
@@ -50,8 +57,8 @@ export type TService = {
   price: number;
   duration: number;
   type: string;
-  status?: 'active' | 'inactive';
-  createdAt?: Date; 
+  status?: "active" | "inactive";
+  createdAt?: Date;
   updatedAt?: Date;
 };
 
@@ -74,39 +81,39 @@ export type TOrganization = {
 export type TFile = {
   _id: string;
   name: string;
-}
+};
 export type TProject = {
   _id?: string;
   name: string;
   description?: string;
   status?: "active" | "inactive" | "completed" | "archived";
-  createdBy: TUser; 
+  createdBy: TUser;
   organization: TOrganization;
   teamMembers?: {
-    user: TUser; 
-    role: "admin" | "manager" | "developer" | "viewer"; 
-    addedAt: Date; 
-    addedBy: TUser; 
+    user: TUser;
+    role: "admin" | "manager" | "developer" | "viewer";
+    addedAt: Date;
+    addedBy: TUser;
   }[];
-  files?: TFile[]; 
-  tasks?: TTask[]; 
+  files?: TFile[];
+  tasks?: TTask[];
   createdAt?: Date;
-  updatedAt?: Date; 
-  startDate?: Date; 
-  endDate?: Date; 
-  tags?: string[]; 
+  updatedAt?: Date;
+  startDate?: Date;
+  endDate?: Date;
+  tags?: string[];
   labels?: string[];
-  isPublic?: boolean; 
-  allowExternalContributors?: boolean; 
+  isPublic?: boolean;
+  allowExternalContributors?: boolean;
 };
 export type TTask = {
   _id: string;
   name: string;
-}
+};
 export type TChatGroups = {
   _id: string;
   name: string;
-}
+};
 
 export type TSections = {
   dashboard: TSection;
@@ -127,40 +134,40 @@ export type TSections = {
 };
 
 export type TInsights = {
-    notifications: {
-      count: number;
-      messages: string[];
-    };
-    logs: {
-      count: number;
-      entries: string[];
-    };
-    errors: {
-      count: number;
-      details: string[];
-    };
-    warnings: {
-      count: number;
-      details: string[];
-    };
-    userActivity: {
-      activeUsers: number;
-      newSignups: number;
-      topActions: string[];
-    };
-    revenue: {
-      totalRevenue: number;
-      monthlyRevenue: number;
-      topProducts: string[];
-    };
-    supportTickets: {
-      openTickets: number;
-      resolvedTickets: number;
-      recentTickets: string[];
-    };
-    systemPerformance: {
-      uptime: string;
-      cpuUsage: number;
-      memoryUsage: number;
-    };
+  notifications: {
+    count: number;
+    messages: string[];
   };
+  logs: {
+    count: number;
+    entries: string[];
+  };
+  errors: {
+    count: number;
+    details: string[];
+  };
+  warnings: {
+    count: number;
+    details: string[];
+  };
+  userActivity: {
+    activeUsers: number;
+    newSignups: number;
+    topActions: string[];
+  };
+  revenue: {
+    totalRevenue: number;
+    monthlyRevenue: number;
+    topProducts: string[];
+  };
+  supportTickets: {
+    openTickets: number;
+    resolvedTickets: number;
+    recentTickets: string[];
+  };
+  systemPerformance: {
+    uptime: string;
+    cpuUsage: number;
+    memoryUsage: number;
+  };
+};
