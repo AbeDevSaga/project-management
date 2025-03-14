@@ -16,6 +16,31 @@ const getAuthToken = () => {
 };
 
 // Async Thunks
+export const fetchAllProjects = createAsyncThunk(
+  "projects/fetchAllProjects",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get<TProject[]>(
+        `${API_URL}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+        }
+      );
+      console.log("projects: ", response.data)
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token"); // Clear the token
+        window.location.href = "/auth/login"; // Redirect to login page
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchProjects = createAsyncThunk(
   "projects/fetchAll",
   async (organizationId: string, { rejectWithValue }) => {
@@ -61,7 +86,7 @@ export const createProject = createAsyncThunk(
   async (projectData: Omit<TProject, "_id">, { rejectWithValue }) => {
     try {
       const response = await axios.post<TProject>(
-        `${API_URL}`,
+        `${API_URL}/create`,
         projectData,
         {
           headers: {
@@ -129,6 +154,21 @@ const projectSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchAllProjects.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchAllProjects.fulfilled,
+        (state, action: PayloadAction<TProject[]>) => {
+          state.loading = false;
+          state.projects = action.payload;
+        }
+      )
+      .addCase(fetchAllProjects.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(fetchProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
