@@ -1,31 +1,25 @@
-import { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import ActionButton from "./ActionButton";
-
-interface User {
-  name: string;
-  email: string;
-  phone: string;
-  image?: StaticImageData;
-  role: string;
-  password: string;
-  date: string;
-}
+import { TUser } from "../constants/type";
+import { FaUserAlt } from "react-icons/fa";
 
 interface ViewUserProps {
-  user: User;
+  user: TUser;
   closeViewUser: () => void;
 }
 
 const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
   // State for user details
-  const [name, setName] = useState(user.name);
+  const [name, setName] = useState(user.username);
   const [email, setEmail] = useState(user.email);
 
   // State for password update
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // State for profile image upload
+  const [profileImage, setProfileImage] = useState(user.profileImage);
 
   // Handle updating user details
   const handleUpdateDetails = () => {
@@ -47,6 +41,18 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
     // Add logic to update password
   };
 
+  // Handle profile image upload (UI only for now)
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="relative p-6 bg-white rounded-lg shadow-lg w-auto">
@@ -62,22 +68,49 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
 
         {/* User Details */}
         <div className="flex flex-col items-center space-y-4">
-          {/* User Image */}
-          <img
-            src={user.image?.src}
-            alt={user.name}
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-          />
+          {/* User Image with Upload Button */}
+          <div className="relative w-24 h-24">
+            {/* <img
+              src={profileImage}
+              alt={user.username}
+              className="w-full h-full rounded-full object-cover border-2 border-gray-200"
+            /> */}
+            {user?.profileImage ? (
+              <img
+                src={profileImage}
+                alt={user.username}
+                className="w-full h-full rounded-full object-cover border-2 border-gray-200"
+              />
+            ) : (
+              <FaUserAlt className="w-full h-full rounded-full object-cover border-2 border-gray-200" />
+            )}
+            {/* Upload Button Overlay */}
+            <label
+              htmlFor="profileImageUpload"
+              className="absolute bottom-0 right-0 w-7 h-7 bg-primary text-white rounded-full flex items-center border border-primary justify-center cursor-pointer shadow-lg hover:shadow-none transition-shadow duration-200 text-xl"
+            >
+              +
+              <input
+                id="profileImageUpload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+            </label>
+          </div>
+
           {/* User Date and Role */}
           <div className="flex items-center space-x-3">
             <p className="px-4 py-2 text-white text-sm font-semibold rounded-full bg-primary">
-              {user.date}
+              {user.created_at}
             </p>
             <span className={`px-6 py-2 text-sm font-semibold rounded-full`}>
               {user.role}
             </span>
           </div>
         </div>
+
         <div className="flex flex-col sm:flex-row gap-4 p-4">
           <div className="mt-6 space-y-4 mx-auto p-2 border rounded-lg">
             <h2 className="text-primary">User Details</h2>

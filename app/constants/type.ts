@@ -42,11 +42,12 @@ export type TUser = {
 };
 
 export type TRole =
-  | "admin"
-  | "super_admin"
-  | "manager"
-  | "developer"
-  | "viewer";
+  | "Admin"
+  | "Super Admin"
+  | "Project Manager"
+  | "Developer"
+  | "Team Member"
+  | "User";
 
 export type TService = {
   _id?: string;

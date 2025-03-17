@@ -13,6 +13,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const userRole = useSelector((state: RootState) => state.auth.user?.role);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   // Redirect unauthenticated users to the login page
   useEffect(() => {
@@ -21,10 +22,10 @@ export default function Sidebar() {
     }
   }, [userRole, router]);
 
-  console.log("userRole: ", userRole)
+  console.log("user: ", user)
 
   // Get filtered sidebar items based on the user's role
-  // const filteredSidebarItems = getFilteredSidebarItems(userRole as TRole);
+  const filteredSidebarItems = getFilteredSidebarItems(userRole as TRole);
 
   return (
     <div className="flex w-full flex-col h-full">
@@ -35,7 +36,7 @@ export default function Sidebar() {
 
       {/* Scrollable Sidebar Items */}
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2 scrollbar-hide">
-        {sidebarItems.map((item, index) => (
+        {filteredSidebarItems.map((item, index) => (
           <Link key={index} href={item.path} passHref>
             <NavItem
               icon={item.icons}

@@ -4,22 +4,32 @@ import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import Image from "next/image";
 import { profile } from "../constants/userProfile";
 import ViewProfile from "./ViewProfile";
+import { TUser } from "../constants/type";
+import { FaUserAlt } from "react-icons/fa";
 
-function UserCard() {
+interface UserCardProps {
+  user: TUser | null; // Pass the logged-in user as a prop
+}
+
+function UserCard({ user }: UserCardProps) {
+  // State for dropdown menu and ViewProfile modal
   const [showMenu, setShowMenu] = useState(false);
   const [showViewProfile, setShowViewProfile] = useState(false);
 
+  // Toggle dropdown menu
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
+  // Handle View Profile click
   const handleViewProfile = () => {
-    setShowViewProfile(true); // Open the ViewUser modal
+    setShowViewProfile(true); // Open the ViewProfile modal
     setShowMenu(false); // Close the dropdown menu
   };
 
+  // Close ViewProfile modal
   const closeViewProfile = () => {
-    setShowViewProfile(false); // Close the ViewUser modal
+    setShowViewProfile(false); // Close the ViewProfile modal
   };
 
   return (
@@ -27,16 +37,25 @@ function UserCard() {
       <div className="flex items-center space-x-2 relative">
         {/* User Info */}
         <div className="text-right">
-          <p className="text-titleFg">{profile.name.split(" ")[0]}</p>
-          <p className="text-sm ">{profile.role}</p>
+          <p className="text-titleFg">
+            {user?.username?.split(" ")[0] || profile.name.split(" ")[0]}
+          </p>
+          <p className="text-sm">{user?.role || profile.role}</p>
         </div>
 
+        {/* Profile Image (Persist from constants if user.profileImage is not available) */}
         <div className="w-9 h-9 rounded-lg overflow-hidden border-2 border-gray-300">
-          <Image
-            src={profile.image}
-            alt="User Profile"
-            className="object-cover"
-          />
+          {user?.profileImage ? (
+            <Image
+              src={user.profileImage}
+              alt="User Profile"
+              width={36}
+              height={36}
+              className="object-cover"
+            />
+          ) : (
+            < FaUserAlt  size={30}/>
+          )}
         </div>
 
         {/* Dropdown Icon */}
@@ -47,24 +66,27 @@ function UserCard() {
             <GoTriangleDown className="w-5 h-5" onClick={toggleMenu} />
           )}
         </div>
-
-        {/* Dropdown Menu */}
       </div>
+
+      {/* Dropdown Menu */}
       {showMenu && (
         <div className="absolute top-12 left-0 bg-white border rounded-lg shadow-lg p-2 z-10">
-          <ul className="space-y-2">
-            <li
-              className="px-4 hover:text-primary cursor-pointer"
-              onClick={handleViewProfile}
-            >
-              View Profile
-            </li>
-          </ul>
+          <p
+            className="px-1 hover:text-primary cursor-pointer"
+            onClick={handleViewProfile}
+          >
+            View Profile
+          </p>
         </div>
       )}
-      {/* ViewUser Modal */}
-      {showViewProfile && (
-        <ViewProfile user={profile} closeViewUser={closeViewProfile} />
+      {/* ViewProfile Modal */}
+      {showViewProfile && user && (
+        <ViewProfile
+          user={{
+            ...user,
+          }}
+          closeViewUser={closeViewProfile}
+        />
       )}
     </div>
   );
