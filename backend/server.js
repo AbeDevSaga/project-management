@@ -23,13 +23,21 @@ app.use((req, res, next) => {
 });
 
 // Routes
-// app.use("/api/auth", require("./routes/authRoutes"));
-// app.use("/api/org", require("./routes/orgRoutes"));
-// app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/chat", require("./routes/chatRoutes"));
+app.use("/api/dept", require("./routes/deptRoutes"));
+app.use("/api/feedback", require("./routes/feedbackRoutes"));
+app.use("/api/manual", require("./routes/manualRoutes"));
+app.use("/api/notification", require("./routes/notificationRoutes"));
+app.use("/api/project", require("./routes/projectRoutes"));
+app.use("/api/proposal", require("./routes/proposalRoutes"));
+app.use("/api/submission", require("./routes/submissionRoutes"));
+app.use("/api/task", require("./routes/taskRoutes"));
+app.use("/api/user", require("./routes/userRoutes"));
 
 app.get("/", (req, res) => {
   res.send(
-    "<h1>Welcome to the Project Management System!</h1><p>Use the /api/auth/register and /api/auth/login routes to register and login users.</p>"
+    "<h1>Welcome to the Project Management System!!!!!!"
   );
 });
 

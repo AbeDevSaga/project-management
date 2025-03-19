@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const seedAdmin = require('../seeds/seedAdmin');
 const seedUsers = require('../seeds/seedUsers');
-console.log("MongoDB URI:", process.env.MONGO_URI || "Not Set");
 
 dotenv.config();
 const connectDB = async () => {
@@ -24,8 +23,8 @@ const connectDB = async () => {
     require("../models/notification");
 
     // seed datas
-    await seedAdmin();
-    await seedUsers();
+    // await seedAdmin();
+    // await seedUsers(40);
 
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);

@@ -1,6 +1,6 @@
 const User = require("../models/user"); 
 const bcrypt = require("bcrypt");
-const {adminUser} = require("./constants");
+const {adminUser} = require("./constant");
 
 const seedAdmin = async () => {
   try {

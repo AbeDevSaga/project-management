@@ -1,8 +1,8 @@
 const User = require("../models/user");
-const { generateFakeUser }  = require("./constants");
+const { generateFakeUser }  = require("./constant");
 const seedUsers = async (numUsers = 10) => {
   try {
-    // await User.deleteMany({}); 
+    await User.deleteMany({}); 
 
     const users = [];
     for (let i = 0; i < numUsers; i++) {
