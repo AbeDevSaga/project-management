@@ -26,12 +26,20 @@ export type TUser = {
   _id?: string;
   username: string;
   email: string;
-  password: string;
   phone?: string;
+  password: string;
+  userId?: string;
   role?: string;
+  department? : string;
+  project?: string;
+  advisor: TUser;
+  profileImage?: string;
+  proposals?: string;
+  submissions?: string;
+  visitHistory?: string;
+
   organization?: string;
   isPremium?: boolean;
-  profileImage?: string;
   services?: TService[];
   chatGroups?: TChatGroups[];
   file?: TFile[];

@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
     project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
     advisor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     profileImage: { type: String, default: "" },
-    projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project" }, // Projects assigned to the user
+    //projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project" }, // Projects assigned to the user
     proposals: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Proposal" }, // Proposals submitted by the student
     ],
