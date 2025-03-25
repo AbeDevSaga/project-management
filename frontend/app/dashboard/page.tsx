@@ -12,32 +12,38 @@ function Dashboard() {
   const users = useSelector((state: RootState) => state.user.users);
   const loading = useSelector((state: RootState) => state.user.loading);
   const error = useSelector((state: RootState) => state.user.error);
-  const [premiumUsers, setPremiumUsers] = React.useState<TUser[]>([]);
-  const [activeUsers, setActiveUsers] = React.useState<TUser[]>([]);
-  const [newUsers, setNewUsers] = React.useState<TUser[]>([]);
+  const [students, setStudents] = React.useState<TUser[]>([]);
+  const [advisors, setAdvisors] = React.useState<TUser[]>([]);
+  const [deptHead, setDeptHead] = React.useState<TUser[]>([]);
+  const [admins, setAdmins] = React.useState<TUser[]>([]);
 
-  useEffect(()=> {
+  useEffect(() => {
     dispatch(fetchAllUsers());
-  }, [dispatch])
+  }, [dispatch]);
 
   // Compute counts when users data changes
   useEffect(() => {
     if (users.length > 0) {
       // Filter premium users (role === "premium")
-      const premiumUsers = users.filter((user) => user.isPremium === true);
-      setPremiumUsers(premiumUsers);
+      const advisors = users.filter((user) => user.role === "advisor");
+      setAdvisors(advisors);
 
-      // Filter active users (status === "active")
-      const activeUsers = users.filter((user) => user.status === "active");
-      setActiveUsers(activeUsers);
+      const admins = users.filter((user) => user.role === "admin");
+      setAdmins(admins);
+
+      const students = users.filter((user) => user.role === "student");
+      setStudents(students);
+
+      const deptHead = users.filter((user) => user.role === "departmentHead");
+      setDeptHead(deptHead);
 
       // Filter new users created today
-      const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-      const newUsers = users.filter((user) => {
-        const userCreatedAt = new Date(user.created_at).toISOString().split("T")[0];
-        return userCreatedAt === today;
-      });
-      setNewUsers(newUsers);
+      // const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+      // const newUsers = users.filter((user) => {
+      //   const userCreatedAt = new Date(user.created_at).toISOString().split("T")[0];
+      //   return userCreatedAt === today;
+      // });
+      // setNewUsers(newUsers);
     }
   }, [users]);
 
@@ -59,22 +65,22 @@ function Dashboard() {
     );
   }
 
-
   const updatedStatsData = statsData.map((stat) => {
     switch (stat.title) {
       case "Total Users":
         return { ...stat, value: `${users.length}` };
-      case "Premium Users":
-        return { ...stat, value: `${premiumUsers.length}` };
-      case "Active Users":
-        return { ...stat, value: `${activeUsers.length}` };
-      case "New Users":
-        return { ...stat, value: `${newUsers.length}` };
+      case "Admins":
+        return { ...stat, value: `${admins.length}` };
+      case "Students":
+        return { ...stat, value: `${students.length}` };
+      case "Advisors":
+        return { ...stat, value: `${advisors.length}` };
+      case "Department Heads":
+        return { ...stat, value: `${deptHead.length}` };
       default:
         return stat;
     }
   });
-  
 
   return (
     <div className="w-full h-full text-white">

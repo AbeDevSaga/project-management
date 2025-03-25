@@ -50,12 +50,10 @@ export type TUser = {
 };
 
 export type TRole =
-  | "Admin"
-  | "Super Admin"
-  | "Project Manager"
-  | "Developer"
-  | "Team Member"
-  | "User";
+  | "admin"
+  | "student"
+  | "advisor"
+  | "departmentHead"
 
 export type TService = {
   _id?: string;

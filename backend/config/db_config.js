@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const seedAdmin = require('../seeds/seedAdmin');
 const seedUsers = require('../seeds/seedUsers');
+const seedProjects = require('../seeds/seedProjects');
+const populateData = require('../seeds/populateData');
+const seedDepartments = require('../seeds/seedDepartment');
 
 dotenv.config();
 const connectDB = async () => {
@@ -10,7 +13,6 @@ const connectDB = async () => {
     console.log('Connected to MongoDB')
 
     // register schemas
-    require("../models/user");
     require("../models/chat");
     require("../models/department");
     require("../models/feedback");
@@ -21,10 +23,14 @@ const connectDB = async () => {
     require("../models/submission");
     require("../models/task");
     require("../models/notification");
+    require("../models/user");
 
     // seed datas
-    // await seedAdmin();
     // await seedUsers(40);
+    // await seedAdmin();
+    // await seedProjects(); 
+    // await populateData();
+    // await seedDepartments();
 
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);

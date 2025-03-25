@@ -9,7 +9,7 @@ export const statsData = [
     iconFg: "text-totalUserFg",
   },
   {
-    title: "Premium Users",
+    title: "Students",
     icon: "premium",
     value: "0",
     decision: "decrement",
@@ -18,7 +18,7 @@ export const statsData = [
     iconFg: "text-premiumUserFg",
   },
   {
-    title: "Active Users",
+    title: "Advisors",
     icon: "userCheck",
     value: "0",
     decision: "increment",
@@ -27,7 +27,16 @@ export const statsData = [
     iconFg: "text-activeUserFg",
   },
   {
-    title: "New Users",
+    title: "Department Heads",
+    icon: "userPlus",
+    value: "0",
+    decision: "increment",
+    percentage: "+12.80%",
+    iconBg: "bg-newUserBg",
+    iconFg: "text-newUserFg",
+  },
+  {
+    title: "Admins",
     icon: "userPlus",
     value: "0",
     decision: "increment",

@@ -18,8 +18,8 @@ const getAuthToken = () => {
 
 const handleApiError = (error: any) => {
   if (error.response?.status === 401) {
-    // localStorage.removeItem("token"); 
-    // window.location.href = "/auth/login";
+    localStorage.removeItem("token"); 
+    window.location.href = "/auth/login";
   }
   return error.response?.data || "An unexpected error occurred";
 };

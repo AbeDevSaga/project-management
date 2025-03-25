@@ -1,7 +1,7 @@
 import { TRole } from "./type";
 
 export const rolesPermissions: Record<TRole, string[]> = {
-  "Admin": [
+  "admin": [
     "dashboard",
     "users",
     "premium-users",
@@ -15,7 +15,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "sales-agents",
     "manage-admins",
   ],
-  "Super Admin": [
+  "student": [
     "dashboard",
     "users",
     "services",
@@ -27,24 +27,16 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "sales-agents",
     "manage-admins",
   ],
-  "Project Manager": [
+  "advisor": [
     "dashboard",
     "users",
     "projects",
     "notifications",
     "messages",
   ],
-  "Developer": [
+  "departmentHead": [
     "dashboard",
     "projects",
-    "notifications",
-  ],
-  "Team Member": [
-    "dashboard",
-    "notifications",
-  ],
-  "User": [
-    "dashboard",
     "notifications",
   ],
 };

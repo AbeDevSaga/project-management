@@ -9,9 +9,7 @@ const seedAdmin = async () => {
       console.log("Admin user already exists:", existingAdmin);
       return;
     }
-
-    const salt = await bcrypt.genSalt(10);
-    adminUser.password = await bcrypt.hash(adminUser.password, salt);
+    adminUser.password = await bcrypt.hash(adminUser.password, 10);
 
     const newAdmin = new User(adminUser);
     await newAdmin.save();
