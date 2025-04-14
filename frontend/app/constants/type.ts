@@ -89,29 +89,50 @@ export type TFile = {
   _id: string;
   name: string;
 };
+// export type TProject = {
+//   _id?: string;
+//   name: string;
+//   title?: string;
+//   description?: string;
+//   projectStatus?: "approved" | "rejected" | "in-progress" | "completed";
+//   createdBy: TUser;
+//   organization: TOrganization;
+//   teamMembers?: {
+//     user: TUser;
+//     role: "admin" | "manager" | "developer" | "viewer";
+//     addedAt: Date;
+//     addedBy: TUser;
+//   }[];
+//   files?: TFile[];
+//   tasks?: TTask[];
+//   createdAt?: Date;
+//   updatedAt?: Date;
+//   startDate?: Date;
+//   endDate?: Date;
+//   tags?: string[];
+//   labels?: string[];
+//   isPublic?: boolean;
+//   allowExternalContributors?: boolean;
+// };
 export type TProject = {
   _id?: string;
-  name: string;
+  title?: string;
   description?: string;
-  status?: "active" | "inactive" | "completed" | "archived";
-  createdBy: TUser;
-  organization: TOrganization;
-  teamMembers?: {
-    user: TUser;
-    role: "admin" | "manager" | "developer" | "viewer";
-    addedAt: Date;
-    addedBy: TUser;
-  }[];
-  files?: TFile[];
+  department?: TDepartment;
+  projectStatus?: "approved" | "rejected" | "in-progress" | "completed";
   tasks?: TTask[];
+  proposals?: TTask[];
+  students?: TUser[];
+  advisor?: TUser;
+  submissions?: TFile[];
   createdAt?: Date;
-  updatedAt?: Date;
-  startDate?: Date;
-  endDate?: Date;
-  tags?: string[];
-  labels?: string[];
-  isPublic?: boolean;
-  allowExternalContributors?: boolean;
+};
+export type TDepartment = {
+  _id?: string;
+  name: string;
+  head?: string;
+  advisors?: TUser[];
+  students?: TUser[];
 };
 export type TTask = {
   _id: string;

@@ -4,15 +4,15 @@ import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
 import UserTable from "@/app/components/user_related/UsersTable";
 import React, {useState } from "react";
-import { createUser, selectAdmins } from "@/app/redux/slices/userSlice";
+import { createUser, selectStudents } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
 import { useRouter } from "next/navigation";
 
-function ManageAdmins() {
+function Students() {
   const router = useRouter();
-  const admins = useSelector(selectAdmins);
+  const students = useSelector(selectStudents);
   const dispatch = useDispatch<AppDispatch>();
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
 
@@ -25,7 +25,7 @@ function ManageAdmins() {
     setIsAddUserOpen(true); // Open the modal
   };
   const handleViewUser = (user: TUser) => {
-    router.push(`manage-admins/${user._id}`);
+    router.push(`students/${user._id}`);
   };
   const handleCloseAddUser = () => {
     setIsAddUserOpen(false); // Close the modal
@@ -48,22 +48,22 @@ function ManageAdmins() {
         <SectionHeader sectionKey="users" />
         <div className="w-auto">
           <ActionButton
-            label="Add Admin"
+            label="Add Student"
             onClick={handleAddUser}
             icon="add_user"
           />
         </div>
       </div>
-      <UserTable onViewUser={handleViewUser} users={admins} px="4" py="4" />
+      <UserTable onViewUser={handleViewUser} users={students} px="4" py="4" />
       {isAddUserOpen && (
         <AddUser
           closeAddUser={handleCloseAddUser}
           onAddUser={handleSaveUser}
-          role="admin"
+          role="student"
         />
       )}
     </div>
   );
 }
 
-export default ManageAdmins;
+export default Students;

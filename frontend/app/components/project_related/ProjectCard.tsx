@@ -16,7 +16,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4 border-2 border-gray-200 shadow-sm">
           <HiOutlineCalendar className="w-6 h-6 text-gray-500" />
         </div>
-        <h2 className="text-xl font-semibold text-gray-800">{project.name}</h2>
+        <h2 className="font-semibold text-gray-800">{project.title}</h2>
       </div>
 
       {/* Project Description */}

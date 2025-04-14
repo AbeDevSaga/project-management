@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { TUser } from "@/app/constants/type"; 
+import { RootState } from "../store";
 
 const API_URL = process.env.NEXT_PUBLIC_USERS_API;
 
@@ -23,6 +24,19 @@ const handleApiError = (error: any) => {
   }
   return error.response?.data || "An unexpected error occurred";
 };
+
+// Selector functions (to be used in components)
+export const selectAdvisors = (state: RootState) => 
+  state.user.users.filter(user => user.role === 'advisor');
+
+export const selectStudents = (state: RootState) => 
+  state.user.users.filter(user => user.role === 'student');
+
+export const selectDepartmentHeads = (state: RootState) => 
+  state.user.users.filter(user => user.role === 'departmentHead');
+
+export const selectAdmins = (state: RootState) => 
+  state.user.users.filter(user => user.role === 'admin');
 
 
 // Async Thunks

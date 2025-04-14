@@ -26,6 +26,7 @@ export default function Sidebar() {
 
   // Get filtered sidebar items based on the user's role
   const filteredSidebarItems = getFilteredSidebarItems(userRole as TRole);
+  console.log("filteredSidebarItems: ", filteredSidebarItems);
 
   return (
     <div className="flex w-full flex-col h-full">

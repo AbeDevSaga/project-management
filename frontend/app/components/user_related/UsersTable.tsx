@@ -80,9 +80,6 @@ const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => 
               <th className="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Date
               </th>
-              <th className="hidden xl:table-cell px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                Status
-              </th>
               <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider">
                 Quick Action
               </th>
@@ -103,9 +100,6 @@ const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => 
                 </td>
                 <td className={`hidden lg:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}>
                   {user.created_at}
-                </td>
-                <td className="hidden xl:table-cell px-2 py-2 whitespace-nowrap">
-                  <StatusBadge status={user.status || "pending"}/>
                 </td>
                 <td className="px-6 py-4 flex items-center justify-center whitespace-nowrap text-sm">
                   <UserActions

@@ -13,6 +13,9 @@ import SectionHeader from "@/app/components/SectionHeader";
 import ActionButton from "@/app/components/ActionButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import UserTable from "@/app/components/user_related/UsersTable";
+import AddUser from "@/app/components/user_related/AddUser";
+import { createUser } from "@/app/redux/slices/userSlice";
 
 const ProjectDetailPage = () => {
   const router = useRouter();
@@ -25,6 +28,7 @@ const ProjectDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [showActions, setShowActions] = useState(false);
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false);
   const [addFileModalOpen, setAddFileModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -32,6 +36,10 @@ const ProjectDetailPage = () => {
   const [selectedProject, setSelectedProject] = useState<TProject | null>(null);
 
   // Open the modals
+
+  const openAddUserModal = () => {
+    setAddUserModalOpen(true);
+  };
   const openAddTaskModal = () => {
     setAddTaskModalOpen(true);
   };
@@ -48,6 +56,16 @@ const ProjectDetailPage = () => {
   };
 
   // Handle modal actions
+  const handleAddStudent = async(Student: TUser) => {
+    console.log("New Student Data:", Student);
+    const resultAction = await dispatch(createUser(Student));
+    if (createUser.fulfilled.match(resultAction)) {
+      console.log("User added successfully:", resultAction.payload);
+      setAddUserModalOpen(false); // Close the modal after saving
+    } else {
+      console.error("Failed to add user:", resultAction.payload);
+    }
+  };
   const handleAddTask = (newTask: TTask) => {
     console.log("New Task Data:", newTask);
     // Add task logic here
@@ -58,6 +76,10 @@ const ProjectDetailPage = () => {
     console.log("New File Data:", newFile);
     // Add file logic here
     setAddFileModalOpen(false);
+  };
+
+  const handleViewUser = (user: TUser) => {
+    router.push(`${projectId}/${user._id}`);
   };
 
   const handleUpdateProject = async (updatedProject: TProject) => {
@@ -101,6 +123,9 @@ const ProjectDetailPage = () => {
   };
 
   // Close the modals
+  const closeAddStudentModal = () => {
+    setAddUserModalOpen(false);
+  };
   const closeAddTaskModal = () => {
     setAddTaskModalOpen(false);
   };
@@ -131,20 +156,20 @@ const ProjectDetailPage = () => {
           }
 
           // Fetch tasks for the project
-        //   const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
-        //   if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
-        //     setTasksList(tasksResponse.payload);
-        //   } else {
-        //     setError("Failed to fetch tasks");
-        //   }
+          //   const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
+          //   if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
+          //     setTasksList(tasksResponse.payload);
+          //   } else {
+          //     setError("Failed to fetch tasks");
+          //   }
 
           // Fetch files for the project
-        //   const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
-        //   if (fetchFilesByProjectId.fulfilled.match(filesResponse)) {
-        //     setFilesList(filesResponse.payload);
-        //   } else {
-        //     setError("Failed to fetch files");
-        //   }
+          //   const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
+          //   if (fetchFilesByProjectId.fulfilled.match(filesResponse)) {
+          //     setFilesList(filesResponse.payload);
+          //   } else {
+          //     setError("Failed to fetch files");
+          //   }
         } catch (err) {
           setError("An unexpected error occurred");
         } finally {
@@ -211,7 +236,7 @@ const ProjectDetailPage = () => {
         )}
         {/* Project Name and Description */}
         <div className="flex items-center space-x-4 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">{project.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-800">{project.title}</h1>
         </div>
         {project.description && (
           <p className="text-gray-600 mb-6">{project.description}</p>
@@ -222,66 +247,61 @@ const ProjectDetailPage = () => {
           {/* Status */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Status</h2>
-            <p className="text-gray-800">{project.status}</p>
+            <p className="text-gray-800">{project.projectStatus}</p>
           </div>
 
           {/* Created By */}
-          {project.createdBy && (
+          {project.advisor && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h2 className="text-sm font-semibold text-gray-500">Created By</h2>
-              <p className="text-gray-800">{project.createdBy.username}</p>
+              <h2 className="text-sm font-semibold text-gray-500">Advisor</h2>
+              <p className="text-gray-800">{project.advisor.username}</p>
             </div>
           )}
 
           {/* Organization */}
-          {project.organization && (
+          {project.department && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-gray-500">
-                Organization
+                Department
               </h2>
-              <p className="text-gray-800">{project.organization.name}</p>
+              <p className="text-gray-800">{project.department.name}</p>
             </div>
           )}
 
           {/* Start Date */}
-          {project.startDate && (
+          {project.createdAt && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-gray-500">
-                Start Date
+                Created At
               </h2>
               <p className="text-gray-800">
-                {new Date(project.startDate).toLocaleDateString()}
+                {new Date(project.createdAt).toLocaleDateString()}
               </p>
-            </div>
-          )}
-
-          {/* End Date */}
-          {project.endDate && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h2 className="text-sm font-semibold text-gray-500">End Date</h2>
-              <p className="text-gray-800">
-                {new Date(project.endDate).toLocaleDateString()}
-              </p>
-            </div>
-          )}
-
-          {/* Tags */}
-          {project.tags && project.tags.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h2 className="text-sm font-semibold text-gray-500">Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           )}
         </div>
+      </div>
+
+      {/* User Section */}
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+        <div className="flex items-center pb-2">
+          <SectionHeader sectionKey="tasks" />
+          <div className="w-auto">
+            <ActionButton
+              label="Add Student"
+              onClick={openAddUserModal}
+              icon="user"
+            />
+          </div>
+        </div>
+        {project.students && (
+          <UserTable
+            onViewUser={handleViewUser}
+            users={project.students}
+            px="4"
+            py="4"
+          />
+        )}
       </div>
 
       {/* Tasks Section */}
@@ -327,6 +347,14 @@ const ProjectDetailPage = () => {
           />
         )} */}
       </div>
+      {/* Modals */}
+      {addUserModalOpen && (
+        <AddUser
+          closeAddUser={closeAddStudentModal}
+          onAddUser={handleAddStudent}
+          role="student"
+        />
+      )}
 
       {/* Modals
       {addTaskModalOpen && (

@@ -185,16 +185,10 @@ const UserDetailsPage = () => {
 
           {/* Organization */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h2 className="text-sm font-semibold text-gray-500">Organization</h2>
+            <h2 className="text-sm font-semibold text-gray-500">Department</h2>
             <p className="text-gray-800">
-              {user.organization ? user.organization : "N/A"}
+              {user.department ? user.department : "N/A"}
             </p>
-          </div>
-
-          {/* Status */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h2 className="text-sm font-semibold text-gray-500">Status</h2>
-            <p className="text-gray-800">{user.status}</p>
           </div>
 
           {/* Created At */}
@@ -308,7 +302,7 @@ const UserDetailsPage = () => {
             {projects.map((project) => (
               <div key={project._id} className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {project.name}
+                  {project.title}
                 </h3>
                 <p className="text-gray-600">{"project.description"}</p>
               </div>
