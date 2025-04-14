@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Messages() {
+function chatGroups() {
   return (
     <div className='bg-gray-500 w-full h-full text-white'>
-        Messages
+        chatGroups
     </div>
   )
 }
 
-export default Messages;
+export default chatGroups;

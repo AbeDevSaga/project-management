@@ -10,14 +10,13 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "department-heads",
     "projects",
     "notifications",
-    "messages",
     "manage-admins",
   ],
   "student": [
     "dashboard",
     "projects",
     "notifications",
-    "messages",
+    "chat-groups",
     "organizations",
   ],
   "advisor": [
@@ -25,7 +24,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "users",
     "projects",
     "notifications",
-    "messages",
+    "chat-groups",
   ],
   "departmentHead": [
     "dashboard",

@@ -3,8 +3,11 @@ import {
     MdDashboard, MdPeople, MdOutlineWorkspacePremium, MdNotifications, MdMessage, MdPhoto, 
     MdReport, MdSupervisorAccount 
   } from "react-icons/md"; 
-  import { FaUserShield, FaProjectDiagram } from "react-icons/fa";
+  import { FaUserShield, FaProjectDiagram, FaUserGraduate } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
+  import { GiTeacher } from 'react-icons/gi';
+  import { RiUserStarLine } from 'react-icons/ri';
+
 
 type IconMapping = {
   [key: string]: React.ComponentType<{ className?: string }>;
@@ -13,6 +16,9 @@ type IconMapping = {
 const iconMapping: IconMapping = {
   dashboard: MdDashboard,
   users: MdPeople,
+  students: FaUserGraduate,
+  advisors: GiTeacher,
+  departmentHeads: RiUserStarLine,
   premiumUsers: MdOutlineWorkspacePremium,
   notifications: MdNotifications,
   messages: MdMessage,
