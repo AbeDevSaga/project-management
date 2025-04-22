@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, TaskAbortError } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Defaults to localStorage for web
 import authReducer from "./slices/authSlice";
@@ -7,6 +7,7 @@ import organizationReducer from "./slices/orgSlice";
 import projectReducer from "./slices/projectSlice";
 import userReducer from "./slices/userSlice";
 import themeReducer from './slices/themeSlice';
+import taskReducer from "./slices/taskSlice";
 
 // Persist configuration
 const persistConfig = {
@@ -23,6 +24,7 @@ const store = configureStore({
     service: serviceReducer,
     organization: organizationReducer,
     project:projectReducer,
+    task: taskReducer,
     user: userReducer,
     theme: themeReducer,
   },

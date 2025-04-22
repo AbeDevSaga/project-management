@@ -20,7 +20,7 @@ const {
 
 // Admin and Super Admin Basic Routes
 router.get("/", verifyToken, getAllProjects);
-router.put("/create", verifyToken, createProject);
+router.post("/create", verifyToken, createProject);
 router.put("/update/:id", verifyToken, updateProject);
 router.delete("/delete/:id", verifyToken, deleteProject);
 router.get("/:id", verifyToken, getProjectById);

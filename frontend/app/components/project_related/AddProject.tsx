@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TOrganization, TProject, TUser } from "../../constants/type";
+import { TProject } from "../../constants/type";
 
 interface AddProjectProps {
   closeAddProject: () => void;
@@ -11,11 +11,9 @@ const AddProject: React.FC<AddProjectProps> = ({
   onAddProject,
 }) => {
   const [newProject, setNewProject] = useState<TProject>({
-    name: "",
+    title: "",
     description: "",
-    status: "active",
-    createdBy: {} as TUser,
-    organization: {} as TOrganization,
+    projectStatus: "in-progress",
   });
 
   const handleInputChange = (
@@ -37,12 +35,12 @@ const AddProject: React.FC<AddProjectProps> = ({
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Name
+              Title
             </label>
             <input
               type="text"
-              name="name"
-              value={newProject.name}
+              name="title"
+              value={newProject.title}
               onChange={handleInputChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               required

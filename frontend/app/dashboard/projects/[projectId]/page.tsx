@@ -9,6 +9,7 @@ import {
   fetchProjectById,
   updateProject,
 } from "@/app/redux/slices/projectSlice";
+import { toast } from "react-toastify";
 import SectionHeader from "@/app/components/SectionHeader";
 import ActionButton from "@/app/components/ActionButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -16,6 +17,10 @@ import { useRouter } from "next/navigation";
 import UserTable from "@/app/components/user_related/UsersTable";
 import AddUser from "@/app/components/user_related/AddUser";
 import { createUser } from "@/app/redux/slices/userSlice";
+import UpdateProject from "@/app/components/project_related/UpdateProject";
+import AddTask from "@/app/components/task_related/AddTask";
+import { createTasks, fetchTasksByProjectId } from "@/app/redux/slices/taskSlice";
+import TaskTable from "@/app/components/task_related/TaskTable";
 
 const ProjectDetailPage = () => {
   const router = useRouter();
@@ -56,7 +61,7 @@ const ProjectDetailPage = () => {
   };
 
   // Handle modal actions
-  const handleAddStudent = async(Student: TUser) => {
+  const handleAddStudent = async (Student: TUser) => {
     console.log("New Student Data:", Student);
     const resultAction = await dispatch(createUser(Student));
     if (createUser.fulfilled.match(resultAction)) {
@@ -66,10 +71,33 @@ const ProjectDetailPage = () => {
       console.error("Failed to add user:", resultAction.payload);
     }
   };
-  const handleAddTask = (newTask: TTask) => {
-    console.log("New Task Data:", newTask);
-    // Add task logic here
-    setAddTaskModalOpen(false);
+  const handleAddTasks = async (newTasks: TTask[]) => {
+    console.log("New Task Data:", newTasks);
+    try {
+      // Dispatch the createTasks action
+      const resultAction = await dispatch(createTasks(newTasks));
+
+      if (createTasks.fulfilled.match(resultAction)) {
+        // Success case
+        const createdTasks = Array.isArray(resultAction.payload)
+          ? resultAction.payload
+          : [resultAction.payload];
+
+        console.log("Tasks created successfully:", createdTasks);
+        toast.success(`Successfully created ${createdTasks.length} task(s)`);
+      } else if (createTasks.rejected.match(resultAction)) {
+        // Error case
+        console.error("Failed to create tasks:", resultAction.error);
+
+        // Show error notification
+        toast.error(`Failed to create tasks: ${resultAction.error.message}`);
+      }
+    } catch (error) {
+      console.error("Unexpected error creating tasks:", error);
+      // toast.error('An unexpected error occurred');
+    } finally {
+      setAddTaskModalOpen(false);
+    }
   };
 
   const handleAddFile = (newFile: TFile) => {
@@ -79,7 +107,7 @@ const ProjectDetailPage = () => {
   };
 
   const handleViewUser = (user: TUser) => {
-    router.push(`${projectId}/${user._id}`);
+    router.push(`${projectId}/user/${user._id}`);
   };
 
   const handleUpdateProject = async (updatedProject: TProject) => {
@@ -156,12 +184,13 @@ const ProjectDetailPage = () => {
           }
 
           // Fetch tasks for the project
-          //   const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
-          //   if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
-          //     setTasksList(tasksResponse.payload);
-          //   } else {
-          //     setError("Failed to fetch tasks");
-          //   }
+            const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
+            if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
+              setTasksList(tasksResponse.payload);
+              console.log("Tasks List: ", tasksResponse.payload);
+            } else {
+              setError("Failed to fetch tasks");
+            }
 
           // Fetch files for the project
           //   const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
@@ -285,7 +314,7 @@ const ProjectDetailPage = () => {
       {/* User Section */}
       <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="tasks" />
+          <SectionHeader sectionKey="users" />
           <div className="w-auto">
             <ActionButton
               label="Add Student"
@@ -316,14 +345,14 @@ const ProjectDetailPage = () => {
             />
           </div>
         </div>
-        {/* {tasksList && tasksList.length > 0 && (
+        {tasksList && tasksList.length > 0 && (
           <TaskTable
             onViewTask={handleViewTask}
             tasks={tasksList}
             px="2"
             py="2"
           />
-        )} */}
+        )}
       </div>
 
       {/* Files Section */}
@@ -355,20 +384,12 @@ const ProjectDetailPage = () => {
           role="student"
         />
       )}
-
-      {/* Modals
       {addTaskModalOpen && (
         <AddTask
           closeAddTask={closeAddTaskModal}
-          onAddTask={handleAddTask}
+          onAddTasks={handleAddTasks}
           projectId={projectId}
-        />
-      )}
-      {addFileModalOpen && (
-        <AddFile
-          closeAddFile={closeAddFileModal}
-          onAddFile={handleAddFile}
-          projectId={projectId}
+          projectUsers={project.students || []}
         />
       )}
       {isUpdateModalOpen && selectedProject && (
@@ -376,6 +397,16 @@ const ProjectDetailPage = () => {
           closeUpdateProject={closeUpdateModal}
           onUpdateProject={handleUpdateProject}
           projectToUpdate={selectedProject}
+        />
+      )}
+
+      {/* Modals
+      
+      {addFileModalOpen && (
+        <AddFile
+          closeAddFile={closeAddFileModal}
+          onAddFile={handleAddFile}
+          projectId={projectId}
         />
       )}
       {isDeleteModalOpen && selectedProject && (

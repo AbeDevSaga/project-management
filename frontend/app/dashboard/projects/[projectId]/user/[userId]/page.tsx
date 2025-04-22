@@ -330,7 +330,7 @@ const UserDetailsPage = () => {
             {tasks.map((task) => (
               <div key={task._id} className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {task.name}
+                  {task.taskName}
                 </h3>
                 <p className="text-gray-600">{"task.description"}</p>
               </div>

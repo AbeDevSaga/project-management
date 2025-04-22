@@ -136,7 +136,14 @@ export type TDepartment = {
 };
 export type TTask = {
   _id: string;
-  name: string;
+  projectId: string;
+  taskName: string;
+  discription: string;
+  assignedTo: TUser[];
+  status: "not-started" | "in-progress" | "completed";
+  startDate: Date;
+  endDate: Date;
+  percentage: string;
 };
 export type TChatGroups = {
   _id: string;

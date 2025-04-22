@@ -24,21 +24,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         router.push("/login");
       }
 
-      // Get current path without query parameters
       const pathname = window.location.pathname;
-      // console.log("Current Pathname:", pathname);
       const pathSegments = pathname.split("/").filter(Boolean);
-      // console.log("Path Segments:", pathSegments);
       const lastSegment = pathSegments[pathSegments.length - 1] || "dashboard";
-      // console.log("Last Segment:", lastSegment);
 
-      // Check if the last segment is a valid path
       const allowedPaths = rolesPermissions[user?.role as TRole] || [];
-      // console.log("Allowed Paths:", allowedPaths);
       if (!allowedPaths.includes(lastSegment)) {
-        // Redirect to the dashboard if the path is not allowed
         router.push("/unauthorized");
-        // console.log("Unauthorized access to:", pathname);
       }
     }
   }, [loading, user, router]);
