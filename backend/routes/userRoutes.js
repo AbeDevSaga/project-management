@@ -7,7 +7,6 @@ const { verifyToken, isAdmin, isAdvisor, isDeptHead  } = require('../middlewares
 // SuperAdmin only Basic Routes
 router.post('/create_user', verifyToken, isAdmin, createUser);
 
-
 // Admin and Super Admin Basic Routes
 router.get("/",verifyToken,  getAllUsers);
 router.put("/update_user/:id", verifyToken,  updateUser);

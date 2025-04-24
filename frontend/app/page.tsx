@@ -2,36 +2,42 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "@/app/redux/store"; // Import RootState
+import { RootState } from "@/app/redux/store";
+import Navbar from "./landing-page-comp/Navbar";
+import Hero from "./landing-page-comp/Hero";
+import About from "./landing-page-comp/About"; // Prepare for future sections
+import CallToAction from "./landing-page-comp/CallToAction";
+import Features from "./landing-page-comp/Features";
+import HowItWorks from "./landing-page-comp/HowItWorks";
+import RoleBased from "./landing-page-comp/RoleBased";
+import Testimonial from "./landing-page-comp/Testimonal";
+import Footer from "./landing-page-comp/Footer";
 
 const LandingPage: React.FC = () => {
   const router = useRouter();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.token !== null); // Check if token exists
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.token !== null
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/dashboard"); // Redirect to dashboard if authenticated
+      router.push("/dashboard");
     }
   }, [isAuthenticated, router]);
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <h1 className="text-4xl font-bold mb-6">Welcome to Code Collab</h1>
-      <p className="mb-4">Select an option to get started:</p>
-      <div className="flex space-x-4">
-        <button
-          onClick={() => router.push("/auth/login")}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Login
-        </button>
-        <button
-          onClick={() => router.push("/auth/register")}
-          className="px-4 py-2 bg-green-500 text-white rounded-md"
-        >
-          Sign Up
-        </button>
-      </div>
+    <div className="min-h-screen">
+      <Navbar />
+      <main>
+        <Hero />
+        <About />
+        <Features />
+        <HowItWorks />
+        <RoleBased />
+        <Testimonial />
+        <CallToAction/>
+        <Footer/>
+      </main>
     </div>
   );
 };
