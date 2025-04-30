@@ -18,6 +18,12 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+const isStudent = (req, res, next) => {
+  if (req.user.role !== "student")
+    return res.status(403).json({ error: "Access denied" });
+  next();
+};
+
 const isAdvisor = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -51,4 +57,5 @@ module.exports = {
   isAdmin,
   isAdvisor,
   isDeptHead,
+  isStudent,
 };

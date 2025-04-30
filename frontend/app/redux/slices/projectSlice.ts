@@ -217,6 +217,10 @@ const projectSlice = createSlice({
           if (index !== -1) {
             state.projects[index] = action.payload;
           }
+
+          if (state.currentProject?._id === action.payload._id) {
+            state.currentProject = action.payload;
+          }
         }
       )
       .addCase(

@@ -60,7 +60,10 @@ const deleteUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   console.log("getAllUsers");
   try {
-    const users = await User.find();
+    const users = await User.find()
+      .populate("department")
+      .populate("project")
+      .populate("advisor")
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Failed to get users", error });
@@ -71,7 +74,10 @@ const getUserById = async (req, res) => {
   console.log("getUserById");
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id)
+    .populate("department")
+      .populate("project")
+      .populate("advisor")
     if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
@@ -84,6 +90,21 @@ const getUsersByOrganizationId = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await User.find({ organization: id });
+    if (!users) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get User", error });
+  }
+};
+
+const getUsersByDepartmentId = async (req, res) => {
+  console.log("getUsersByDepartmentId");
+  try {
+    const { id } = req.params;
+    const users = await User.find({ department: id })
+    .populate("department")
+      .populate("project")
+      .populate("advisor");
     if (!users) return res.status(404).json({ message: "User not found" });
     res.status(200).json(users);
   } catch (error) {
@@ -110,5 +131,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   getUsersByOrganizationId,
+  getUsersByDepartmentId,
   getPremiumUsers,
 };

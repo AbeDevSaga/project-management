@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TProject, TUser, TTask, TFile } from "@/app/constants/type";
+import { TProject, TUser, TTask, TFile, TProposal } from "@/app/constants/type";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
 import {
@@ -19,14 +19,21 @@ import AddUser from "@/app/components/user_related/AddUser";
 import { createUser } from "@/app/redux/slices/userSlice";
 import UpdateProject from "@/app/components/project_related/UpdateProject";
 import AddTask from "@/app/components/task_related/AddTask";
-import { createTasks, fetchTasksByProjectId } from "@/app/redux/slices/taskSlice";
+import {
+  createTasks,
+  fetchTasksByProjectId,
+} from "@/app/redux/slices/taskSlice";
 import TaskTable from "@/app/components/task_related/TaskTable";
+import { fetchProposalByProject } from "@/app/redux/slices/proposalSlice";
 
 const ProjectDetailPage = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { projectId } = useParams() as { projectId: string };
   const [project, setProject] = useState<TProject | null>(null);
+  const [projectProposal, setProjectProposal] = useState<TProposal | null>(
+    null
+  );
   const [tasksList, setTasksList] = useState<TTask[]>([]);
   const [filesList, setFilesList] = useState<TFile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -178,19 +185,36 @@ const ProjectDetailPage = () => {
           // Fetch project details
           const projectResponse = await dispatch(fetchProjectById(projectId));
           if (fetchProjectById.fulfilled.match(projectResponse)) {
-            setProject(projectResponse.payload);
+            const fetchedProject = projectResponse.payload;
+            setProject(fetchedProject);
+            // Set proposal if it exists in the project response
+            // In your fetchData function:
+            if (fetchedProject.proposal) {
+              // If the project has a proposal attached
+              setProjectProposal(fetchedProject.proposal);
+            } else {
+              // If fetching separately - assuming this returns a single proposal
+              const proposalResponse = await dispatch(
+                fetchProposalByProject(projectId)
+              );
+              if (fetchProposalByProject.fulfilled.match(proposalResponse)) {
+                setProjectProposal(proposalResponse.payload); // Single proposal
+              }
+            }
           } else if (fetchProjectById.rejected.match(projectResponse)) {
             setError("Failed to fetch project data");
           }
 
           // Fetch tasks for the project
-            const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
-            if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
-              setTasksList(tasksResponse.payload);
-              console.log("Tasks List: ", tasksResponse.payload);
-            } else {
-              setError("Failed to fetch tasks");
-            }
+          const tasksResponse = await dispatch(
+            fetchTasksByProjectId(projectId)
+          );
+          if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
+            setTasksList(tasksResponse.payload);
+            console.log("Tasks List: ", tasksResponse.payload);
+          } else {
+            setError("Failed to fetch tasks");
+          }
 
           // Fetch files for the project
           //   const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
@@ -226,6 +250,9 @@ const ProjectDetailPage = () => {
   }
 
   console.log("project: ", project);
+  const hasApprovedProposal =
+    projectProposal && projectProposal.status === "approved";
+  console.log("projectProposal: ", projectProposal);
 
   return (
     <div className="w-full h-full relative space-y-4 mx-auto overflow-auto scrollbar-hide">
@@ -297,7 +324,7 @@ const ProjectDetailPage = () => {
             </div>
           )}
 
-          {/* Start Date */}
+          {/* Created Date */}
           {project.createdAt && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-gray-500">
@@ -306,6 +333,138 @@ const ProjectDetailPage = () => {
               <p className="text-gray-800">
                 {new Date(project.createdAt).toLocaleDateString()}
               </p>
+            </div>
+          )}
+          {/* Proposal Section */}
+          {projectProposal ? (
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-sm font-semibold text-gray-500">
+                  Project Proposal
+                </h2>
+                <div className="flex space-x-2">
+                  {/* Download Button */}
+                  <button
+                    // onClick={() => downloadProposal(projectProposal._id)}
+                    className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                    title="Download Proposal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Update Button */}
+                  <button
+                    // onClick={() => handleUpdateProposal(projectProposal)}
+                    className="p-1 text-yellow-600 hover:text-yellow-800 transition-colors"
+                    title="Update Proposal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Delete Button */}
+                  <button
+                    // onClick={() => handleDeleteProposal(projectProposal._id)}
+                    className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                    title="Delete Proposal"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 truncate">
+                    {projectProposal.file &&
+                      projectProposal.file.split("/").pop()}
+                  </p>
+                  <div className="flex items-center mt-1">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        projectProposal.status === "approved"
+                          ? "bg-green-100 text-green-800"
+                          : projectProposal.status === "rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      status: {projectProposal.status}
+                    </span>
+                    {projectProposal.feedback && (
+                      <p className="ml-2 text-xs text-gray-500 truncate">
+                        Feedback: {projectProposal.feedback}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+              <label className="flex flex-col items-center justify-center cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+                <span className="mt-2 text-sm font-medium text-gray-600">
+                  Submit Proposal
+                </span>
+                <span className="text-xs text-gray-500">Click to upload</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  // onChange={(e) => handleProposalUpload(e.target.files)}
+                  accept=".pdf,.doc,.docx"
+                />
+              </label>
             </div>
           )}
         </div>
@@ -334,40 +493,43 @@ const ProjectDetailPage = () => {
       </div>
 
       {/* Tasks Section */}
-      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
-        <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="tasks" />
-          <div className="w-auto">
-            <ActionButton
-              label="Add Task"
-              onClick={openAddTaskModal}
-              icon="task"
-            />
+      {hasApprovedProposal && (
+        <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+          <div className="flex items-center pb-2">
+            <SectionHeader sectionKey="tasks" />
+            <div className="w-auto">
+              <ActionButton
+                label="Add Task"
+                onClick={openAddTaskModal}
+                icon="task"
+              />
+            </div>
           </div>
+          {tasksList && tasksList.length > 0 && (
+            <TaskTable
+              onViewTask={handleViewTask}
+              tasks={tasksList}
+              px="2"
+              py="2"
+            />
+          )}
         </div>
-        {tasksList && tasksList.length > 0 && (
-          <TaskTable
-            onViewTask={handleViewTask}
-            tasks={tasksList}
-            px="2"
-            py="2"
-          />
-        )}
-      </div>
+      )}
 
       {/* Files Section */}
-      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
-        <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="files" />
-          <div className="w-auto">
-            <ActionButton
-              label="Add File"
-              onClick={openAddFileModal}
-              icon="file"
-            />
+      {hasApprovedProposal && (
+        <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+          <div className="flex items-center pb-2">
+            <SectionHeader sectionKey="files" />
+            <div className="w-auto">
+              <ActionButton
+                label="Add File"
+                onClick={openAddFileModal}
+                icon="file"
+              />
+            </div>
           </div>
-        </div>
-        {/* {filesList && filesList.length > 0 && (
+          {/* {filesList && filesList.length > 0 && (
           <FileTable
             onViewFile={handleViewFile}
             files={filesList}
@@ -375,7 +537,8 @@ const ProjectDetailPage = () => {
             py="2"
           />
         )} */}
-      </div>
+        </div>
+      )}
       {/* Modals */}
       {addUserModalOpen && (
         <AddUser

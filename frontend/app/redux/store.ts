@@ -8,12 +8,18 @@ import projectReducer from "./slices/projectSlice";
 import userReducer from "./slices/userSlice";
 import themeReducer from './slices/themeSlice';
 import taskReducer from "./slices/taskSlice";
+import manualReducer from "./slices/manualSlice";
+import proposalReducer from "./slices/proposalSlice";
+
 
 // Persist configuration
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["auth"], // Only persist the auth slice
+  stateReconciler: (inboundState: any, originalState: any) => {
+    return originalState;
+  }
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -25,6 +31,8 @@ const store = configureStore({
     organization: organizationReducer,
     project:projectReducer,
     task: taskReducer,
+    manual: manualReducer,
+    proposal: proposalReducer,
     user: userReducer,
     theme: themeReducer,
   },

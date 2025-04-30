@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
     MdDashboard, MdPeople, MdOutlineWorkspacePremium, MdNotifications, MdMessage, MdPhoto, 
-    MdReport, MdSupervisorAccount 
+    MdReport, MdSupervisorAccount,MdMenuBook
   } from "react-icons/md"; 
   import { FaUserShield, FaProjectDiagram, FaUserGraduate } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
@@ -28,6 +28,7 @@ const iconMapping: IconMapping = {
   manageAdmins: FaUserShield,
   oraganizations: FaBuildingColumns,
   projects: FaProjectDiagram,
+  manuals: MdMenuBook,
 };
 
 interface NavItemProps {

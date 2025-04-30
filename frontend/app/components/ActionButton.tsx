@@ -30,6 +30,7 @@ interface ActionButtonProps {
     | "task"
     | "file"
     | "project"
+    | "upload"
   onClick: () => void; // Action to perform on click
 }
 
@@ -47,6 +48,8 @@ const iconMap = {
   task: BiTask,
   project: FaProjectDiagram,
   file: FaFileCirclePlus,
+  upload: BiUpload,
+  
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({

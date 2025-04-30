@@ -7,6 +7,8 @@ const {
   getAllProjects,
   getProjectById,
   getProjectsByDepartmentId,
+  getProjectsByStudentId,
+  getProjectsByAdvisorId,
   getProjectsByStatus,
 } = require("../controllers/projectController");
 const {
@@ -14,12 +16,36 @@ const {
   isAdmin,
   isAdvisor,
   isDeptHead,
+  isStudent,
 } = require("../middlewares/authMiddleware");
 
 // SuperAdmin only Basic Routes
 
 // Admin and Super Admin Basic Routes
-router.get("/", verifyToken, getAllProjects);
+router.get("/", verifyToken, (req, res, next) => {
+  if (req.user.role === "admin") {
+    return isAdmin(req, res, () => {
+      getAllProjects(req, res, next);
+    });
+  } else if (req.user.role === "advisor") {
+    return isAdvisor(req, res, () => {
+      req.params.id = req.user.id;
+      getProjectsByAdvisorId(req, res, next);
+    });
+  } else if (req.user.role === "student") {
+    return isStudent(req, res, () => {
+      req.params.id = req.user.id;
+      getProjectsByStudentId(req, res, next);
+    });
+  } else if (req.user.role === "departmentHead") {
+    return isDeptHead(req, res, () => {
+      req.params.id = req.user.department;
+      getProjectsByDepartmentId(req, res, next);
+    });
+  } else {
+    return res.status(403).json({ message: "Unauthorized access" });
+  }
+});
 router.post("/create", verifyToken, createProject);
 router.put("/update/:id", verifyToken, updateProject);
 router.delete("/delete/:id", verifyToken, deleteProject);

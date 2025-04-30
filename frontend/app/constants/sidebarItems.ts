@@ -9,6 +9,7 @@ export const sidebarItems = [
     { path: "/dashboard/services", icons: "users", label: "Services" },
     { path: "/dashboard/projects", icons: "projects", label: "Projects" },
     { path: "/dashboard/notifications", icons: "notifications", label: "Notifications" },
+    { path: "/dashboard/manuals", icons: "manuals", label: "Manuals" },
     { path: "/dashboard/chat-groups", icons: "messages", label: "Chat Groups" },
     { path: "/dashboard/photo-review", icons: "photoReview", label: "Photo Review" },
     { path: "/dashboard/reports-bans", icons: "reportsBans", label: "Reports & Bans" },

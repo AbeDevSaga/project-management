@@ -8,6 +8,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "advisors",
     "department-heads",
     "projects",
+    "manuals",
     "notifications",
     "manage-admins",
   ],
@@ -16,7 +17,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "projects",
     "notifications",
     "chat-groups",
-    "organizations",
+    "manuals",
   ],
   "advisor": [
     "dashboard",
@@ -24,10 +25,12 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "projects",
     "notifications",
     "chat-groups",
+    "manuals",
   ],
   "departmentHead": [
     "dashboard",
     "projects",
     "notifications",
+    "manuals",
   ],
 };

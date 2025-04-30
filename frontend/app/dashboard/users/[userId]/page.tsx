@@ -187,7 +187,7 @@ const UserDetailsPage = () => {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Department</h2>
             <p className="text-gray-800">
-              {user.department ? user.department : "N/A"}
+              {user.department ? user.department.name : "N/A"}
             </p>
           </div>
 
@@ -199,34 +199,6 @@ const UserDetailsPage = () => {
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Services Section */}
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="services" />
-          <div className="w-auto">
-            <ActionButton
-              label="Add Service"
-              onClick={() => {}}
-              icon="service"
-            />
-          </div>
-        </div>
-        {services.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {services.map((service) => (
-              <div key={service._id} className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {service.name}
-                </h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No services found.</p>
-        )}
       </div>
 
       {/* Chat Groups Section */}
@@ -330,7 +302,7 @@ const UserDetailsPage = () => {
             {tasks.map((task) => (
               <div key={task._id} className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {task.name}
+                  {task.taskName}
                 </h3>
                 <p className="text-gray-600">{"task.description"}</p>
               </div>

@@ -1,4 +1,4 @@
-import { TUser } from "@/app/constants/type";
+import { TRole, TUser } from "@/app/constants/type";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -6,6 +6,9 @@ const API_URL = process.env.NEXT_PUBLIC_AUTH_API;
 
 interface AuthState {
   user: TUser | null;
+  role: TRole | null;
+  userId: string | null;
+  currentSession: string | null;
   token: string | null;
   loading: boolean;
   error: string | null;
@@ -32,6 +35,7 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`${API_URL}/login`, userData);
       localStorage.setItem("token", response.data.token); // Save token to localStorage
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("role", JSON.stringify(response.data.user.role));
       console.log("response.data: ", response.data);
       return response.data;
     } catch (error: any) {
@@ -42,7 +46,7 @@ export const loginUser = createAsyncThunk(
 
 // Slice
 const initialState: AuthState = {
-  user:
+  user: 
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("user") || "null")
       : null,
@@ -50,6 +54,9 @@ const initialState: AuthState = {
     typeof window !== "undefined"
       ? localStorage.getItem("token") || null
       : null,
+  role: null,
+  userId: null,
+  currentSession: null,
   loading: false,
   error: null,
 };
@@ -88,6 +95,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.role = action.payload.user.role;
+        state.userId = action.payload.user.id;
+        state.currentSession = `${action.payload.user.id}_${Date.now()}`; // Create a unique session identifier
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;

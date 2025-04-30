@@ -7,13 +7,13 @@ const projectSchema = new mongoose.Schema({
   department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   projectStatus: {
     type: String,
-    enum: ["approved", "rejected", "in-progress", "completed"],
+    enum: ["in-progress", "completed", "evaluated"],
     default: "in-progress",
   },
   tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
-  proposals: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Proposal" }, // Link to the proposals for this project
-  ],
+  proposal: { type: mongoose.Schema.Types.ObjectId, ref: "Proposal" },
+
+  files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
   students: [
     { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Link to the students for this project
   ],
@@ -21,6 +21,8 @@ const projectSchema = new mongoose.Schema({
   submissions: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Submission" }, // Link to the submissions for this project
   ],
+  isApproved: { type: Boolean, default: false },
+  isRejected: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 

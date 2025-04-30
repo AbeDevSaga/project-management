@@ -30,8 +30,8 @@ export type TUser = {
   password: string;
   userId?: string;
   role?: string;
-  department? : string;
-  project?: string;
+  department? : TDepartment;
+  project?: TProject[];
   advisor: TUser;
   profileImage?: string;
   proposals?: string;
@@ -88,43 +88,26 @@ export type TOrganization = {
 export type TFile = {
   _id: string;
   name: string;
+  path: string;
+  type: string;
+  uploadedBy: TUser;
+  uploadedAt: Date;
 };
-// export type TProject = {
-//   _id?: string;
-//   name: string;
-//   title?: string;
-//   description?: string;
-//   projectStatus?: "approved" | "rejected" | "in-progress" | "completed";
-//   createdBy: TUser;
-//   organization: TOrganization;
-//   teamMembers?: {
-//     user: TUser;
-//     role: "admin" | "manager" | "developer" | "viewer";
-//     addedAt: Date;
-//     addedBy: TUser;
-//   }[];
-//   files?: TFile[];
-//   tasks?: TTask[];
-//   createdAt?: Date;
-//   updatedAt?: Date;
-//   startDate?: Date;
-//   endDate?: Date;
-//   tags?: string[];
-//   labels?: string[];
-//   isPublic?: boolean;
-//   allowExternalContributors?: boolean;
-// };
+
 export type TProject = {
   _id?: string;
   title?: string;
   description?: string;
   department?: TDepartment;
-  projectStatus?: "approved" | "rejected" | "in-progress" | "completed";
+  projectStatus?: "in-progress" | "completed" | "evaluated";
   tasks?: TTask[];
-  proposals?: TTask[];
+  proposal?: TProposal;
   students?: TUser[];
+  files?: TFile[];
   advisor?: TUser;
   submissions?: TFile[];
+  isApproved?: boolean;
+  isRejected?: boolean;
   createdAt?: Date;
 };
 export type TDepartment = {
@@ -140,7 +123,7 @@ export type TTask = {
   taskName: string;
   discription: string;
   assignedTo: TUser[];
-  status: "not-started" | "in-progress" | "completed";
+  status: "not-started" | "in-progress" | "completed" | "approved" | "rejected";
   startDate: Date;
   endDate: Date;
   percentage: string;
@@ -149,6 +132,30 @@ export type TChatGroups = {
   _id: string;
   name: string;
 };
+
+export type TManual = {
+  _id?: string;
+  title: string;
+  description: string;
+  type?: string;
+  file?: string;
+  department?: TDepartment |string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  createdBy?: TUser | string;
+}
+
+export type TProposal = {
+  _id?: string;
+  project: TProject | string;
+  student?: TUser;
+  date?: Date;
+  approvedBy?: TUser;
+  status?: string;
+  file?: string;
+  feedback?: string;
+  similarityScore?: Number;
+}
 
 export type TSections = {
   dashboard: TSection;

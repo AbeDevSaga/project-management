@@ -58,7 +58,7 @@ const deleteProject = async (req, res) => {
 const getAllProjects = async (req, res) => {
   console.log("getAllProjects");
   try {
-    const projects = await Project.find().populate("students").populate("advisor").populate("department");
+    const projects = await Project.find().populate("students").populate("advisor").populate("department").populate("proposal");
     res.status(200).json(projects);
   } catch (error) {
     res.status(500).json({ message: "Failed to get projects", error });
@@ -70,8 +70,7 @@ const getProjectById = async (req, res) => {
   console.log("getProjectById");
   try {
     const { id } = req.params;
-    const project = await Project.findById(id).populate("students").populate("advisor").populate("department");
-    
+    const project = await Project.findById(id).populate("students").populate("advisor").populate("department").populate("proposal");
     if (!project) return res.status(404).json({ message: "Project not found" });
     res.status(200).json(project);
   } catch (error) {
@@ -84,7 +83,7 @@ const getProjectsByDepartmentId = async (req, res) => {
   console.log("getProjectsByDepartmentId");
   try {
     const { id } = req.params;
-    const projects = await Project.find({ department: id }).populate("students").populate("advisor");
+    const projects = await Project.find({ department: id }).populate("students").populate("advisor").populate("department").populate("proposal");
     
     if (!projects) return res.status(404).json({ message: "Projects not found for this department" });
     res.status(200).json(projects);
@@ -93,12 +92,62 @@ const getProjectsByDepartmentId = async (req, res) => {
   }
 };
 
+// Get projects by Student ID
+const getProjectsByStudentId = async (req, res) => {
+  console.log("getProjectsByStudentId");
+  try {
+    const { id } = req.params;
+    const projects = await Project.find({ 
+      students: id // Changed from department to students
+    })
+    .populate("students")
+    .populate("advisor")
+    .populate("department")
+    .populate("proposal");
+    
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ message: "No projects found for this student" });
+    }
+    res.status(200).json(projects);
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Failed to get projects for student", 
+      error: error.message 
+    });
+  }
+};
+
+// Get projects by Advisor ID
+const getProjectsByAdvisorId = async (req, res) => {
+  console.log("getProjectsByAdvisorId");
+  try {
+    const { id } = req.params;
+    const projects = await Project.find({ 
+      advisor: id // Changed from department to advisor
+    })
+    .populate("students")
+    .populate("advisor")
+    .populate("department")
+    .populate("proposal");
+    
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ message: "No projects found for this advisor" });
+    }
+    res.status(200).json(projects);
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Failed to get projects for advisor", 
+      error: error.message 
+    });
+  }
+};
+
 // Get projects by status
 const getProjectsByStatus = async (req, res) => {
   console.log("getProjectsByStatus");
   try {
     const { status } = req.params;
-    const projects = await Project.find({ projectStatus: status }).populate("students").populate("advisor");
+    const projects = await Project.find({ projectStatus: status }).populate("students").populate("advisor").populate("proposal");
     
     if (!projects) return res.status(404).json({ message: "No projects found with this status" });
     res.status(200).json(projects);
@@ -114,5 +163,7 @@ module.exports = {
   getAllProjects,
   getProjectById,
   getProjectsByDepartmentId,
+  getProjectsByStudentId,
+  getProjectsByAdvisorId,
   getProjectsByStatus,
 };
