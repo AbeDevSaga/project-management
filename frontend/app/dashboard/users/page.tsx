@@ -9,15 +9,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
 import { useRouter } from "next/navigation";
+import { fetchAllDepartments } from "@/app/redux/slices/deptSlice";
 
 function users() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector(
+      (state: RootState) => state.auth.user);
   const usersList = useSelector((state: RootState) => state.user.users);
+  const departmentList = useSelector(
+      (state: RootState) => state.department.departments);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
 
   useEffect(() => {
     dispatch(fetchAllUsers());
+    dispatch(fetchAllDepartments());
   }, [dispatch]);
 
   const handleAddUser = () => {
@@ -47,13 +53,13 @@ function users() {
     <div className="w-full h-full overflow-hidden relative">
       <div className="flex items-center pb-2">
         <SectionHeader sectionKey="users" />
-        <div className="w-auto">
+        {/* {user?.role === "admin" && (<div className="w-auto">
           <ActionButton
-            label="Add User"
+            label="Create User"
             onClick={handleAddUser}
             icon="add_user"
           />
-        </div>
+        </div>)} */}
       </div>
       <UserTable onViewUser={handleViewUser} users = {usersList} px="4" py="4"/>
       {isAddUserOpen && (

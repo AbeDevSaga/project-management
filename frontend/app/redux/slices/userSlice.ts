@@ -89,6 +89,22 @@ export const fetchUsersByOrganizationId = createAsyncThunk(
   }
 );
 
+export const fetchUsersByDepartmentId = createAsyncThunk(
+  "users/fetchByDepartmentId ",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get<TUser[]>(`${API_URL}/department/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
 export const fetchPremiumUsers = createAsyncThunk(
   "users/fetchPremium",
   async (_, { rejectWithValue }) => {
@@ -209,6 +225,20 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(fetchUsersByOrganizationId.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Fetch Users by Department ID
+      .addCase(fetchUsersByDepartmentId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUsersByDepartmentId.fulfilled, (state, action: PayloadAction<TUser[]>) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(fetchUsersByDepartmentId.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

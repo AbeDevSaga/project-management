@@ -72,7 +72,7 @@ const upload = multer({
 // });
 // Manual routes
 
-router.post("/", verifyToken, isAdmin, upload.single("file"), createManual);
+router.post("/", verifyToken, isDeptHead, upload.single("file"), createManual);
 router.get("/", verifyToken, getAllManuals);
 router.get("/recent", verifyToken, getRecentManuals);
 router.get("/type/:type", verifyToken, getManualsByType);

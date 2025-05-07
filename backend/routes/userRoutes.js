@@ -4,17 +4,20 @@ const {
   createUser,
   getAllUsers,
   getUserById,
-  getUsersByOrganizationId,
   getUsersByDepartmentId,
   deleteUser,
   updateUser,
   getPremiumUsers,
+  addHeadToDepartment,
+  addAdvisorToDepartment,
+  addStudentToDepartment,
 } = require("../controllers/userController");
 const {
   verifyToken,
   isAdmin,
   isAdvisor,
   isDeptHead,
+  isStudent,
 } = require("../middlewares/authMiddleware");
 
 // SuperAdmin only Basic Routes
@@ -28,7 +31,12 @@ router.get("/", verifyToken, (req, res, next) => {
   } else if (req.user.role === "advisor") {
     return isAdvisor(req, res, () => {
       req.params.id = req.user.id;
-      getProjectsByAdvisorId(req, res, next);
+      getUsersByDepartmentId(req, res, next);
+    });
+  } else if (req.user.role === "student") {
+    return isStudent(req, res, () => {
+      req.params.id = req.user.department;
+      getUsersByDepartmentId(req, res, next);
     });
   } else if (req.user.role === "departmentHead") {
     return isDeptHead(req, res, () => {
@@ -44,5 +52,8 @@ router.get("/department/:id", verifyToken, getUsersByDepartmentId);
 router.put("/update_user/:id", verifyToken, updateUser);
 router.delete("/delete/:id", verifyToken, deleteUser);
 router.get("/:id", verifyToken, getUserById);
+router.put("/add_head/:id", verifyToken, addHeadToDepartment);
+router.put("/add_advisor/:id", verifyToken, addAdvisorToDepartment);
+router.put("/add_student/:id", verifyToken, addStudentToDepartment);
 
 module.exports = router;

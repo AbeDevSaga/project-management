@@ -187,7 +187,7 @@ export const downloadProposal = createAsyncThunk(
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-      return response.data;
+      return { id, data: response.data };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Download failed");
     }

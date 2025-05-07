@@ -1,6 +1,7 @@
 export const sidebarItems = [
     { path: "/dashboard", icons: "dashboard", label: "Dashboard" },
     { path: "/dashboard/users", icons: "users", label: "Users" },
+    { path: "/dashboard/department", icons: "department", label: "Departments" },
     { path: "/dashboard/students", icons: "students", label: "Students" },
     { path: "/dashboard/advisors", icons: "advisors", label: "Advisors" },
     { path: "/dashboard/department-heads", icons: "departmentHeads", label: "Department Heads" },
@@ -15,5 +16,6 @@ export const sidebarItems = [
     { path: "/dashboard/reports-bans", icons: "reportsBans", label: "Reports & Bans" },
     { path: "/dashboard/sales-agents", icons: "salesAgents", label: "Sales Agents" },
     { path: "/dashboard/manage-admins", icons: "manageAdmins", label: "Manage Admins" },
+    { path: "/dashboard/schedule", icons: "schedule", label: "Schedules" },
   ];
   

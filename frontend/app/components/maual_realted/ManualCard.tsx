@@ -7,11 +7,11 @@ import {
   FiEye,
   FiFileText,
 } from "react-icons/fi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteManual, downloadManual } from "@/app/redux/slices/manualSlice";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { AppDispatch } from "@/app/redux/store";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import { formatDate } from "@/app/utils/dateUtils";
 import Alert from "../AlertProp";
 
@@ -27,6 +27,7 @@ const ManualCard: React.FC<ManualCardProps> = ({
   showActions = true,
 }) => {
   const API_URL = process.env.NEXT_PUBLIC_MANUAL_API;
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
   const [alert, setAlert] = useState<{
     status: "success" | "error";
@@ -102,7 +103,7 @@ const ManualCard: React.FC<ManualCardProps> = ({
               <FiDownload className="mr-1" /> Download
             </button>
 
-            {oUpdateModal && (
+            {oUpdateModal && user?.role === "departmentHead" && (
               <button
                 onClick={() => oUpdateModal(manual)}
                 className="flex items-center text-sm bg-yellow-100 text-yellow-700 px-4 py-1 rounded hover:bg-yellow-200 transition-colors"
@@ -111,12 +112,12 @@ const ManualCard: React.FC<ManualCardProps> = ({
               </button>
             )}
 
-            <button
+            {user?.role === "departmentHead" && (<button
               onClick={handleDelete}
               className="flex items-center text-sm bg-red-100 text-red-700 px-4 py-1 rounded hover:bg-red-200 transition-colors"
             >
               <FiTrash2 className="mr-1" /> Delete
-            </button>
+            </button>)}
           </div>
         )}
       </div>

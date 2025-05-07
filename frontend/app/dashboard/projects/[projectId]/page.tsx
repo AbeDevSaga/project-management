@@ -2,9 +2,11 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TProject, TUser, TTask, TFile, TProposal } from "@/app/constants/type";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/app/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import {
+  addStudentsToProject,
+  addUserToProject,
   deleteProject,
   fetchProjectById,
   updateProject,
@@ -16,7 +18,10 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import UserTable from "@/app/components/user_related/UsersTable";
 import AddUser from "@/app/components/user_related/AddUser";
-import { createUser } from "@/app/redux/slices/userSlice";
+import {
+  createUser,
+  fetchUsersByDepartmentId,
+} from "@/app/redux/slices/userSlice";
 import UpdateProject from "@/app/components/project_related/UpdateProject";
 import AddTask from "@/app/components/task_related/AddTask";
 import {
@@ -24,13 +29,27 @@ import {
   fetchTasksByProjectId,
 } from "@/app/redux/slices/taskSlice";
 import TaskTable from "@/app/components/task_related/TaskTable";
-import { fetchProposalByProject } from "@/app/redux/slices/proposalSlice";
+import {
+  createProposal,
+  downloadProposal,
+  fetchProposalByProject,
+  updateProposal,
+} from "@/app/redux/slices/proposalSlice";
+import Alert from "@/app/components/AlertProp";
+import UpdateProposal from "@/app/components/project_related/UpdateProposal";
+import AddStudents from "@/app/components/project_related/AddStudents";
+import ProjectProposal from "@/app/components/project_related/ProjectProposal";
+import AddAdvisor from "@/app/components/project_related/AddAdvisor";
+import { formatDate } from "@/app/utils/dateUtils";
 
 const ProjectDetailPage = () => {
+  const API_URL = process.env.NEXT_PUBLIC_PROPOSAL_API;
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
   const { projectId } = useParams() as { projectId: string };
   const [project, setProject] = useState<TProject | null>(null);
+  const [departmentUsers, setDepartmentUsers] = useState<TUser[]>([]);
   const [projectProposal, setProjectProposal] = useState<TProposal | null>(
     null
   );
@@ -41,16 +60,25 @@ const ProjectDetailPage = () => {
 
   const [showActions, setShowActions] = useState(false);
   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
+  const [addAdvisorModalOpen, setAddAdvisorModalOpen] = useState(false);
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false);
   const [addFileModalOpen, setAddFileModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUpdateProposalOpen, setIsUpdateProposalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<TProject | null>(null);
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Open the modals
 
   const openAddUserModal = () => {
     setAddUserModalOpen(true);
+  };
+  const openAddAdvisorModal = () => {
+    setAddAdvisorModalOpen(true);
   };
   const openAddTaskModal = () => {
     setAddTaskModalOpen(true);
@@ -62,20 +90,35 @@ const ProjectDetailPage = () => {
     setIsUpdateModalOpen(true);
     setSelectedProject(project);
   };
+  const openUpdateProposal = () => {
+    setIsUpdateProposalOpen(true);
+  };
   const openDeleteModal = (project: TProject) => {
     setSelectedProject(project);
     setIsDeleteModalOpen(true);
   };
 
   // Handle modal actions
-  const handleAddStudent = async (Student: TUser) => {
-    console.log("New Student Data:", Student);
-    const resultAction = await dispatch(createUser(Student));
-    if (createUser.fulfilled.match(resultAction)) {
-      console.log("User added successfully:", resultAction.payload);
-      setAddUserModalOpen(false); // Close the modal after saving
-    } else {
-      console.error("Failed to add user:", resultAction.payload);
+  const handleAddStudents = async (studentIds: string[], projectId: string) => {
+    try {
+      await dispatch(addStudentsToProject({ projectId, studentIds })).unwrap();
+      toast.success("Students added successfully");
+    } catch (error) {
+      toast.error("Failed to add students");
+    }
+  };
+  const handleAddUser = async (userId: string, projectId: string, role:string) => {
+    try {
+      await dispatch(addUserToProject({ projectId, userId, role })).unwrap();
+      setAlert({
+        status: "success",
+        text: `${role} added successfully`,
+      });
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text: `Failed to add ${role}`,
+      });
     }
   };
   const handleAddTasks = async (newTasks: TTask[]) => {
@@ -149,6 +192,28 @@ const ProjectDetailPage = () => {
     }
   };
 
+  const handleUpdateProposal = async (formData: FormData) => {
+    try {
+      // Then update the status and feedback
+      await dispatch(
+        updateProposal({
+          id: projectProposal?._id || " ",
+          formData,
+        })
+      ).unwrap();
+
+      setAlert({
+        status: "success",
+        text: "Proposal updated successfully",
+      });
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text: "Failed to update proposal",
+      });
+    }
+  };
+
   const handleViewTask = (task: TTask) => {
     router.push(`${projectId}/tasks/${task._id}`);
   };
@@ -157,9 +222,95 @@ const ProjectDetailPage = () => {
     router.push(`${projectId}/files/${file._id}`);
   };
 
+  //handle download proposal
+  const handleDownloadProposal = async (proposal: TProject) => {
+    try {
+      await dispatch(downloadProposal(proposal._id ?? "")).unwrap();
+      setAlert({
+        status: "success",
+        text: "Download started successfully",
+      });
+      window.open(`${API_URL}/download/${proposal._id}`, "_blank");
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Failed to download Proposal",
+      });
+    }
+  };
+
+  //handle delete proposal
+  const handleDeleteProposal = async (proposal: TProject) => {
+    if (window.confirm("Are you sure you want to delete this Proposal?")) {
+      try {
+        await dispatch(downloadProposal(proposal._id ?? "")).unwrap();
+        setAlert({
+          status: "success",
+          text: "Proposal deleted successfully",
+        });
+      } catch (error) {
+        setAlert({
+          status: "error",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Failed to delete Proposal",
+        });
+      }
+    }
+  };
+  // Handle proposal upload
+  const handleProposalUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setAlert({
+        status: "error",
+        text: "Only PDF and Word documents are allowed",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("project", projectId);
+    formData.append("student", project?.students?.[0]?._id || ""); // Assuming first student is the submitter
+
+    try {
+      const resultAction = await dispatch(createProposal(formData));
+      if (createProposal.fulfilled.match(resultAction)) {
+        setProjectProposal(resultAction.payload);
+        setAlert({
+          status: "success",
+          text: "Proposal uploaded successfully",
+        });
+      } else {
+        throw new Error(resultAction.payload as string);
+      }
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text: "Failed to upload proposal",
+      });
+    }
+  };
+
   // Close the modals
   const closeAddStudentModal = () => {
     setAddUserModalOpen(false);
+  };
+  const closeAddAdvisorModal = () => {
+    setAddAdvisorModalOpen(false);
   };
   const closeAddTaskModal = () => {
     setAddTaskModalOpen(false);
@@ -169,6 +320,9 @@ const ProjectDetailPage = () => {
   };
   const closeUpdateModal = () => {
     setIsUpdateModalOpen(false);
+  };
+  const closeUpdateProposal = () => {
+    setIsUpdateProposalOpen(false);
   };
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
@@ -182,47 +336,62 @@ const ProjectDetailPage = () => {
           setLoading(true);
           setError(null);
 
-          // Fetch project details
+          // Fetch project details first to get department ID
           const projectResponse = await dispatch(fetchProjectById(projectId));
+
           if (fetchProjectById.fulfilled.match(projectResponse)) {
             const fetchedProject = projectResponse.payload;
             setProject(fetchedProject);
+
             // Set proposal if it exists in the project response
-            // In your fetchData function:
             if (fetchedProject.proposal) {
-              // If the project has a proposal attached
               setProjectProposal(fetchedProject.proposal);
             } else {
-              // If fetching separately - assuming this returns a single proposal
+              // If fetching separately
               const proposalResponse = await dispatch(
                 fetchProposalByProject(projectId)
               );
               if (fetchProposalByProject.fulfilled.match(proposalResponse)) {
-                setProjectProposal(proposalResponse.payload); // Single proposal
+                setProjectProposal(proposalResponse.payload);
               }
             }
+
+            // Now that we have the project, fetch department users
+            if (fetchedProject.department?._id) {
+              const departmentId = fetchedProject.department._id;
+              const userResponse = await dispatch(
+                fetchUsersByDepartmentId(departmentId)
+              );
+
+              if (fetchUsersByDepartmentId.fulfilled.match(userResponse)) {
+                setDepartmentUsers(userResponse.payload);
+                console.log("Department Users: ", userResponse.payload);
+              } else {
+                setError("Failed to fetch Department Users");
+              }
+            }
+
+            // Fetch tasks for the project
+            const tasksResponse = await dispatch(
+              fetchTasksByProjectId(projectId)
+            );
+            if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
+              setTasksList(tasksResponse.payload);
+              console.log("Tasks List: ", tasksResponse.payload);
+            } else {
+              setError("Failed to fetch tasks");
+            }
+
+            // Fetch files for the project (commented out as in original)
+            // const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
+            // if (fetchFilesByProjectId.fulfilled.match(filesResponse)) {
+            //   setFilesList(filesResponse.payload);
+            // } else {
+            //   setError("Failed to fetch files");
+            // }
           } else if (fetchProjectById.rejected.match(projectResponse)) {
             setError("Failed to fetch project data");
           }
-
-          // Fetch tasks for the project
-          const tasksResponse = await dispatch(
-            fetchTasksByProjectId(projectId)
-          );
-          if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
-            setTasksList(tasksResponse.payload);
-            console.log("Tasks List: ", tasksResponse.payload);
-          } else {
-            setError("Failed to fetch tasks");
-          }
-
-          // Fetch files for the project
-          //   const filesResponse = await dispatch(fetchFilesByProjectId(projectId));
-          //   if (fetchFilesByProjectId.fulfilled.match(filesResponse)) {
-          //     setFilesList(filesResponse.payload);
-          //   } else {
-          //     setError("Failed to fetch files");
-          //   }
         } catch (err) {
           setError("An unexpected error occurred");
         } finally {
@@ -303,14 +472,26 @@ const ProjectDetailPage = () => {
           {/* Status */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Status</h2>
-            <p className="text-gray-800">{project.projectStatus}</p>
+            <p className="text-gray-800">
+              {project.isApproved ? "Approved" : "Rejected"}
+            </p>
           </div>
 
           {/* Created By */}
-          {project.advisor && (
+          {project.advisor ? (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-gray-500">Advisor</h2>
               <p className="text-gray-800">{project.advisor.username}</p>
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h2 className="text-sm font-semibold text-red-400">Advisor ?</h2>
+              <p
+                onClick={openAddAdvisorModal}
+                className="text-blue-500 cursor-pointer hover:text-blue-700 transition-transform duration-300 ease-in-out"
+              >
+                Assign Advisor +
+              </p>
             </div>
           )}
 
@@ -336,137 +517,47 @@ const ProjectDetailPage = () => {
             </div>
           )}
           {/* Proposal Section */}
-          {projectProposal ? (
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <div className="flex justify-between items-center mb-2">
+          <ProjectProposal
+            user={user}
+            project={project}
+            proposal={projectProposal}
+            onDownload={handleDownloadProposal}
+            onDelete={handleDeleteProposal}
+            onUpdate={openUpdateProposal}
+            setProjectProposal={setProjectProposal}
+          />
+          {project.projectStatus === "completed" &&
+            (project.evaluation ? (
+              <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-gray-500">
-                  Project Proposal
+                  Evaluator
                 </h2>
-                <div className="flex space-x-2">
-                  {/* Download Button */}
-                  <button
-                    // onClick={() => downloadProposal(projectProposal._id)}
-                    className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
-                    title="Download Proposal"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Update Button */}
-                  <button
-                    // onClick={() => handleUpdateProposal(projectProposal)}
-                    className="p-1 text-yellow-600 hover:text-yellow-800 transition-colors"
-                    title="Update Proposal"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Delete Button */}
-                  <button
-                    // onClick={() => handleDeleteProposal(projectProposal._id)}
-                    className="p-1 text-red-600 hover:text-red-800 transition-colors"
-                    title="Delete Proposal"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600 truncate">
-                    {projectProposal.file &&
-                      projectProposal.file.split("/").pop()}
+                <p className="text-gray-800">
+                  {project.evaluation?.evaluator.username}
+                </p>
+                <div className="flex items-center space-x-2 justify-end">
+                  <h2 className="text-sm font-semibold text-green-500">
+                    Date:
+                  </h2>
+                  <p className="text-gray-800">
+                    {project.evaluation?.date &&
+                      formatDate(project.evaluation?.date)}
                   </p>
-                  <div className="flex items-center mt-1">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        projectProposal.status === "approved"
-                          ? "bg-green-100 text-green-800"
-                          : projectProposal.status === "rejected"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      status: {projectProposal.status}
-                    </span>
-                    {projectProposal.feedback && (
-                      <p className="ml-2 text-xs text-gray-500 truncate">
-                        Feedback: {projectProposal.feedback}
-                      </p>
-                    )}
-                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300 hover:border-gray-400 transition-colors">
-              <label className="flex flex-col items-center justify-center cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            ) : (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h2 className="text-sm font-semibold text-red-400">
+                  Evaluator ?
+                </h2>
+                <p
+                  onClick={openAddAdvisorModal}
+                  className="text-blue-500 cursor-pointer hover:text-blue-700 transition-transform duration-300 ease-in-out"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
-                <span className="mt-2 text-sm font-medium text-gray-600">
-                  Submit Proposal
-                </span>
-                <span className="text-xs text-gray-500">Click to upload</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  // onChange={(e) => handleProposalUpload(e.target.files)}
-                  accept=".pdf,.doc,.docx"
-                />
-              </label>
-            </div>
-          )}
+                  Assign Evaluator +
+                </p>
+              </div>
+            ))}
         </div>
       </div>
 
@@ -474,13 +565,13 @@ const ProjectDetailPage = () => {
       <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
           <SectionHeader sectionKey="users" />
-          <div className="w-auto">
+          {/* <div className="w-auto">
             <ActionButton
               label="Add Student"
               onClick={openAddUserModal}
               icon="user"
             />
-          </div>
+          </div> */}
         </div>
         {project.students && (
           <UserTable
@@ -541,10 +632,19 @@ const ProjectDetailPage = () => {
       )}
       {/* Modals */}
       {addUserModalOpen && (
-        <AddUser
-          closeAddUser={closeAddStudentModal}
-          onAddUser={handleAddStudent}
-          role="student"
+        <AddStudents
+          users={departmentUsers}
+          projectId={projectId}
+          closeAddStudents={closeAddStudentModal}
+          onAddStudents={handleAddStudents}
+        />
+      )}
+      {addAdvisorModalOpen && (
+        <AddAdvisor
+          users={departmentUsers}
+          projectId={projectId}
+          closeAddAdvisor={closeAddAdvisorModal}
+          onAddAdvisor={handleAddUser}
         />
       )}
       {addTaskModalOpen && (
@@ -562,7 +662,13 @@ const ProjectDetailPage = () => {
           projectToUpdate={selectedProject}
         />
       )}
-
+      {isUpdateProposalOpen && projectProposal && (
+        <UpdateProposal
+          closeUpdateProposal={closeUpdateProposal}
+          onUpdateProposal={handleUpdateProposal}
+          proposalToUpdate={projectProposal}
+        />
+      )}
       {/* Modals
       
       {addFileModalOpen && (
@@ -579,6 +685,13 @@ const ProjectDetailPage = () => {
           onDeleteProject={handleDeleteProject}
         />
       )} */}
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
+        />
+      )}
     </div>
   );
 };

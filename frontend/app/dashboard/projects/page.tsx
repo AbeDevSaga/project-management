@@ -12,10 +12,12 @@ import {
 import ProjectCard from "@/app/components/project_related/ProjectCard";
 import AddProject from "@/app/components/project_related/AddProject";
 import { useRouter } from "next/navigation";
+import { fetchAllUsers } from "@/app/redux/slices/userSlice";
 
 function Projects() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+    const users = useSelector((state: RootState) => state.user.users);
   const projectList = useSelector(
     (state: RootState) => state.project.projects
   );
@@ -26,6 +28,7 @@ function Projects() {
   // Fetch projects on component mount
   useEffect(() => {
     dispatch(fetchAllProjects());
+    dispatch(fetchAllUsers());
   }, [dispatch]);
 
   // Open the modals
@@ -79,6 +82,7 @@ function Projects() {
       </div>
       {isAddModalOpen && (
         <AddProject
+          users={users}
           closeAddProject={closeAddModal}
           onAddProject={handleAddProject}
         />

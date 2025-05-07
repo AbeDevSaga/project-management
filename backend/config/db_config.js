@@ -25,6 +25,7 @@ const connectDB = async () => {
     require("../models/task");
     require("../models/notification");
     require("../models/user");
+    require("../models/schedule");
 
     // seed datas
     // await seedUsers(40);

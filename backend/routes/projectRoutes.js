@@ -10,6 +10,8 @@ const {
   getProjectsByStudentId,
   getProjectsByAdvisorId,
   getProjectsByStatus,
+  addStudentsToProject,
+  addUserToProject,
 } = require("../controllers/projectController");
 const {
   verifyToken,
@@ -48,6 +50,8 @@ router.get("/", verifyToken, (req, res, next) => {
 });
 router.post("/create", verifyToken, createProject);
 router.put("/update/:id", verifyToken, updateProject);
+router.put("/add-students/:id", verifyToken, addStudentsToProject);
+router.put("/add-user/:id", verifyToken, addUserToProject);
 router.delete("/delete/:id", verifyToken, deleteProject);
 router.get("/:id", verifyToken, getProjectById);
 

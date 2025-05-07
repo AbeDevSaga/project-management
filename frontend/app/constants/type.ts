@@ -4,6 +4,14 @@ type TSection = {
   headline: string;
 };
 
+export type TEvaluation = {
+  evaluator: TUser;
+  status: string;
+  date: Date,
+  form: Map<string, string>;
+  comment: string;
+};
+
 export type TProfile = {
   name: string;
   email: string;
@@ -30,7 +38,7 @@ export type TUser = {
   password: string;
   userId?: string;
   role?: string;
-  department? : TDepartment;
+  department? : TDepartment | string;
   project?: TProject[];
   advisor: TUser;
   profileImage?: string;
@@ -54,6 +62,7 @@ export type TRole =
   | "student"
   | "advisor"
   | "departmentHead"
+  | "evaluator"
 
 export type TService = {
   _id?: string;
@@ -106,6 +115,7 @@ export type TProject = {
   files?: TFile[];
   advisor?: TUser;
   submissions?: TFile[];
+  evaluation?: TEvaluation;
   isApproved?: boolean;
   isRejected?: boolean;
   createdAt?: Date;
@@ -113,10 +123,23 @@ export type TProject = {
 export type TDepartment = {
   _id?: string;
   name: string;
-  head?: string;
+  head?: TUser;
   advisors?: TUser[];
   students?: TUser[];
 };
+export type TSchedule = {
+  _id: string;
+  title: string;
+  project: string | TProject; 
+  description: string;
+  type?: string;
+  link?: string;
+  place?: string;
+  createdBy: string | TUser;
+  createdAt: Date;
+  updatedAt?: Date;
+  date?: Date;
+}
 export type TTask = {
   _id: string;
   projectId: string;
@@ -169,6 +192,7 @@ export type TSections = {
   files: TSection;
   notifications: TSection;
   messages: TSection;
+  departments: TSection;
   photo_review: TSection;
   reports_bans: TSection;
   sales_agents: TSection;

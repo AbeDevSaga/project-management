@@ -4,7 +4,7 @@ import { TManual } from "../../constants/type";
 
 interface UpdateManualProps {
   closeUpdateManual: () => void;
-  onUpdateManual: (manualData: TManual) => void;
+  onUpdateManual: (manualData: FormData) => void;
   manualToUpdate: TManual;
 }
 
@@ -38,15 +38,15 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
   };
 
   const handleUpdateManual = () => {
-    const updatedManual: TManual = {
-      ...manualToUpdate,
-      title,
-      description,
-      type,
-      file: fileUrl,
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
 
-    onUpdateManual(updatedManual);
+    // If a new file was selected, append it
+    if (file instanceof File) {
+      formData.append("file", file);
+    }
+    onUpdateManual(formData);
     closeUpdateManual();
   };
 
@@ -65,12 +65,17 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
 
         {/* Update Manual Form */}
         <div className="mt-6">
-          <h2 className="text-primary text-xl font-semibold mb-4">Manual Details</h2>
+          <h2 className="text-primary text-xl font-semibold mb-4">
+            Manual Details
+          </h2>
 
           <div className="grid grid-cols-1 gap-4">
             {/* Title */}
             <div className="relative">
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Title *
               </label>
               <input
@@ -86,7 +91,10 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
 
             {/* Description */}
             <div className="relative">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Description *
               </label>
               <textarea
@@ -102,7 +110,10 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
 
             {/* Type */}
             <div className="relative">
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="type"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Type *
               </label>
               <select
@@ -121,7 +132,10 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
 
             {/* File Upload */}
             <div className="relative">
-              <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="file"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Manual File
               </label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
@@ -159,7 +173,7 @@ const UpdateManual: React.FC<UpdateManualProps> = ({
               </div>
               {fileUrl && !file && (
                 <p className="mt-2 text-sm text-gray-600">
-                  Current file: {fileUrl.split('/').pop()}
+                  Current file: {fileUrl.split("/").pop()}
                 </p>
               )}
             </div>

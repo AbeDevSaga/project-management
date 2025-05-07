@@ -56,12 +56,12 @@ const Navbar = () => {
         >
           Login
         </button>
-        <button
+        {/* <button
           onClick={() => router.push("/auth/register")}
           className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
         >
           Sign Up
-        </button>
+        </button> */}
       </div>
     </nav>
   );

@@ -6,3 +6,11 @@ export const formatDate = (dateString: string | Date): string => {
     day: "numeric",
   });
 };
+
+export const getDaysRemaining = (targetDate: Date): number => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const timeDiff = targetDate.getTime() - today.getTime();
+  return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+};

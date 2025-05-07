@@ -3,10 +3,12 @@ import {
     MdDashboard, MdPeople, MdOutlineWorkspacePremium, MdNotifications, MdMessage, MdPhoto, 
     MdReport, MdSupervisorAccount,MdMenuBook
   } from "react-icons/md"; 
+  import { FaUniversity } from "react-icons/fa";
   import { FaUserShield, FaProjectDiagram, FaUserGraduate } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
   import { GiTeacher } from 'react-icons/gi';
   import { RiUserStarLine } from 'react-icons/ri';
+  import { AiOutlineSchedule } from "react-icons/ai";
 
 
 type IconMapping = {
@@ -29,6 +31,8 @@ const iconMapping: IconMapping = {
   oraganizations: FaBuildingColumns,
   projects: FaProjectDiagram,
   manuals: MdMenuBook,
+  department: FaUniversity,
+  schedule: AiOutlineSchedule,
 };
 
 interface NavItemProps {

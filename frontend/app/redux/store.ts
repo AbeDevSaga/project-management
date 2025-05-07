@@ -10,6 +10,8 @@ import themeReducer from './slices/themeSlice';
 import taskReducer from "./slices/taskSlice";
 import manualReducer from "./slices/manualSlice";
 import proposalReducer from "./slices/proposalSlice";
+import scheduleReducer from "./slices/scheduleSlice";
+import departmentReducer from "./slices/deptSlice";
 
 
 // Persist configuration
@@ -29,10 +31,12 @@ const store = configureStore({
     auth: persistedAuthReducer,
     service: serviceReducer,
     organization: organizationReducer,
+    department: departmentReducer,
     project:projectReducer,
     task: taskReducer,
     manual: manualReducer,
     proposal: proposalReducer,
+    schedule: scheduleReducer,
     user: userReducer,
     theme: themeReducer,
   },

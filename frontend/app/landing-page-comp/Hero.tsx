@@ -19,7 +19,7 @@ const Hero = () => {
             From title submission to final defense—manage, track, and collaborate effortlessly.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <button 
+            {/* <button 
               className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors text-lg font-medium"
               onClick={() => router.push("/demo")}
             >
@@ -30,7 +30,7 @@ const Hero = () => {
               onClick={() => router.push("#features")}
             >
               Learn More
-            </button>
+            </button> */}
           </div>
         </div>
 

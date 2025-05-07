@@ -139,7 +139,62 @@ export const deleteProject = createAsyncThunk(
     }
   }
 );
-
+export const addStudentsToProject = createAsyncThunk(
+  "projects/addStudents",
+  async (
+    { projectId, studentIds }: { projectId: string; studentIds: string[] },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put<TProject>(
+        `${API_URL}/add-students/${projectId}`,
+        { studentIds },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+      }
+      return rejectWithValue(error.response?.data || "Failed to add students");
+    }
+  }
+);
+export const addUserToProject = createAsyncThunk(
+  "projects/addUser",
+  async (
+    { projectId, userId, role }: { projectId: string; userId: string, role: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put<TProject>(
+        `${API_URL}/add-user/${projectId}`,
+        { userId, role },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+      }
+      return rejectWithValue(error.response?.data || "Failed to add students");
+    }
+  }
+);
 // Slice
 const initialState: ProjectState = {
   projects: [],
@@ -230,7 +285,69 @@ const projectSlice = createSlice({
             (project) => project._id !== action.payload
           );
         }
-      );
+      )
+      // Add Students to Project cases
+      .addCase(addStudentsToProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addStudentsToProject.fulfilled,
+        (state, action: PayloadAction<TProject>) => {
+          state.loading = false;
+          
+          // Update the current project if it's the one being modified
+          if (state.currentProject?._id === action.payload._id) {
+            state.currentProject = action.payload;
+          }
+          
+          // Update the project in the projects array
+          const index = state.projects.findIndex(
+            (p) => p._id === action.payload._id
+          );
+          if (index !== -1) {
+            state.projects[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        addStudentsToProject.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
+      // Add User to Project cases
+      .addCase(addUserToProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addUserToProject.fulfilled,
+        (state, action: PayloadAction<TProject>) => {
+          state.loading = false;
+          
+          // Update the current project if it's the one being modified
+          if (state.currentProject?._id === action.payload._id) {
+            state.currentProject = action.payload;
+          }
+          
+          // Update the project in the projects array
+          const index = state.projects.findIndex(
+            (p) => p._id === action.payload._id
+          );
+          if (index !== -1) {
+            state.projects[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        addUserToProject.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
   },
 });
 

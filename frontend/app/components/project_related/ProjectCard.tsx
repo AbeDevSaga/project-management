@@ -4,8 +4,8 @@ import { FaTasks, FaFileAlt } from "react-icons/fa";
 import { HiOutlineCalendar } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { updateProject } from "@/app/redux/slices/projectSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/app/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import { toast } from "react-toastify";
 
 interface ProjectCardProps {
@@ -15,6 +15,7 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
   const [showActions, setShowActions] = useState(false);
   const [isUpdating, setIsUpdating] = useState<"approved" | "rejected" | null>(
     null
@@ -61,17 +62,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
         isUpdating ? "opacity-75" : ""
       }`}
     >
-      <div className="absolute top-2 right-2">
+      {user?.role === "departmentHead" && (<div className="absolute top-2 right-2">
         <BsThreeDotsVertical
           onClick={() => !isUpdating && setShowActions(!showActions)}
           className={`text-gray-600 cursor-pointer ${
             isUpdating ? "opacity-50 cursor-not-allowed" : ""
           }`}
         />
-      </div>
+      </div>)}
 
       {/* Actions Menu */}
-      {showActions && (
+      {showActions && user?.role === "departmentHead" && (
         <div className="absolute bg-white py-2 top-10 right-2 rounded-lg shadow-md z-10 w-40">
           <button
             onClick={() => handleUpdateProject("approved")}

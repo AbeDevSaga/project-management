@@ -20,11 +20,21 @@ const {
 } = require("../middlewares/authMiddleware");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+// Ensure the uploads directory exists
+const proposalsBaseDir = path.join(__dirname, "..", "Uploads", "Proposals");
+const tempDir = path.join(__dirname, '..', 'Uploads', 'Temp');
+[tempDir, proposalsBaseDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 // Configure multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../Uploads/Temp"));
+    cb(null, tempDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -48,8 +58,9 @@ const upload = multer({
   }
 });
 
-// Student routes
-router.post("/", verifyToken, isStudent, upload.single("file"), createProposal);
+// Student routes 
+// router.post("/", verifyToken, isStudent, upload.single("file"), createProposal);
+router.post("/", verifyToken, upload.single("file"), createProposal);
 router.get("/my-proposals", verifyToken, isStudent, (req, res) => {
   req.params.studentId = req.user.id;
   return getProposalsByStudent(req, res);

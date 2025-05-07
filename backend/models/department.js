@@ -9,7 +9,9 @@ const departmentSchema = new mongoose.Schema({
     ],
     students: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  // Students in the department
-    ]
+    ],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   });
   
   const Department = mongoose.model('Department', departmentSchema);

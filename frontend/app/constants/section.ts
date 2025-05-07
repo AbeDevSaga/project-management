@@ -41,6 +41,10 @@ export const sections: TSections = {
     section: "Notifications",
     headline: "Send and manage notifications for users. Keep everyone informed.",
   },
+  departments: {
+    section: "All Departments",
+    headline: "Manage departments and their settings. Organize your teams effectively.",
+  },
   messages: {
     section: "Messages",
     headline: "View and manage user messages. Respond to inquiries and feedback.",

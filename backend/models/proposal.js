@@ -8,7 +8,7 @@ const proposalSchema = new mongoose.Schema({
   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Department Head
   status: {
     type: String,
-    enum: ["pending", "approved", "rejected"],
+    enum: ["pending", "approved", "rejected", "Needs Revision"],
     default: "pending",
   },
   file: { type: String }, // File location for the proposal

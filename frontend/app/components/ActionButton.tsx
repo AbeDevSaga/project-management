@@ -12,7 +12,9 @@ import {
 import { MdOutlinePersonAddAlt } from "react-icons/md";
 import { FaBuildingColumns, FaFileCirclePlus } from "react-icons/fa6";
 import { IoMdChatboxes } from "react-icons/io";
-import { FaProjectDiagram } from "react-icons/fa";
+import { FaProjectDiagram, FaUniversity } from "react-icons/fa";
+
+import { FiCalendar } from "react-icons/fi";
 
 // Define the type for the props
 interface ActionButtonProps {
@@ -31,6 +33,8 @@ interface ActionButtonProps {
     | "file"
     | "project"
     | "upload"
+    | "calendar"
+    | "department"; 
   onClick: () => void; // Action to perform on click
 }
 
@@ -49,7 +53,8 @@ const iconMap = {
   project: FaProjectDiagram,
   file: FaFileCirclePlus,
   upload: BiUpload,
-  
+  calendar: FiCalendar,
+  department: FaUniversity,
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({

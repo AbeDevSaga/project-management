@@ -44,12 +44,12 @@ const CallToAction = () => {
             >
               Login
             </button>
-            <button
+            {/* <button
               className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-indigo-600 transform hover:-translate-y-1 transition-all duration-300 ease-in-out text-lg font-semibold px-8 py-4 rounded-lg shadow-md"
               onClick={() => router.push("/auth/register")}
             >
               Sign Up
-            </button>
+            </button> */}
           </div>
 
           <div className="mt-12 flex items-center justify-center gap-4">
