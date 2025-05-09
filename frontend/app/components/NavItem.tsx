@@ -3,6 +3,7 @@ import {
     MdDashboard, MdPeople, MdOutlineWorkspacePremium, MdNotifications, MdMessage, MdPhoto, 
     MdReport, MdSupervisorAccount,MdMenuBook
   } from "react-icons/md"; 
+  import { HiUserGroup } from 'react-icons/hi'
   import { FaUniversity } from "react-icons/fa";
   import { FaUserShield, FaProjectDiagram, FaUserGraduate } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
@@ -33,6 +34,7 @@ const iconMapping: IconMapping = {
   manuals: MdMenuBook,
   department: FaUniversity,
   schedule: AiOutlineSchedule,
+  teams: HiUserGroup,
 };
 
 interface NavItemProps {

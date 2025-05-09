@@ -1,13 +1,26 @@
-import { TUsers } from "@/app/constants/type";
+import { TUser } from "@/app/constants/type";
+import { deleteUser } from "@/app/redux/slices/userSlice";
+import { AppDispatch } from "@/app/redux/store";
 import React from "react";
-
+import { useDispatch } from "react-redux";
 
 interface ViewUserProps {
-  user: TUsers;
+  user: TUser;
   closeDeleteUser: () => void;
 }
 
 const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleDelete = async() => {
+    dispatch(deleteUser(user._id ?? ""));
+    const resultAction = await dispatch(deleteUser(user._id ?? ""));
+    if (deleteUser.fulfilled.match(resultAction)) {
+      console.log("User added successfully:", resultAction.payload);
+    } else {
+      console.error("Failed to add user:", resultAction.payload);
+    }
+    closeDeleteUser();
+  };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
       <div className="relative bg-white rounded-lg shadow-lg py-6 w-full max-w-md">
@@ -25,14 +38,14 @@ const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
         <div className="flex flex-col items-center space-y-4">
           {/* User Image */}
           <img
-            src={user.image}
-            alt={user.name}
+            src={user.profileImage}
+            alt={user.username}
             className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
           />
           {/* User Name */}
           <div className="flex space-x-2 items-center">
             <h2 className="text-2xl font-semibold text-gray-800">
-              {user.name}
+              {user.username}
             </h2>
             <div className="p-2 flex space-x-2 items-center">
               <p
@@ -64,7 +77,10 @@ const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
               <p className="w-full text-center cursor-pointer px-4 py-2 bg-primary rounded-lg hover:text-primary hover:bg-white transition-all duration-300 border border-primary shadow-xl">
                 Cancel
               </p>
-              <p className="w-full text-center cursor-pointer px-4 py-2 bg-red-500 rounded-lg hover:text-red-500 hover:bg-white transition transition-all duration-300 border border-red-500 shadow-xl">
+              <p
+                onClick={handleDelete}
+                className="w-full text-center cursor-pointer px-4 py-2 bg-red-500 rounded-lg hover:text-red-500 hover:bg-white transition transition-all duration-300 border border-red-500 shadow-xl"
+              >
                 Delete
               </p>
             </div>

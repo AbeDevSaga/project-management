@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Department = require("../models/department");
 const bcrypt = require("bcryptjs");
 
 const createUser = async (req, res) => {
@@ -6,6 +7,11 @@ const createUser = async (req, res) => {
   try {
     const { username, email,phone, password, role, department } = req.body;
 
+    // Check if department exists
+    const departmentDoc = await Department.findById(department);
+    if (!departmentDoc) {
+      return res.status(404).json({ error: "Department not found" });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
@@ -16,7 +22,20 @@ const createUser = async (req, res) => {
       department
     });
 
+    //populate the department field with the department user id
+    
+
     await user.save();
+    // Add user to the appropriate department field depending on role
+    if (role === "departmentHead") {
+      departmentDoc.head = user._id; // Replace existing head
+    } else if (role === "advisor") {
+      departmentDoc.advisors.push(user._id);
+    } else if (role === "student") {
+      departmentDoc.students.push(user._id);
+    }
+
+    await departmentDoc.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     res

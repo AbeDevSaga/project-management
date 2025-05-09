@@ -184,7 +184,7 @@ const getSchedulesByUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const schedules = await Schedule.find({ createdBy: userId })
-      .populate("project")
+      .populate("project createdBy")
       .sort({ createdAt: -1 });
     
     res.status(200).json(schedules);

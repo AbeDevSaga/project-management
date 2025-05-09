@@ -26,6 +26,7 @@ export const fetchAllSchedules = createAsyncThunk(
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
+      console.log("Fetched schedules:", response.data); // Debugging line
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -68,6 +69,7 @@ export const fetchSchedulesByUser = createAsyncThunk(
           },
         }
       );
+      console.log("Fetched schedules:", response.data); // Debugging line
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Failed to fetch user schedules");

@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     userId: { type: String, unique: true, sparse: true },
     role: {
       type: String,
-      enum: ["admin", "student", "advisor", "departmentHead"],
+      enum: ["admin", "student", "advisor", "evaluator", "departmentHead"],
       default: "student"
     },
     department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },

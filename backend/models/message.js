@@ -2,11 +2,7 @@
 const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
-  chatGroup: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ChatGroup",
-    required: true,
-  },
+  project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -24,12 +20,12 @@ const messageSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  messageType: {
+  type: {
     type: String,
     enum: ["text", "file"],
     default: "text",
   },
-  fileUrl: {
+  file: {
     type: String,
   },
 });

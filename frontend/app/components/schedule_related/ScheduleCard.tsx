@@ -96,7 +96,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
                   : "N/A"}
               </span>
 
-              {schedule.type && (
+              {schedule.title === "online" && schedule.type && (
                 <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
                   {schedule.type}
                 </span>

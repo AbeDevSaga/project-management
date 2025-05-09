@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));
+app.use("/api/message", require("./routes/messageRoutes"));
 app.use("/api/dept", require("./routes/deptRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutes"));
 app.use("/api/manual", require("./routes/manualRoutes"));
@@ -46,5 +47,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`Authentication service running on port ${PORT}`)
+  console.log(`Project Management Server Is Running On Port ${PORT}`)
 );

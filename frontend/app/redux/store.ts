@@ -12,7 +12,7 @@ import manualReducer from "./slices/manualSlice";
 import proposalReducer from "./slices/proposalSlice";
 import scheduleReducer from "./slices/scheduleSlice";
 import departmentReducer from "./slices/deptSlice";
-
+import messageReducer from "./slices/messageSlice";
 
 // Persist configuration
 const persistConfig = {
@@ -35,6 +35,7 @@ const store = configureStore({
     project:projectReducer,
     task: taskReducer,
     manual: manualReducer,
+    message: messageReducer,
     proposal: proposalReducer,
     schedule: scheduleReducer,
     user: userReducer,

@@ -7,6 +7,7 @@ import { TProject } from "@/app/constants/type";
 import { fetchAllProjects } from "@/app/redux/slices/projectSlice";
 import {
   createSchedule,
+  fetchSchedulesByProject,
   fetchSchedulesByUser,
 } from "@/app/redux/slices/scheduleSlice";
 import { AppDispatch, RootState } from "@/app/redux/store";
@@ -32,8 +33,13 @@ function Schedule() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(fetchSchedulesByUser(user?._id || ""));
         await dispatch(fetchAllProjects());
+        // if (user.role === "advisor") {
+        //   await dispatch(fetchSchedulesByUser(user?._id || ""));
+        // }else {
+        //   await dispatch(fetchSchedulesByProject(user?._id || ""));
+        // }
+        await dispatch(fetchSchedulesByUser(user?._id || ""));
       } catch (err) {
         setAlert({
           status: "error",

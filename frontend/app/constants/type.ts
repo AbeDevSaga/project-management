@@ -103,6 +103,16 @@ export type TFile = {
   uploadedAt: Date;
 };
 
+export type TMessage = {
+  _id?: string;
+  project?: string;
+  sender: TUser;
+  content: string;
+  timestamp?: Date;
+  type: "text" | "file";
+  file?: string;
+}
+
 export type TProject = {
   _id?: string;
   title?: string;
