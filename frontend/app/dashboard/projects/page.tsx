@@ -37,9 +37,8 @@ function Projects() {
   };
 
   // Handle modal actions
-  const handleAddProject = async (newProject: TProject) => {
-    console.log("Adding new Project...", newProject);
-    const resultAction = await dispatch(createProject(newProject));
+  const handleAddProject = async (formData: FormData) => {
+    const resultAction = await dispatch(createProject(formData));
     if (createProject.fulfilled.match(resultAction)) {
       console.log("Project added successfully:", resultAction.payload);
       setIsAddModalOpen(false);

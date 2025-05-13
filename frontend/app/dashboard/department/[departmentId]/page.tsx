@@ -9,11 +9,14 @@ import {
   updateDepartment,
   deleteDepartment,
   addUsersToDepartment,
-//   addHeadToDepartment,
-//   addAdvisorToDepartment,
-//   addStudentToDepartment,
+  //   addHeadToDepartment,
+  //   addAdvisorToDepartment,
+  //   addStudentToDepartment,
 } from "@/app/redux/slices/deptSlice";
-import { fetchUsersByDepartmentId } from "@/app/redux/slices/userSlice";
+import {
+  fetchAllUsers,
+  fetchUsersByDepartmentId,
+} from "@/app/redux/slices/userSlice";
 import { toast } from "react-toastify";
 import SectionHeader from "@/app/components/SectionHeader";
 import ActionButton from "@/app/components/ActionButton";
@@ -27,9 +30,14 @@ import AddUsers from "@/app/components/dept_related/AddUsers";
 const DepartmentDetailPage = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const users = useSelector((state: RootState) => state.user.users);
+  const potentialHeads = users.filter((user) => user.role === "departmentHead");
+  console.log("potential heads", potentialHeads, "users: ", users);
   const { departmentId } = useParams() as { departmentId: string };
-  
+
+  const [students, setStudents] = useState<TUser[]>([]);
+  const [advisors, setAdvisors] = useState<TUser[]>([]);
+
   const [department, setDepartment] = useState<TDepartment | null>(null);
   const [departmentUsers, setDepartmentUsers] = useState<TUser[]>([]);
   const [departmentProjects, setDepartmentProjects] = useState<TProject[]>([]);
@@ -43,7 +51,8 @@ const DepartmentDetailPage = () => {
   const [addStudentModalOpen, setAddStudentModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState<TDepartment | null>(null);
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<TDepartment | null>(null);
   const [alert, setAlert] = useState<{
     status: "success" | "error";
     text: string;
@@ -62,6 +71,10 @@ const DepartmentDetailPage = () => {
     setIsDeleteModalOpen(true);
   };
 
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+
   const handleAddUsers = (userIds: string[], deptId: string, role: string) => {
     dispatch(addUsersToDepartment({ departmentId: deptId, userIds, role }))
       .unwrap()
@@ -75,11 +88,13 @@ const DepartmentDetailPage = () => {
 
   const handleUpdateDepartment = async (updatedDept: TDepartment) => {
     try {
-      const result = await dispatch(updateDepartment({
-        id: departmentId,
-        departmentData: updatedDept
-      })).unwrap();
-      
+      const result = await dispatch(
+        updateDepartment({
+          id: departmentId,
+          departmentData: updatedDept,
+        })
+      ).unwrap();
+
       setDepartment(result);
       setAlert({ status: "success", text: "Department updated successfully" });
       setIsUpdateModalOpen(false);
@@ -123,15 +138,17 @@ const DepartmentDetailPage = () => {
       const deptResponse = await dispatch(fetchDepartmentById(departmentId));
       if (fetchDepartmentById.fulfilled.match(deptResponse)) {
         setDepartment(deptResponse.payload);
+        setStudents(deptResponse.payload.students || []);
+        setAdvisors(deptResponse.payload.advisors || []);
         console.log("Department data:", deptResponse.payload);
 
         // Fetch department users
-        const usersResponse = await dispatch(fetchUsersByDepartmentId(departmentId));
+        const usersResponse = await dispatch(
+          fetchUsersByDepartmentId(departmentId)
+        );
         if (fetchUsersByDepartmentId.fulfilled.match(usersResponse)) {
           setDepartmentUsers(usersResponse.payload);
         }
-
-        
       } else {
         setError("Failed to fetch department data");
       }
@@ -152,7 +169,7 @@ const DepartmentDetailPage = () => {
 
   return (
     <div className="w-full h-full relative space-y-4 mx-auto overflow-auto scrollbar-hide">
-      {/* Department Header */}
+      {/* Department Headear */}
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="absolute top-2 right-2">
           <BsThreeDotsVertical
@@ -160,7 +177,7 @@ const DepartmentDetailPage = () => {
             className="text-gray-600 cursor-pointer"
           />
         </div>
-        
+
         {showActions && (
           <div className="absolute bg-white py-2 top-10 right-2 rounded-lg shadow-md">
             <div
@@ -180,7 +197,9 @@ const DepartmentDetailPage = () => {
 
         {/* Department Name and Description */}
         <div className="flex items-center space-x-4 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">{department.name}</h1>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {department.name}
+          </h1>
         </div>
 
         {/* Department Details Grid */}
@@ -188,7 +207,9 @@ const DepartmentDetailPage = () => {
           {/* Department Head */}
           {department.head ? (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h2 className="text-sm font-semibold text-gray-500">Department Head</h2>
+              <h2 className="text-sm font-semibold text-gray-500">
+                Department Head
+              </h2>
               <p className="text-gray-800">{department.head.username}</p>
             </div>
           ) : (
@@ -209,6 +230,14 @@ const DepartmentDetailPage = () => {
             <p className="text-gray-800">{department.advisors?.length || 0}</p>
           </div>
 
+          {/* Evaluators Count */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h2 className="text-sm font-semibold text-gray-500">Evaluators</h2>
+            <p className="text-gray-800">
+              {department.evaluators?.length || 0}
+            </p>
+          </div>
+
           {/* Students Count */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Students</h2>
@@ -223,7 +252,22 @@ const DepartmentDetailPage = () => {
         </div>
       </div>
 
-      {/* People Section */}
+       {/* Head Section */}
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+        {/* Head Section */}
+        {department.head && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Department Head</h3>
+            <UserTable
+              users={[department.head]}
+              onViewUser={handleViewUser}
+              px="4"
+              py="4"
+            />
+          </div>
+        )}
+      </div>
+      {/* Advisors Section */}
       <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
           <SectionHeader sectionKey="users" />
@@ -233,46 +277,29 @@ const DepartmentDetailPage = () => {
               onClick={openAddAdvisorModal}
               icon="add_user"
             />
-            <ActionButton
-              label="Add Student"
-              onClick={openAddStudentModal}
-              icon="user"
-            />
           </div>
         </div>
-        
-        {/* Head Section */}
-        {department.head && (
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Department Head</h3>
-            <UserTable 
-              users={[department.head]} 
-              onViewUser={handleViewUser}
-              px="4"
-              py="4"
-            />
-          </div>
-        )}
 
         {/* Advisors Section */}
         {department.advisors && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Advisors</h3>
-            <UserTable 
-              users={department.advisors} 
+            <UserTable
+              users={advisors}
               onViewUser={handleViewUser}
               px="4"
               py="4"
             />
           </div>
         )}
-
-        {/* Students Section */}
+      </div>
+      {/* Students Section */}
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         {department.students && (
           <div>
             <h3 className="text-lg font-semibold mb-2">Students</h3>
-            <UserTable 
-              users={department.students} 
+            <UserTable
+              users={students}
               onViewUser={handleViewUser}
               px="4"
               py="4"
@@ -286,15 +313,14 @@ const DepartmentDetailPage = () => {
         <AddUsers
           role="departmentHead"
           departmentId={departmentId}
-          users={departmentUsers}
+          users={potentialHeads}
           closeAddUsers={closeAddHeadModal}
           onAddUsers={handleAddUsers}
         />
       )}
-
       {addAdvisorModalOpen && (
         <AddUsers
-          role="advisor"
+          role="advisors"
           departmentId={departmentId}
           users={departmentUsers}
           closeAddUsers={closeAddAdvisorModal}

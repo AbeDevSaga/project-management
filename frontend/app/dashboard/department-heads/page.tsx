@@ -6,6 +6,7 @@ import UserTable from "@/app/components/user_related/UsersTable";
 import React, { useEffect, useState } from "react";
 import {
   createUser,
+  fetchAllUsers,
   selectDepartmentHeads,
 } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +24,7 @@ function Students() {
   const dispatch = useDispatch<AppDispatch>();
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
   useEffect(() => {
-    dispatch(fetchAllDepartments());
+    dispatch(fetchAllUsers());
   }, [dispatch]);
 
   const handleAddUser = () => {
@@ -39,13 +40,13 @@ function Students() {
 
   const handleSaveUser = async (newUser: TUser) => {
     console.log("New User Data:", newUser);
-    const resultAction = await dispatch(createUser(newUser));
-    if (createUser.fulfilled.match(resultAction)) {
-      console.log("User added successfully:", resultAction.payload);
-      setIsAddUserOpen(false); // Close the modal after saving
-    } else {
-      console.error("Failed to add user:", resultAction.payload);
-    }
+    // const resultAction = await dispatch(createUser(newUser));
+    // if (createUser.fulfilled.match(resultAction)) {
+    //   console.log("User added successfully:", resultAction.payload);
+    //   setIsAddUserOpen(false); // Close the modal after saving
+    // } else {
+    //   console.error("Failed to add user:", resultAction.payload);
+    // }
   };
 
   return (

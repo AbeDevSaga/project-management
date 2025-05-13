@@ -4,6 +4,7 @@ const {adminUser} = require("./constant");
 
 const seedAdmin = async () => {
   try {
+    await User.deleteOne({email: adminUser.email }); 
     const existingAdmin = await User.findOne({ email: adminUser.email });
     if (existingAdmin) {
       console.log("Admin user already exists:", existingAdmin);

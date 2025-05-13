@@ -34,6 +34,7 @@ app.use("/api/feedback", require("./routes/feedbackRoutes"));
 app.use("/api/manual", require("./routes/manualRoutes"));
 app.use("/api/notification", require("./routes/notificationRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
+app.use("/api/files", require("./routes/fileRoutes"));
 app.use("/api/proposal", require("./routes/proposalRoutes"));
 app.use("/api/schedule", require("./routes/scheduleRoutes"));
 app.use("/api/submission", require("./routes/submissionRoutes"));

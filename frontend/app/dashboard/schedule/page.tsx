@@ -19,9 +19,7 @@ function Schedule() {
   const scheduleList = useSelector(
     (state: RootState) => state.schedule.schedules
   );
-  const projectList = useSelector(
-    (state: RootState) => state.project.projects
-  );
+  const projectList = useSelector((state: RootState) => state.project.projects);
   const user = useSelector((state: RootState) => state.auth.user);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateManual, setShowUpdateManual] = useState(false);
@@ -76,13 +74,15 @@ function Schedule() {
     <div className="w-full h-full pb-2 relative mx-auto px-4 overflow-auto scrollbar-hide">
       <div className="flex items-center pb-2">
         <SectionHeader sectionKey="users" />
-        <div className="w-auto">
-          <ActionButton
-            label="Create Schedule"
-            onClick={openAddModal}
-            icon="calendar"
-          />
-        </div>
+        {user?.role === "advisor" && (
+          <div className="w-auto">
+            <ActionButton
+              label="Create Schedule"
+              onClick={openAddModal}
+              icon="calendar"
+            />
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {scheduleList.map((schedule) => (

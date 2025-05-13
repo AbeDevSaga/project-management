@@ -20,6 +20,44 @@ const {
   isDeptHead,
   isStudent,
 } = require("../middlewares/authMiddleware");
+const multer = require("multer");
+const path = require("path");
+
+// Configure multer storage for project files
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    let uploadPath = path.join(__dirname, "../Uploads/ProjectFiles");
+    if (req.params.id) {
+      uploadPath = path.join(uploadPath, req.params.id);
+    }
+    require("fs").mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".zip", ".jpg", ".png"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only document, image, and archive files are allowed!"), false);
+    }
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});
+
 
 // SuperAdmin only Basic Routes
 
@@ -48,7 +86,7 @@ router.get("/", verifyToken, (req, res, next) => {
     return res.status(403).json({ message: "Unauthorized access" });
   }
 });
-router.post("/create", verifyToken, createProject);
+router.post("/create", verifyToken, upload.single("description"), createProject);
 router.put("/update/:id", verifyToken, updateProject);
 router.put("/add-students/:id", verifyToken, addStudentsToProject);
 router.put("/add-user/:id", verifyToken, addUserToProject);

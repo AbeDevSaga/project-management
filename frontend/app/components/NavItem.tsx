@@ -5,11 +5,12 @@ import {
   } from "react-icons/md"; 
   import { HiUserGroup } from 'react-icons/hi'
   import { FaUniversity } from "react-icons/fa";
-  import { FaUserShield, FaProjectDiagram, FaUserGraduate } from "react-icons/fa";
+  import { FaUserShield, FaProjectDiagram, FaUserGraduate, FaUserTie } from "react-icons/fa";
   import { FaBuildingColumns } from "react-icons/fa6";
   import { GiTeacher } from 'react-icons/gi';
   import { RiUserStarLine } from 'react-icons/ri';
   import { AiOutlineSchedule } from "react-icons/ai";
+  import { FaChalkboardTeacher,  } from 'react-icons/fa';
 
 
 type IconMapping = {
@@ -21,6 +22,7 @@ const iconMapping: IconMapping = {
   users: MdPeople,
   students: FaUserGraduate,
   advisors: GiTeacher,
+  evaluators: FaUserTie,
   departmentHeads: RiUserStarLine,
   premiumUsers: MdOutlineWorkspacePremium,
   notifications: MdNotifications,

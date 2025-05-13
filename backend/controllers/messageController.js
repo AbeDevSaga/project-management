@@ -237,7 +237,7 @@ const getProjectMessages = async (req, res) => {
     const messages = await Message.find({ project: projectId })
       .populate("sender", "username email profileImage")
       .sort({ timestamp: -1 })
-      .exec();
+      .exec().reverse();
 
     // Mark user's notifications for this project as read
     await Notification.updateMany(

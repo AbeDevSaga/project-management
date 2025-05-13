@@ -4,10 +4,13 @@ import {
   FaChartLine,
   FaUserCheck,
   FaUserPlus,
+  FaProjectDiagram,
 } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa6";
 import { HiCurrencyDollar } from "react-icons/hi2";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type IconMapping = {
   [key: string]: React.ComponentType<{ className?: string }>;
@@ -21,6 +24,7 @@ const iconMapping: IconMapping = {
   userPlus: FaUserPlus,
   userCheck:FaUserCheck,
   premium: MdOutlineWorkspacePremium,
+  projects: FaProjectDiagram,
 };
 
 // Define the StatsProp interface where icon is a key of the iconMapping object
@@ -35,13 +39,18 @@ interface StatsProp {
 }
 
 function CountCard({ stats }: { stats: StatsProp }) {
+  
+  const user = useSelector((state: RootState) => state.auth.user);
+   if (stats.title === "Admins" && user?.role !== "admin") {
+    return null;
+  }
   const IconComponent = stats.icon ? iconMapping[stats.icon] : null;
   const trendColor = stats.decision === "increment" ? "text-green-500" : "text-red-500";
   const TrendIcon =
     stats.decision === "increment" ? PiChartLineUpLight : PiChartLineDownLight;
 
   return (
-    <div className="flex flex-col p-4 shadow-lg rounded-lg">
+    (<div className="flex flex-col p-4 shadow-lg rounded-lg">
       <p className="text-foreground text-lg font-semibold">{stats.title}</p>
       <div className="flex items-center mt-2">
         <div
@@ -59,7 +68,7 @@ function CountCard({ stats }: { stats: StatsProp }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

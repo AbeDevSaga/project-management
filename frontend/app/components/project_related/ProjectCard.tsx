@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { TProject } from "../../constants/type";
-import { FaTasks, FaFileAlt } from "react-icons/fa";
+import { TFile, TProject } from "../../constants/type";
+import { FaTasks, FaFileAlt, FaDownload } from "react-icons/fa";
 import { HiOutlineCalendar } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { updateProject } from "@/app/redux/slices/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { toast } from "react-toastify";
+import { downloadProjectFile } from "@/app/redux/slices/fileSlice";
 
 interface ProjectCardProps {
   project: TProject;
@@ -15,11 +16,16 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const API_URL = process.env.NEXT_PUBLIC_FILE_API;
   const user = useSelector((state: RootState) => state.auth.user);
   const [showActions, setShowActions] = useState(false);
   const [isUpdating, setIsUpdating] = useState<"approved" | "rejected" | null>(
     null
   );
+  const [alert, setAlert] = useState<{
+      status: "success" | "error";
+      text: string;
+    } | null>(null);
 
   const handleUpdateProject = async (status: "approved" | "rejected") => {
     setIsUpdating(status);
@@ -55,6 +61,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
       setIsUpdating(null);
     }
   };
+
+  const descriptionFile = project.files?.find((file: TFile) => file.property === 'description');
+   const handleDownload = async () => {
+      try {
+        await dispatch(downloadProjectFile({ projectId: project._id || "", fileId: descriptionFile?._id || "" })).unwrap();
+        setAlert({
+          status: "success",
+          text: "Download started successfully",
+        });
+        window.open(`${API_URL}/${project._id}/files/${descriptionFile?._id}/download`, "_blank");
+      } catch (error) {
+        setAlert({
+          status: "error",
+          text:
+            error instanceof Error ? error.message : "Failed to download manual",
+        });
+      }
+    };
 
   return (
     <div
@@ -188,6 +212,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
         </div>
       </div>
 
+      {/* Download Button */}
+        {descriptionFile && (
+          <button
+            onClick={handleDownload}
+            className="w-full mb-4 flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+          >
+            <FaDownload className="text-gray-600" />
+            {descriptionFile.name}
+          </button>
+        )}
       {/* Status Indicator */}
       <div className="mt-auto">
         {project.isApproved ? (

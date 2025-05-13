@@ -1,39 +1,93 @@
 const Project = require("../models/project");
+const File = require("../models/file");
+const fs = require("fs");
+const { getFileType } = require("./fileController");
 
 // Create a new project
+// const createProject = async (req, res) => {
+//   console.log("createProject");
+//   try {
+//     const {
+//       title,
+//       description,
+//       department,
+//       projectStatus,
+//       tasks,
+//       proposals,
+//       students,
+//       advisor,
+//       submissions,
+//     } = req.body;
+
+//     const project = new Project({
+//       title,
+//       description,
+//       department,
+//       projectStatus,
+//       tasks,
+//       proposals,
+//       students,
+//       advisor,
+//       submissions,
+//     });
+
+//     await project.save();
+//     res.status(201).json({ message: "Project created successfully" });
+//   } catch (error) {
+//     res
+//       .status(400)
+//       .json({ error: "Project creation failed", details: error.message });
+//   }
+// };
+
 const createProject = async (req, res) => {
   console.log("createProject");
   try {
-    const {
-      title,
-      description,
-      department,
-      projectStatus,
-      tasks,
-      proposals,
-      students,
-      advisor,
-      submissions,
-    } = req.body;
-
+    const { title, description, department, students, advisor } = req.body;
+    console.log("req.body: ", req.body)
+    // Create project
     const project = new Project({
       title,
       description,
       department,
-      projectStatus,
-      tasks,
-      proposals,
-      students,
+      projectStatus: "in-progress",
+      students: students,
       advisor,
-      submissions,
     });
 
     await project.save();
-    res.status(201).json({ message: "Project created successfully" });
+
+    // Handle proposal file if uploaded
+    if (req.file) {
+      const file = new File({
+        projectId: project._id,
+        name: req.file.originalname,
+        path: req.file.path,
+        property: "description",
+        type: getFileType(req.file.mimetype),
+        uploadedBy: req.user.id
+      });
+
+      await file.save();
+      
+      // Update project with proposal reference
+      project.files.push(file)
+      await project.save();
+    }
+
+    res.status(201).json({
+      message: "Project created successfully",
+      project: await Project.findById(project._id).populate('proposal'),
+    });
   } catch (error) {
-    res
-      .status(400)
-      .json({ error: "Project creation failed", details: error.message });
+    // Clean up uploaded file if project creation failed
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    res.status(400).json({
+      error: "Project creation failed",
+      details: error.message,
+    });
   }
 };
 
@@ -83,6 +137,7 @@ const getAllProjects = async (req, res) => {
       .populate("students")
       .populate("advisor")
       .populate("department")
+      .populate("files")
       .populate("proposal");
     res.status(200).json(projects);
   } catch (error) {
@@ -116,6 +171,7 @@ const getProjectsByDepartmentId = async (req, res) => {
       .populate("students")
       .populate("advisor")
       .populate("department")
+      .populate("files")
       .populate("proposal");
 
     if (!projects)
@@ -141,6 +197,7 @@ const getProjectsByStudentId = async (req, res) => {
       .populate("students")
       .populate("advisor")
       .populate("department")
+      .populate("files")
       .populate("proposal");
 
     if (!projects || projects.length === 0) {
@@ -168,6 +225,7 @@ const getProjectsByAdvisorId = async (req, res) => {
       .populate("students")
       .populate("advisor")
       .populate("department")
+      .populate("files")
       .populate("proposal");
 
     if (!projects || projects.length === 0) {
@@ -192,6 +250,7 @@ const getProjectsByStatus = async (req, res) => {
     const projects = await Project.find({ projectStatus: status })
       .populate("students")
       .populate("advisor")
+      .populate("files")
       .populate("proposal");
 
     if (!projects)

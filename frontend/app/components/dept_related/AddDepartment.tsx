@@ -67,7 +67,7 @@ const AddDepartment: React.FC<AddDepartmentProps> = ({
   };
 
   // Filter non-student users (potential department heads)
-  const potentialHeads = users.filter(user => user.role !== "student");
+  const potentialHeads = users.filter(user => user.role === "departmentHead");
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

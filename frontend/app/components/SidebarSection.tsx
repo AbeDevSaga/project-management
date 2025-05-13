@@ -15,9 +15,10 @@ export default function SidebarSection({ isOpen }: SidebarSectionProps) {
   const router = useRouter();
 
   const handleLogOut = () => {
-    console.log("Logging out...");
     dispatch(logout());
+    setTimeout(() => {
     router.push("/auth/login");
+  }, 100);
   };
 
   return (

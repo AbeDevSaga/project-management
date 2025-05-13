@@ -30,7 +30,7 @@ router.get("/", verifyToken, (req, res, next) => {
     });
   } else if (req.user.role === "advisor") {
     return isAdvisor(req, res, () => {
-      req.params.id = req.user.id;
+      req.params.id = req.user.department;
       getUsersByDepartmentId(req, res, next);
     });
   } else if (req.user.role === "student") {

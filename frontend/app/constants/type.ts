@@ -7,7 +7,7 @@ type TSection = {
 export type TEvaluation = {
   evaluator: TUser;
   status: string;
-  date: Date,
+  date: Date;
   form: Map<string, string>;
   comment: string;
 };
@@ -30,6 +30,11 @@ export type TLanguage = {
   };
 };
 
+export type TLogo = {
+  image: StaticImageData;
+  title: string;
+};
+
 export type TUser = {
   _id?: string;
   username: string;
@@ -38,7 +43,7 @@ export type TUser = {
   password: string;
   userId?: string;
   role?: string;
-  department? : TDepartment | string;
+  department?: TDepartment | string;
   project?: TProject[];
   advisor: TUser;
   profileImage?: string;
@@ -62,7 +67,7 @@ export type TRole =
   | "student"
   | "advisor"
   | "departmentHead"
-  | "evaluator"
+  | "evaluator";
 
 export type TService = {
   _id?: string;
@@ -95,12 +100,13 @@ export type TOrganization = {
 };
 
 export type TFile = {
-  _id: string;
+  _id?: string;
   name: string;
-  path: string;
-  type: string;
-  uploadedBy: TUser;
-  uploadedAt: Date;
+  path?: string;
+  type?: string;
+  property?: string;
+  uploadedBy?: TUser;
+  uploadedAt?: Date;
 };
 
 export type TMessage = {
@@ -111,7 +117,7 @@ export type TMessage = {
   timestamp?: Date;
   type: "text" | "file";
   file?: string;
-}
+};
 
 export type TProject = {
   _id?: string;
@@ -135,12 +141,13 @@ export type TDepartment = {
   name: string;
   head?: TUser;
   advisors?: TUser[];
+  evaluators?: TUser[];
   students?: TUser[];
 };
 export type TSchedule = {
   _id: string;
   title: string;
-  project: string | TProject; 
+  project: string | TProject;
   description: string;
   type?: string;
   link?: string;
@@ -149,7 +156,7 @@ export type TSchedule = {
   createdAt: Date;
   updatedAt?: Date;
   date?: Date;
-}
+};
 export type TTask = {
   _id: string;
   projectId: string;
@@ -172,11 +179,11 @@ export type TManual = {
   description: string;
   type?: string;
   file?: string;
-  department?: TDepartment |string;
+  department?: TDepartment | string;
   createdAt?: Date;
   updatedAt?: Date;
   createdBy?: TUser | string;
-}
+};
 
 export type TProposal = {
   _id?: string;
@@ -188,7 +195,7 @@ export type TProposal = {
   file?: string;
   feedback?: string;
   similarityScore?: Number;
-}
+};
 
 export type TSections = {
   dashboard: TSection;

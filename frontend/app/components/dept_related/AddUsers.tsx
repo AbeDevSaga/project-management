@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionButton from "../ActionButton";
 import { TUser } from "@/app/constants/type";
-import { useSelector } from "react-redux";
-import { selectStudents } from "@/app/redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllUsers, selectStudents, selectDepartmentHeads } from "@/app/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/app/redux/store";
 
 interface AddUsersProps {
   users: TUser[]; // List of all users
@@ -20,24 +21,39 @@ const AddUsers: React.FC<AddUsersProps> = ({
   closeAddUsers,
   onAddUsers,
 }) => {
-  // State for selected user IDs
+  const dispatch = useDispatch<AppDispatch>();
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const students = useSelector(selectStudents);
-  
-  // Filter users by role and exclude those already in the department
-  console.log("Users:", users);
-  const filteredUsers = users.filter(user => {
-    if (role === 'student') {
-      return students && students.department !== departmentId;
-    } else if (role === 'advisor') {
-      return user.role !== 'student' && user.department !== departmentId;
-    } else if (role === 'departmentHead') {
-      return user.role === 'departmentHead' && user.department !== departmentId;
-    }
-    return false;
-  });
+  const departmentHeads = useSelector(selectDepartmentHeads);
+  const allUsers = useSelector((state: RootState) => state.user.users);
 
-  // Toggle user selection
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(fetchAllUsers()).finally(() => setIsLoading(false));
+  }, [dispatch]);
+
+  // Filter users based on role
+  const getFilteredUsers = () => {
+    if (role === 'students') {
+      return users.filter(user => 
+        students && students.department !== departmentId
+      );
+    } else if (role === 'advisors') {
+      return users.filter(user => 
+        user.role !== 'student' && user.department !== departmentId
+      );
+    } else if (role === 'departmentHead') {
+      // Use the freshly fetched department heads from Redux
+      return departmentHeads.filter((user: TUser) => 
+        user.department !== departmentId
+      );
+    }
+    return [];
+  };
+
+  const filteredUsers = getFilteredUsers();
+
   const toggleUserSelection = (userId: string) => {
     setSelectedUsers(prev => 
       prev.includes(userId)
@@ -46,7 +62,6 @@ const AddUsers: React.FC<AddUsersProps> = ({
     );
   };
 
-  // Handle adding selected users
   const handleAddUsers = () => {
     if (selectedUsers.length === 0) {
       alert(`Please select at least one ${role}!`);
@@ -57,7 +72,6 @@ const AddUsers: React.FC<AddUsersProps> = ({
     closeAddUsers();
   };
 
-  // Get role display name
   const getRoleDisplayName = () => {
     switch(role) {
       case 'advisor': return 'Advisor';
@@ -87,37 +101,46 @@ const AddUsers: React.FC<AddUsersProps> = ({
           </h2>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        )}
+
         {/* User List */}
-        <div className="space-y-3">
-          {filteredUsers.length === 0 ? (
-            <p className="text-center text-gray-500">No {role}s available</p>
-          ) : (
-            filteredUsers.map(user => (
-              <div 
-                key={user._id} 
-                className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                onClick={() => toggleUserSelection(user._id!)}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedUsers.includes(user._id!)}
-                  onChange={() => toggleUserSelection(user._id!)}
-                  className="mr-3 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <div className="flex-1">
-                  <h3 className="font-medium">{user.username}</h3>
-                  <p className="text-sm text-gray-600">{user.email}</p>
-                  {user.department && (
-                    <p className="text-xs text-gray-500">
-                      Currently in: {user.department.name || user.department}
-                    </p>
-                  )}
+        {!isLoading && (
+          <div className="space-y-3">
+            {filteredUsers.length === 0 ? (
+              <p className="text-center text-gray-500">No {getRoleDisplayName()}s available</p>
+            ) : (
+              filteredUsers.map(user => (
+                <div 
+                  key={user._id} 
+                  className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                  onClick={() => toggleUserSelection(user._id!)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.includes(user._id!)}
+                    onChange={() => toggleUserSelection(user._id!)}
+                    className="mr-3 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-medium">{user.username}</h3>
+                    <p className="text-sm text-gray-600">{user.email}</p>
+                    {user.department && (
+                      <p className="text-xs text-gray-500">
+                        Currently in: {typeof user.department === 'object' ? user.department.name : user.department}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        )}
 
         {/* Selected Count */}
         {selectedUsers.length > 0 && (

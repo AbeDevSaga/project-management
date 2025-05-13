@@ -4,27 +4,21 @@ import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
 import UserTable from "@/app/components/user_related/UsersTable";
 import React, { useEffect, useState } from "react";
-import { createUser, selectAdvisors } from "@/app/redux/slices/userSlice";
+import { createUser, selectEvaluators } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
 import { useRouter } from "next/navigation";
 import { fetchAllDepartments } from "@/app/redux/slices/deptSlice";
-import NotificationCard from "@/app/components/NotificationCard";
 
 function Students() {
   const router = useRouter();
-  const advisors = useSelector(selectAdvisors);
+  const evaluators = useSelector(selectEvaluators);
   const departmentList = useSelector(
     (state: RootState) => state.department.departments
   );
   const dispatch = useDispatch<AppDispatch>();
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "success" | "error";
-    onCloseComplete?: () => void;
-  } | null>(null);
 
   useEffect(() => {
     dispatch(fetchAllDepartments());
@@ -35,7 +29,7 @@ function Students() {
     setIsAddUserOpen(true); // Open the modal
   };
   const handleViewUser = (user: TUser) => {
-    router.push(`advisors/${user._id}`);
+    router.push(`evaluators/${user._id}`);
   };
   const handleCloseAddUser = () => {
     setIsAddUserOpen(false); // Close the modal
@@ -45,17 +39,10 @@ function Students() {
     console.log("New User Data:", newUser);
     const resultAction = await dispatch(createUser(newUser));
     if (createUser.fulfilled.match(resultAction)) {
-      setNotification({
-        message: "User created successfully!",
-        type: "success",
-        onCloseComplete: () => setIsAddUserOpen(false),
-      });
+      console.log("User added successfully:", resultAction.payload);
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
-      setNotification({
-        message: "Failed to create user",
-        type: "error",
-      });
+      console.error("Failed to add user:", resultAction.payload);
     }
   };
 
@@ -65,29 +52,19 @@ function Students() {
         <SectionHeader sectionKey="users" />
         <div className="w-auto">
           <ActionButton
-            label="Create Advisors"
+            label="Create Evaluators"
             onClick={handleAddUser}
             icon="add_user"
           />
         </div>
       </div>
-      <UserTable onViewUser={handleViewUser} users={advisors} px="4" py="4" />
+      <UserTable onViewUser={handleViewUser} users={evaluators} px="4" py="4" />
       {isAddUserOpen && (
         <AddUser
           closeAddUser={handleCloseAddUser}
           onAddUser={handleSaveUser}
-          role="advisor"
+          role="evaluator"
           departments={departmentList}
-        />
-      )}
-      {notification && (
-        <NotificationCard
-          message={notification.message}
-          type={notification.type}
-          onClose={() => {
-            setNotification(null);
-            notification.onCloseComplete?.();
-          }}
         />
       )}
     </div>

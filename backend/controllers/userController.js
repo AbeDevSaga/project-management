@@ -5,13 +5,9 @@ const bcrypt = require("bcryptjs");
 const createUser = async (req, res) => {
   console.log("createUser");
   try {
-    const { username, email,phone, password, role, department } = req.body;
+    const { username, email, phone, password, role, department } = req.body;
 
-    // Check if department exists
-    const departmentDoc = await Department.findById(department);
-    if (!departmentDoc) {
-      return res.status(404).json({ error: "Department not found" });
-    }
+    console.log("department: ", department)
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
@@ -19,23 +15,29 @@ const createUser = async (req, res) => {
       phone,
       password: hashedPassword,
       role,
-      department
+      department: department || null,
     });
 
-    //populate the department field with the department user id
-    
-
     await user.save();
-    // Add user to the appropriate department field depending on role
-    if (role === "departmentHead") {
-      departmentDoc.head = user._id; // Replace existing head
-    } else if (role === "advisor") {
-      departmentDoc.advisors.push(user._id);
-    } else if (role === "student") {
-      departmentDoc.students.push(user._id);
-    }
 
-    await departmentDoc.save();
+    // Check if department exists
+    if (department) {
+      const departmentDoc = await Department.findById(department);
+      //populate the department field with the department user id
+
+      // Add user to the appropriate department field depending on role
+      if (role === "departmentHead") {
+        departmentDoc.head = user._id;
+      } else if (role === "advisor") {
+        departmentDoc.advisors.push(user._id);
+      } else if (role === "student") {
+        departmentDoc.students.push(user._id);
+      } else if (role === "evaluator") {
+        departmentDoc.evaluators.push(user._id);
+      }
+
+      await departmentDoc.save();
+    }
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     res
@@ -82,7 +84,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.find()
       .populate("department")
       .populate("project")
-      .populate("advisor")
+      .populate("advisor");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Failed to get users", error });
@@ -94,9 +96,9 @@ const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id)
-    .populate("department")
+      .populate("department")
       .populate("project")
-      .populate("advisor")
+      .populate("advisor");
     if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
@@ -121,7 +123,7 @@ const getUsersByDepartmentId = async (req, res) => {
   try {
     const { id } = req.params;
     const users = await User.find({ department: id })
-    .populate("department")
+      .populate("department")
       .populate("project")
       .populate("advisor");
     if (!users) return res.status(404).json({ message: "User not found" });
@@ -152,7 +154,9 @@ const addHeadToDepartment = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     if (user.role !== "departmentHead") {
-      return res.status(400).json({ message: "User must be a department head" });
+      return res
+        .status(400)
+        .json({ message: "User must be a department head" });
     }
 
     // 2. Verify the department exists
@@ -163,9 +167,12 @@ const addHeadToDepartment = async (req, res) => {
 
     // 3. Check if the user is already head of another department
     const existingDepartment = await Department.findOne({ head: userId });
-    if (existingDepartment && existingDepartment._id.toString() !== departmentId) {
-      return res.status(400).json({ 
-        message: "User is already head of another department" 
+    if (
+      existingDepartment &&
+      existingDepartment._id.toString() !== departmentId
+    ) {
+      return res.status(400).json({
+        message: "User is already head of another department",
       });
     }
 
@@ -177,15 +184,14 @@ const addHeadToDepartment = async (req, res) => {
     user.department = departmentId;
     await user.save();
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Department head assigned successfully",
-      department 
+      department,
     });
-
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Failed to assign department head",
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -211,8 +217,8 @@ const addAdvisorToDepartment = async (req, res) => {
 
     // 3. Check if advisor is already in this department
     if (department.advisors.includes(userId)) {
-      return res.status(400).json({ 
-        message: "Advisor is already in this department" 
+      return res.status(400).json({
+        message: "Advisor is already in this department",
       });
     }
 
@@ -224,15 +230,14 @@ const addAdvisorToDepartment = async (req, res) => {
     user.department = departmentId;
     await user.save();
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Advisor added to department successfully",
-      department 
+      department,
     });
-
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Failed to add advisor to department",
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -249,29 +254,29 @@ const addStudentToDepartment = async (req, res) => {
     }
 
     // 2. Verify all users exist and are students
-    const students = await User.find({ 
+    const students = await User.find({
       _id: { $in: studentIds },
-      role: "student" 
+      role: "student",
     });
 
     if (students.length !== studentIds.length) {
-      const invalidIds = studentIds.filter(id => 
-        !students.some(student => student._id.toString() === id)
+      const invalidIds = studentIds.filter(
+        (id) => !students.some((student) => student._id.toString() === id)
       );
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "Some users are not valid students",
-        invalidIds 
+        invalidIds,
       });
     }
 
     // 3. Filter out students already in this department
-    const newStudents = studentIds.filter(id => 
-      !department.students.includes(id)
+    const newStudents = studentIds.filter(
+      (id) => !department.students.includes(id)
     );
 
     if (newStudents.length === 0) {
-      return res.status(400).json({ 
-        message: "All students are already in this department" 
+      return res.status(400).json({
+        message: "All students are already in this department",
       });
     }
 
@@ -285,16 +290,15 @@ const addStudentToDepartment = async (req, res) => {
       { $set: { department: departmentId } }
     );
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Students added to department successfully",
       addedCount: newStudents.length,
-      department 
+      department,
     });
-
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Failed to add students to department",
-      error: error.message 
+      error: error.message,
     });
   }
 };

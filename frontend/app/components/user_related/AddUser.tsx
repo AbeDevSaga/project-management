@@ -29,6 +29,7 @@ const AddUser: React.FC<AddUserProps> = ({
 
   // Only show department selection for students
   const isAdmin = role === "admin";
+  const isDepartmentHead = role === "departmentHead";
   console.log("Departments:", departments);
 
   // Handle adding a new user
@@ -119,7 +120,7 @@ const AddUser: React.FC<AddUserProps> = ({
 
             {/* Department Selection (not for admins) */}
 
-            {!isAdmin && (<div className="relative mt-4">
+            {!isAdmin && !isDepartmentHead && (<div className="relative mt-4">
               <label
                 htmlFor="department"
                 className="block text-sm font-medium text-gray-700 mb-1"

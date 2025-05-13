@@ -29,6 +29,10 @@ const handleApiError = (error: any) => {
 export const selectAdvisors = (state: RootState) => 
   state.user.users.filter(user => user.role === 'advisor');
 
+
+export const selectEvaluators = (state: RootState) => 
+  state.user.users.filter(user => user.role === 'evaluator');
+
 export const selectStudents = (state: RootState) => 
   state.user.users.filter(user => user.role === 'student');
 
@@ -149,6 +153,7 @@ export const updateUser = createAsyncThunk(
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
+      console.log("updated data: ", response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(handleApiError(error));

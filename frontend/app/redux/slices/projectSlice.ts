@@ -83,11 +83,11 @@ export const fetchProjectById = createAsyncThunk(
 
 export const createProject = createAsyncThunk(
   "projects/create",
-  async (projectData: Omit<TProject, "_id">, { rejectWithValue }) => {
+  async (formData: FormData, { rejectWithValue }) => {
     try {
       const response = await axios.post<TProject>(
         `${API_URL}/create`,
-        projectData,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,

@@ -6,10 +6,12 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { fetchAllUsers } from "@/app/redux/slices/userSlice";
 import { TUser } from "@/app/constants/type";
 import { statsData } from "../constants/dashboardStats";
+import { fetchAllProjects } from "../redux/slices/projectSlice";
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector((state: RootState) => state.user.users);
+  const projects = useSelector((state: RootState) => state.project.projects);
   const loading = useSelector((state: RootState) => state.user.loading);
   const error = useSelector((state: RootState) => state.user.error);
   const [students, setStudents] = React.useState<TUser[]>([]);
@@ -19,6 +21,7 @@ function Dashboard() {
 
   useEffect(() => {
     dispatch(fetchAllUsers());
+    dispatch(fetchAllProjects());
   }, [dispatch]);
 
   // Compute counts when users data changes
@@ -36,14 +39,6 @@ function Dashboard() {
 
       const deptHead = users.filter((user) => user.role === "departmentHead");
       setDeptHead(deptHead);
-
-      // Filter new users created today
-      // const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-      // const newUsers = users.filter((user) => {
-      //   const userCreatedAt = new Date(user.created_at).toISOString().split("T")[0];
-      //   return userCreatedAt === today;
-      // });
-      // setNewUsers(newUsers);
     }
   }, [users]);
 
@@ -77,6 +72,8 @@ function Dashboard() {
         return { ...stat, value: `${advisors.length}` };
       case "Department Heads":
         return { ...stat, value: `${deptHead.length}` };
+      case "Projects":
+        return { ...stat, value: `${projects.length}` };
       default:
         return stat;
     }

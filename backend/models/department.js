@@ -10,7 +10,7 @@ const departmentSchema = new mongoose.Schema({
     students: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  // Students in the department
     ],
-    evaluator: [
+    evaluators: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  // Evaluators in the department
     ],
     createdAt: { type: Date, default: Date.now },

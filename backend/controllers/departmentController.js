@@ -82,7 +82,8 @@ const getDepartmentById = async (req, res) => {
     const department = await Department.findById(id)
       .populate("head")
       .populate("advisors")
-      .populate("students");
+      .populate("students")
+      .populate("evaluators");
     if (!department) return res.status(404).json({ message: "Department not found" });
     res.status(200).json(department);
   } catch (error) {
@@ -162,6 +163,7 @@ const addUsersToDepartment = async (req, res) => {
   try {
     const { id } = req.params;
     const { userIds, role } = req.body;
+    console.log(" req.body: ",  req.body)
 
     // Validate input
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0 || !role) {
@@ -170,13 +172,14 @@ const addUsersToDepartment = async (req, res) => {
 
     // Determine which field to update based on role
     let updateField;
-    if (role === 'head') {
+    if (role === 'departmentHead') {
       updateField = { head: userIds[0] }; // Only one head allowed
-    } else if (role === 'advisors' || role === 'students') {
+    } else if (role === 'advisors' || role === 'students' || role === 'evaluators') {
       updateField = { $addToSet: { [role]: { $each: userIds } } }; // Multiple advisors or students
     } else {
       return res.status(400).json({ message: "Invalid role provided" });
     }
+    console.log("updated field: ", updateField)
 
     // Find the department and update it
     const department = await Department.findByIdAndUpdate(

@@ -27,6 +27,15 @@ export const statsData = [
     iconFg: "text-activeUserFg",
   },
   {
+    title: "Projects",
+    icon: "projects",
+    value: "0",
+    decision: "increment",
+    percentage: "+12.08%",
+    iconBg: "bg-activeUserBg",
+    iconFg: "text-activeUserFg",
+  },
+  {
     title: "Department Heads",
     icon: "userPlus",
     value: "0",

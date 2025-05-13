@@ -1,23 +1,34 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Department = require("../models/department");
 
 const login = async (req, res) => {
   console.log("login recieved", req.body)
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("department");
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return res.status(401).json({ error: "Invalid password" });
 
+    const tokenPayload = {
+      id: user._id,
+      role: user.role
+    };
+
+     if (user.department && user.role !== 'admin') {
+      tokenPayload.department = user.department._id;
+    }
+
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      tokenPayload,
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
+
     res.status(200).json({ token, user });
   } catch (error) {
     console.error(error); 
