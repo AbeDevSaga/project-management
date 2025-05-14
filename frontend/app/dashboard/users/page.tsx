@@ -50,6 +50,7 @@ function users() {
         status: "success",
         text: "User added successfull",
       });
+      dispatch(fetchAllUsers());
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
       setAlert({

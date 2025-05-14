@@ -4,7 +4,7 @@ import AddUser from "@/app/components/user_related/AddUser";
 import SectionHeader from "@/app/components/SectionHeader";
 import UserTable from "@/app/components/user_related/UsersTable";
 import React, { useEffect, useState } from "react";
-import { createUser, selectAdvisors } from "@/app/redux/slices/userSlice";
+import { createUser, fetchAllUsers, selectAdvisors } from "@/app/redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
@@ -57,6 +57,7 @@ function Students() {
         type: "success",
         onCloseComplete: () => setIsAddUserOpen(false),
       });
+      dispatch(fetchAllUsers());
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
       setNotification({

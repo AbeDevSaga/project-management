@@ -6,7 +6,7 @@ import { RootState } from "@/app/redux/store";
 interface AddProjectProps {
   users: TUser[];
   closeAddProject: () => void;
-  onAddProject: (newProject: FormData) => Promise<void>; // Changed to accept FormData
+  onAddProject: (newProject: FormData) => Promise<void>;
 }
 
 const AddProject: React.FC<AddProjectProps> = ({
@@ -37,7 +37,6 @@ const AddProject: React.FC<AddProjectProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         setError("File size must be less than 5MB");
         return;
@@ -71,7 +70,6 @@ const AddProject: React.FC<AddProjectProps> = ({
         formData.append("department", deptId);
       }
 
-      // Append each student ID
       selectedStudents.forEach((studentId) => {
         formData.append("students", studentId);
       });
@@ -91,18 +89,30 @@ const AddProject: React.FC<AddProjectProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">Add New Project</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Add New Project</h2>
+          <button
+            onClick={closeAddProject}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
         {error && (
           <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 overflow-hidden">
             {/* Left side: Project details */}
-            <div>
+            <div className="overflow-y-auto pr-2">
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Title *
@@ -180,46 +190,48 @@ const AddProject: React.FC<AddProjectProps> = ({
             </div>
 
             {/* Right side: Student list */}
-            <div>
+            <div className="overflow-hidden flex flex-col">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Assign Students *
               </label>
-              <div className="space-y-3 max-h-[450px] overflow-y-auto">
+              <div className="flex-1 overflow-y-auto border rounded-lg p-2">
                 {students.length === 0 ? (
-                  <p className="text-center text-gray-500">
+                  <p className="text-center text-gray-500 py-4">
                     No students available
                   </p>
                 ) : (
-                  students.map((student) => (
-                    <div
-                      key={student._id}
-                      className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                      onClick={() => toggleStudentSelection(student._id!)}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedStudents.includes(student._id!)}
-                        onChange={() => toggleStudentSelection(student._id!)}
-                        className="mr-3 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium truncate">
-                          {student.username}
-                        </h3>
-                        <p className="text-sm text-gray-600 truncate">
-                          {student.email}
-                        </p>
+                  <div className="space-y-2">
+                    {students.map((student) => (
+                      <div
+                        key={student._id}
+                        className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                        onClick={() => toggleStudentSelection(student._id!)}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedStudents.includes(student._id!)}
+                          onChange={() => toggleStudentSelection(student._id!)}
+                          className="mr-3 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium truncate">
+                            {student.username}
+                          </h3>
+                          <p className="text-sm text-gray-600 truncate">
+                            {student.email}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end pt-6">
+          <div className="flex justify-end pt-4 mt-4 border-t">
             <button
               type="button"
               onClick={closeAddProject}

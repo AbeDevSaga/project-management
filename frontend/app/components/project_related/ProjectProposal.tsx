@@ -1,4 +1,5 @@
 import { TProject, TProposal, TUser } from "@/app/constants/type";
+import { fetchAllProjects } from "@/app/redux/slices/projectSlice";
 import { createProposal } from "@/app/redux/slices/proposalSlice";
 import { AppDispatch } from "@/app/redux/store";
 import React, { useState } from "react";
@@ -60,6 +61,7 @@ const ProjectProposal: React.FC<projectProposalProp> = ({
           status: "success",
           text: "Proposal uploaded successfully",
         });
+        dispatch(fetchAllProjects())
       } else {
         throw new Error(resultAction.payload as string);
       }

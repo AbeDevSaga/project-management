@@ -8,6 +8,7 @@ import {
   addStudentsToProject,
   addUserToProject,
   deleteProject,
+  fetchAllProjects,
   fetchProjectById,
   updateProject,
 } from "@/app/redux/slices/projectSlice";
@@ -20,6 +21,7 @@ import UserTable from "@/app/components/user_related/UsersTable";
 import AddUser from "@/app/components/user_related/AddUser";
 import {
   createUser,
+  fetchAllUsers,
   fetchUsersByDepartmentId,
 } from "@/app/redux/slices/userSlice";
 import UpdateProject from "@/app/components/project_related/UpdateProject";
@@ -102,6 +104,7 @@ const ProjectDetailPage = () => {
   const handleAddStudents = async (studentIds: string[], projectId: string) => {
     try {
       await dispatch(addStudentsToProject({ projectId, studentIds })).unwrap();
+      dispatch(fetchAllUsers())
       toast.success("Students added successfully");
     } catch (error) {
       toast.error("Failed to add students");
@@ -114,6 +117,7 @@ const ProjectDetailPage = () => {
   ) => {
     try {
       await dispatch(addUserToProject({ projectId, userId, role })).unwrap();
+      dispatch(fetchAllProjects())
       setAlert({
         status: "success",
         text: `${role} added successfully`,
@@ -139,6 +143,7 @@ const ProjectDetailPage = () => {
 
         console.log("Tasks created successfully:", createdTasks);
         toast.success(`Successfully created ${createdTasks.length} task(s)`);
+        dispatch(fetchAllProjects())
       } else if (createTasks.rejected.match(resultAction)) {
         // Error case
         console.error("Failed to create tasks:", resultAction.error);
@@ -174,6 +179,7 @@ const ProjectDetailPage = () => {
         })
       );
       if (updateProject.fulfilled.match(resultAction)) {
+        dispatch(fetchAllProjects())
         console.log("Project updated successfully:", resultAction.payload);
         setIsUpdateModalOpen(false);
       } else {
@@ -189,6 +195,7 @@ const ProjectDetailPage = () => {
     );
     if (deleteProject.fulfilled.match(resultAction)) {
       console.log("Project deleted successfully:", resultAction.payload);
+      dispatch(fetchAllProjects())
       setIsDeleteModalOpen(false);
       router.push("/projects"); // Redirect to projects page after deletion
     } else {
@@ -205,7 +212,7 @@ const ProjectDetailPage = () => {
           formData,
         })
       ).unwrap();
-
+      dispatch(fetchAllProjects())
       setAlert({
         status: "success",
         text: "Proposal updated successfully",
@@ -537,21 +544,21 @@ const ProjectDetailPage = () => {
             setProjectProposal={setProjectProposal}
           />
           {project.projectStatus === "completed" &&
-            (project.evaluation?.[0] ? (
+            (project.evaluation ? (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-gray-500">
                   Evaluator
                 </h2>
                 <p className="text-gray-800">
-                  {project.evaluation[0]?.evaluator.username}
+                  {project.evaluation.evaluator.username}
                 </p>
                 <div className="flex items-center space-x-2 justify-end">
                   <h2 className="text-sm font-semibold text-green-500">
                     Date:
                   </h2>
                   <p className="text-gray-800">
-                    {project.evaluation[0]?.date &&
-                      formatDate(project.evaluation[0]?.date)}
+                    {project.evaluation?.date &&
+                      formatDate(project.evaluation?.date)}
                   </p>
                 </div>
               </div>

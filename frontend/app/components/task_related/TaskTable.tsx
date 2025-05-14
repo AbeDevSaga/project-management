@@ -16,7 +16,7 @@ interface TaskTableProps {
 const TaskTable: React.FC<TaskTableProps> = ({ onViewTask, tasks, px, py }) => {
   const [deletedTask, setDeletedTask] = useState<TTask | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-   
+
   const tasksPerPage = 6;
 
   const handleView = (task: TTask) => {
@@ -115,32 +115,37 @@ const TaskTable: React.FC<TaskTableProps> = ({ onViewTask, tasks, px, py }) => {
                 <td
                   className={`hidden xl:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}
                 >
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full ${
-                        task.status === "completed"
-                          ? "bg-green-600"
-                          : task.status === "in-progress"
-                          ? "bg-blue-600"
-                          : "bg-gray-400"
-                      }`}
-                      style={{
-                        width:
+                  <div className="flex items-center gap-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 flex-1">
+                      <div
+                        className={`h-2.5 rounded-full ${
                           task.status === "completed"
-                            ? "100%"
+                            ? "bg-green-600"
                             : task.status === "in-progress"
-                            ? task.percentage || "50%"
-                            : "0%",
-                      }}
-                    ></div>
+                            ? "bg-blue-600"
+                            : "bg-gray-400"
+                        }`}
+                        style={{
+                          width:
+                            task.status === "completed"
+                              ? "100%"
+                              : task.status === "in-progress"
+                              ? `${Math.min(
+                                  100,
+                                  Math.max(0, Number(task.percentage) || 0)
+                                )}%`
+                              : "0%",
+                        }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-gray-500 min-w-[40px] text-right">
+                      {task.status === "completed"
+                        ? "100%"
+                        : task.status === "in-progress"
+                        ? `${Math.min(100, Math.max(0, Number(task.percentage) || 0))}%`
+                        : "0%"}
+                    </span>
                   </div>
-                  <span className="text-xs text-gray-500 mt-1 block">
-                    {task.status === "completed"
-                      ? "100%"
-                      : task.status === "in-progress"
-                      ? task.percentage || "50%"
-                      : "0%"}
-                  </span>
                 </td>
                 <td className="px-6 py-4 flex items-center justify-center whitespace-nowrap text-sm">
                   <TaskActions

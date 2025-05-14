@@ -41,6 +41,7 @@ function Projects() {
     const resultAction = await dispatch(createProject(formData));
     if (createProject.fulfilled.match(resultAction)) {
       console.log("Project added successfully:", resultAction.payload);
+      dispatch(fetchAllProjects())
       setIsAddModalOpen(false);
     } else {
       console.error("Failed to add Project:", resultAction.payload);

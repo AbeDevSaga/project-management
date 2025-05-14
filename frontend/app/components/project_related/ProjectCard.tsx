@@ -3,7 +3,7 @@ import { TFile, TProject } from "../../constants/type";
 import { FaTasks, FaFileAlt, FaDownload } from "react-icons/fa";
 import { HiOutlineCalendar } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { updateProject } from "@/app/redux/slices/projectSlice";
+import { fetchAllProjects, fetchProjectById, updateProject } from "@/app/redux/slices/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { toast } from "react-toastify";
@@ -46,6 +46,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
           })
         ).unwrap(),
         new Promise((resolve) => setTimeout(resolve, 500)),
+        dispatch(fetchAllProjects())
       ]);
 
       toast.success(`Project ${status} successfully`, {

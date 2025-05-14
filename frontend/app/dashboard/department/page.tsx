@@ -39,6 +39,7 @@ function Departments() {
     const resultAction = await dispatch(createDepartment(newDepartment));
     if (createDepartment.fulfilled.match(resultAction)) {
       console.log("Department added successfully:", resultAction.payload);
+    dispatch(fetchAllDepartments());
       setIsAddModalOpen(false);
     } else {
       console.error("Failed to add Department:", resultAction.payload);

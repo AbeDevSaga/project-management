@@ -43,6 +43,7 @@ function Students() {
     const resultAction = await dispatch(createUser(newUser));
     if (createUser.fulfilled.match(resultAction)) {
       console.log("User added successfully:", resultAction.payload);
+      dispatch(fetchAllUsers());
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
       console.error("Failed to add user:", resultAction.payload);
