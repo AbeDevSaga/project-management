@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 // Define the Notification Schema
 const notificationSchema = new mongoose.Schema({
-  recipient: { 
+  recipients: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User", // Reference to the User who will receive the notification
     required: true
-  },
+  }],
   type: {
     type: String, 
     enum: ["Project Update", "Approval Required", "Feedback", "Reminder", "General", "Message"],

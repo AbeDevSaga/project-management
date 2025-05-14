@@ -8,12 +8,18 @@ import { RootState } from "@/app/redux/store";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Alert from "@/app/components/AlertProp";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
+
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.auth);
@@ -44,10 +50,26 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAlert(null);
     if (validateForm()) {
-      const resultAction = await dispatch(loginUser({ email, password }));
-      if (loginUser.fulfilled.match(resultAction)) {
-        router.push("/dashboard");
+      try {
+        const resultAction = await dispatch(loginUser({ email, password }));
+
+        if (loginUser.fulfilled.match(resultAction)) {
+          setAlert({
+            status: "success",
+            text: "Login successful! Redirecting to dashboard...",
+          });
+          // Redirect after showing success message
+          setTimeout(() => router.push("/dashboard"), 1500);
+        } else {
+          throw new Error(resultAction.payload as string);
+        }
+      } catch (error) {
+        setAlert({
+          status: "error",
+          text: error instanceof Error ? error.message : "Login failed",
+        });
       }
     }
   };
@@ -68,10 +90,12 @@ const LoginPage: React.FC = () => {
             <p className="text-gray-600">Login to access your dashboard</p>
           </div>
 
-          {error && (
-            <div className="mb-6 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-              {error}
-            </div>
+          {alert && (
+            <Alert
+              status={alert.status}
+              text={alert.text}
+              onClose={() => setAlert(null)}
+            />
           )}
 
           <form onSubmit={handleLogin} className="space-y-6">

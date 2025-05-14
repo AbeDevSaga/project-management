@@ -40,13 +40,13 @@ function Students() {
 
   const handleSaveUser = async (newUser: TUser) => {
     console.log("New User Data:", newUser);
-    // const resultAction = await dispatch(createUser(newUser));
-    // if (createUser.fulfilled.match(resultAction)) {
-    //   console.log("User added successfully:", resultAction.payload);
-    //   setIsAddUserOpen(false); // Close the modal after saving
-    // } else {
-    //   console.error("Failed to add user:", resultAction.payload);
-    // }
+    const resultAction = await dispatch(createUser(newUser));
+    if (createUser.fulfilled.match(resultAction)) {
+      console.log("User added successfully:", resultAction.payload);
+      setIsAddUserOpen(false); // Close the modal after saving
+    } else {
+      console.error("Failed to add user:", resultAction.payload);
+    }
   };
 
   return (

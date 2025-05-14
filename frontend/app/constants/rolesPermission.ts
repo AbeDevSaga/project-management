@@ -36,6 +36,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
   "departmentHead": [
     "dashboard",
     "projects",
+    "advisors",
     "notifications",
     "manuals",
   ],

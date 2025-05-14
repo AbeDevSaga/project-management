@@ -172,6 +172,16 @@ export type TChatGroups = {
   _id: string;
   name: string;
 };
+export type TNotification = {
+  _id: string;
+  recipients: string[];
+  type: string;
+  message: string;
+  status: 'unread' | 'read';
+  timestamp: string;
+  projectId?: string;
+  sender?: string;
+}
 
 export type TManual = {
   _id?: string;

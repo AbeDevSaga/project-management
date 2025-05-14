@@ -53,7 +53,7 @@ const AddAdvisor: React.FC<AddAdvisorProps> = ({
         {/* Header */}
         <div className="flex items-center justify-center mb-6">
           <h2 className="text-primary text-xl font-semibold">
-            Add Students to Project
+            Add Advisors to Project
           </h2>
         </div>
 

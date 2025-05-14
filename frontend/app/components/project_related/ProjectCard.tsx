@@ -219,7 +219,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
             className="w-full mb-4 flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
           >
             <FaDownload className="text-gray-600" />
-            {descriptionFile.name}
+            download attachment
           </button>
         )}
       {/* Status Indicator */}

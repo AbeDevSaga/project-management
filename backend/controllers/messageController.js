@@ -58,6 +58,7 @@ const sendMessage = async (req, res) => {
       content: content || "",
       type: type || (fileName ? "file" : "text"),
     };
+    console.log("message: ", messageData);
 
     // Create the message
     if (type === "file" && file) {
@@ -210,6 +211,7 @@ const getProjectMessages = async (req, res) => {
   console.log("Getting project messages...");
   try {
     const { projectId } = req.params;
+    console.log("projectid: ", projectId)
     const userId = req.user.id;
 
     // Check if user is part of the project
@@ -236,8 +238,11 @@ const getProjectMessages = async (req, res) => {
     // Get messages sorted by timestamp (newest first)
     const messages = await Message.find({ project: projectId })
       .populate("sender", "username email profileImage")
-      .sort({ timestamp: -1 })
-      .exec().reverse();
+      .sort({ timestamp: -1 })  // Already sorts newest first (descending)
+      .exec();
+
+    // No need to reverse since we're already sorting by -1
+    // If you want oldest first, use .sort({ timestamp: 1 }) instead
 
     // Mark user's notifications for this project as read
     await Notification.updateMany(
@@ -258,7 +263,6 @@ const getProjectMessages = async (req, res) => {
     });
   }
 };
-
 // Get a single message by ID
 const getMessageById = async (req, res) => {
   try {

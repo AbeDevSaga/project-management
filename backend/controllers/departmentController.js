@@ -1,4 +1,6 @@
 const Department = require("../models/department");
+const User = require("../models/user");
+
 
 // Create a new department
 const createDepartment = async (req, res) => {
@@ -192,6 +194,17 @@ const addUsersToDepartment = async (req, res) => {
       return res.status(404).json({ message: "Department not found" });
     }
 
+    // Update each user's department field
+    const updateUserPromises = userIds.map(userId => 
+      User.findByIdAndUpdate(
+        userId,
+        { department: id }, // Set the department reference
+        { new: true }
+      )
+    );
+
+    await Promise.all(updateUserPromises);
+
     res.status(200).json({
       message: `${role} added to department successfully`,
       department,
@@ -238,9 +251,20 @@ const removeUserFromDepartment = async (req, res) => {
       return res.status(404).json({ message: "Department not found" });
     }
 
+    // Update each user's department field
+    const updateUser = await User.findByIdAndUpdate(
+        userId,
+        { department: id }, // Set the department reference
+        { new: true }
+      );
+
+    await Promise.all(updateUserPromises);
+    await Promise.all(updateUserPromises);
+
     res.status(200).json({
       message: `${role} removed from department successfully`,
       department,
+      user: updateUser
     });
   } catch (error) {
     console.error(`Error removing ${role} from department:`, error);

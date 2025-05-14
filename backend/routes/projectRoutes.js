@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/user");
 const {
   createProject,
   updateProject,
@@ -58,34 +59,44 @@ const upload = multer({
   },
 });
 
+// Route handler with proper middleware chaining
+router.get("/", verifyToken, async (req, res, next) => {
+  try {
+    const { role, id } = req.user;
 
-// SuperAdmin only Basic Routes
-
-// Admin and Super Admin Basic Routes
-router.get("/", verifyToken, (req, res, next) => {
-  if (req.user.role === "admin") {
-    return isAdmin(req, res, () => {
-      getAllProjects(req, res, next);
-    });
-  } else if (req.user.role === "advisor") {
-    return isAdvisor(req, res, () => {
-      req.params.id = req.user.id;
-      getProjectsByAdvisorId(req, res, next);
-    });
-  } else if (req.user.role === "student") {
-    return isStudent(req, res, () => {
-      req.params.id = req.user.id;
-      getProjectsByStudentId(req, res, next);
-    });
-  } else if (req.user.role === "departmentHead") {
-    return isDeptHead(req, res, () => {
-      req.params.id = req.user.department;
-      getProjectsByDepartmentId(req, res, next);
-    });
-  } else {
-    return res.status(403).json({ message: "Unauthorized access" });
+    if (role === "admin") {
+      // Only check admin role, don't send response
+      await isAdmin(req, res, () => {});
+      return getAllProjects(req, res, next);
+    } else if (role === "advisor") {
+      // Only check advisor role, don't send response
+      await isAdvisor(req, res, () => {});
+      req.params.id = id;
+      return getProjectsByAdvisorId(req, res, next);
+    } else if (role === "student") {
+      // Only check student role, don't send response
+      await isStudent(req, res, () => {});
+      req.params.id = id;
+      return getProjectsByStudentId(req, res, next);
+    } else if (role === "departmentHead") {
+      // Only check dept head role, don't send response
+      await isDeptHead(req, res, () => {});
+      const user = await User.findById(id);
+      console.log("user: ", user)
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      req.params.id = user.department;
+      return getProjectsByDepartmentId(req, res, next);
+    } else {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+  } catch (error) {
+    next(error);
   }
 });
+
+// Other routes
 router.post("/create", verifyToken, upload.single("description"), createProject);
 router.put("/update/:id", verifyToken, updateProject);
 router.put("/add-students/:id", verifyToken, addStudentsToProject);

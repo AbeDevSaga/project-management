@@ -37,7 +37,7 @@ const AddUsers: React.FC<AddUsersProps> = ({
   const getFilteredUsers = () => {
     if (role === 'students') {
       return users.filter(user => 
-        students && students.department !== departmentId
+        students && !students.some(student => student.department === departmentId)
       );
     } else if (role === 'advisors') {
       return users.filter(user => 

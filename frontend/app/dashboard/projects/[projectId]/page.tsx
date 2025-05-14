@@ -107,7 +107,11 @@ const ProjectDetailPage = () => {
       toast.error("Failed to add students");
     }
   };
-  const handleAddUser = async (userId: string, projectId: string, role:string) => {
+  const handleAddUser = async (
+    userId: string,
+    projectId: string,
+    role: string
+  ) => {
     try {
       await dispatch(addUserToProject({ projectId, userId, role })).unwrap();
       setAlert({
@@ -426,12 +430,14 @@ const ProjectDetailPage = () => {
   return (
     <div className="w-full h-full relative space-y-4 mx-auto overflow-auto scrollbar-hide">
       <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="absolute top-2 right-2">
-          <BsThreeDotsVertical
-            onClick={() => setShowActions(!showActions)}
-            className="text-gray-600 cursor-pointer"
-          />
-        </div>
+        {user?.role === "departmentHead" && (
+          <div className="absolute top-2 right-2">
+            <BsThreeDotsVertical
+              onClick={() => setShowActions(!showActions)}
+              className="text-gray-600 cursor-pointer"
+            />
+          </div>
+        )}
         {/* Actions */}
         {showActions && (
           <div className="absolute bg-white py-2 top-10 right-2 rounded-lg shadow-md">
@@ -483,7 +489,7 @@ const ProjectDetailPage = () => {
               <h2 className="text-sm font-semibold text-gray-500">Advisor</h2>
               <p className="text-gray-800">{project.advisor.username}</p>
             </div>
-          ) : (
+          ) : user?.role === "departmentHead" ? (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h2 className="text-sm font-semibold text-red-400">Advisor ?</h2>
               <p
@@ -492,6 +498,10 @@ const ProjectDetailPage = () => {
               >
                 Assign Advisor +
               </p>
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-red-800">Advisor Not Assigned Yet</p>
             </div>
           )}
 
@@ -588,13 +598,13 @@ const ProjectDetailPage = () => {
         <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
           <div className="flex items-center pb-2">
             <SectionHeader sectionKey="tasks" />
-            <div className="w-auto">
+            {user?.role === "advisor" && (<div className="w-auto">
               <ActionButton
                 label="Add Task"
                 onClick={openAddTaskModal}
                 icon="task"
               />
-            </div>
+            </div>)}
           </div>
           {tasksList && tasksList.length > 0 && (
             <TaskTable

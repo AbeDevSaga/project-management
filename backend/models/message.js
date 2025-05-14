@@ -28,6 +28,9 @@ const messageSchema = new mongoose.Schema({
   file: {
     type: String,
   },
-});
+},
+{ timestamps: true });
+//68239989d8a00f41485b9a03
+//6823a7bd69f8c2d6486e242c
 
 module.exports = mongoose.model("Message", messageSchema);

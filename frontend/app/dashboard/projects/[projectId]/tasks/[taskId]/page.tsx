@@ -82,22 +82,23 @@ const TaskDetailPage = () => {
   };
 
   const handleUpdateTask = async (updatedTask: TTask) => {
+    console.log("updating asj: ", updatedTask)
     if (!task) return;
 
-    const resultAction = await dispatch(
-      updateTask({
-        id: task._id,
-        taskData: updatedTask,
-      })
-    );
+    // const resultAction = await dispatch(
+    //   updateTask({
+    //     id: task._id,
+    //     taskData: updatedTask,
+    //   })
+    // );
 
-    if (updateTask.fulfilled.match(resultAction)) {
-      setTask(resultAction.payload);
-      toast.success("Task updated successfully");
-      closeUpdateModal();
-    } else {
-      toast.error("Failed to update task");
-    }
+    // if (updateTask.fulfilled.match(resultAction)) {
+    //   setTask(resultAction.payload);
+    //   toast.success("Task updated successfully");
+    //   closeUpdateModal();
+    // } else {
+    //   toast.error("Failed to update task");
+    // }
   };
 
   const handleDeleteTask = async () => {
@@ -247,10 +248,7 @@ const TaskDetailPage = () => {
         />
       )}
       {isDeleteModalOpen && (
-        <DeleteTask
-          closeDeleteTask={closeDeleteModal}
-          task={task}
-        />
+        <DeleteTask closeDeleteTask={closeDeleteModal} task={task} />
       )}
 
       {/* Add DeleteTask modal component similarly */}

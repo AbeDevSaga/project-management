@@ -18,6 +18,9 @@ function Students() {
   const departmentList = useSelector(
     (state: RootState) => state.department.departments
   );
+  const user = useSelector(
+    (state: RootState) => state.auth.user
+  );
   const dispatch = useDispatch<AppDispatch>();
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
   const [notification, setNotification] = useState<{
@@ -63,13 +66,13 @@ function Students() {
     <div className="w-full h-full overflow-hidden relative">
       <div className="flex items-center pb-2">
         <SectionHeader sectionKey="users" />
-        <div className="w-auto">
+        {user?.role === "admin" && (<div className="w-auto">
           <ActionButton
             label="Create Advisors"
             onClick={handleAddUser}
             icon="add_user"
           />
-        </div>
+        </div>)}
       </div>
       <UserTable onViewUser={handleViewUser} users={advisors} px="4" py="4" />
       {isAddUserOpen && (

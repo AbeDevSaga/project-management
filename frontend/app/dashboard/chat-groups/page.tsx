@@ -36,10 +36,12 @@ const ChatGroup: React.FC = () => {
       .unwrap()
       .then((data) => {
         console.log("Projects fetched successfully:", data);
-        setProjectId(data[0]._id || "");
+        const project = data.filter(project=>project.isApproved)
+        console.log("project: ", project)
+        setProjectId(project[0]._id || "");
         // fetch message for first project
-        if (data.length > 0) {
-          dispatch(fetchProjectMessages(data[0]._id || ""));
+        if (project) {
+          dispatch(fetchProjectMessages(project[0]._id || ""));
         }
       })
       .catch((error) => {

@@ -31,13 +31,23 @@ function Schedule() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(fetchAllProjects());
-        // if (user.role === "advisor") {
-        //   await dispatch(fetchSchedulesByUser(user?._id || ""));
-        // }else {
-        //   await dispatch(fetchSchedulesByProject(user?._id || ""));
-        // }
-        await dispatch(fetchSchedulesByUser(user?._id || ""));
+        if (user) {
+          console.log("user role: ", user.role)
+          if (user.role === "advisor") {
+            await dispatch(fetchSchedulesByUser(user?._id || ""));
+          } else {
+            const projectResponse = await dispatch(fetchAllProjects());
+            if (fetchAllProjects.fulfilled.match(projectResponse)) {
+              const approvedProject = projectResponse.payload.filter(
+                (project) => project.isApproved
+              );
+              console.log("approvedProject: ", approvedProject[0]._id);
+            await dispatch(fetchSchedulesByProject(approvedProject[0]._id || ""));
+            } else if (fetchAllProjects.rejected.match(projectResponse)) {
+              setAlert({ status: "error", text: "Failed to fetch user data" });
+            }
+          }
+        }
       } catch (err) {
         setAlert({
           status: "error",

@@ -42,6 +42,7 @@ export const fetchSchedulesByProject = createAsyncThunk(
   "schedules/fetchByProject",
   async (projectId: string, { rejectWithValue }) => {
     try {
+      console.log("fetchSchedulesByProject: ", projectId )
       const response = await axios.get<TSchedule[]>(
         `${API_URL}/project/${projectId}`,
         {

@@ -167,6 +167,7 @@ const getProjectsByDepartmentId = async (req, res) => {
   console.log("getProjectsByDepartmentId");
   try {
     const { id } = req.params;
+    console.log("req.params id", req.params);
     const projects = await Project.find({ department: id })
       .populate("students")
       .populate("advisor")
