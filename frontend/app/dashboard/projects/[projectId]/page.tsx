@@ -430,7 +430,7 @@ const ProjectDetailPage = () => {
   return (
     <div className="w-full h-full relative space-y-4 mx-auto overflow-auto scrollbar-hide">
       <div className="p-6 bg-white rounded-lg shadow-md">
-        {user?.role === "departmentHead" && (
+        {user?.role === "advisor" && (
           <div className="absolute top-2 right-2">
             <BsThreeDotsVertical
               onClick={() => setShowActions(!showActions)}
@@ -537,26 +537,26 @@ const ProjectDetailPage = () => {
             setProjectProposal={setProjectProposal}
           />
           {project.projectStatus === "completed" &&
-            (project.evaluation ? (
+            (project.evaluation?.[0] ? (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-gray-500">
                   Evaluator
                 </h2>
                 <p className="text-gray-800">
-                  {project.evaluation?.evaluator.username}
+                  {project.evaluation[0]?.evaluator.username}
                 </p>
                 <div className="flex items-center space-x-2 justify-end">
                   <h2 className="text-sm font-semibold text-green-500">
                     Date:
                   </h2>
                   <p className="text-gray-800">
-                    {project.evaluation?.date &&
-                      formatDate(project.evaluation?.date)}
+                    {project.evaluation[0]?.date &&
+                      formatDate(project.evaluation[0]?.date)}
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-50 p-4 rounded-lg">
+              user?.role === "departmentHead" && (<div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-red-400">
                   Evaluator ?
                 </h2>
@@ -566,7 +566,7 @@ const ProjectDetailPage = () => {
                 >
                   Assign Evaluator +
                 </p>
-              </div>
+              </div>)
             ))}
         </div>
       </div>

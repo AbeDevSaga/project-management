@@ -28,6 +28,10 @@ function Students() {
     type: "success" | "error";
     onCloseComplete?: () => void;
   } | null>(null);
+  const [alert, setAlert] = useState<{
+      status: "success" | "error";
+      text: string;
+    } | null>(null);
 
   useEffect(() => {
     dispatch(fetchAllDepartments());

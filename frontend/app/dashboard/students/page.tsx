@@ -18,6 +18,10 @@ function Students() {
   const departmentList = useSelector(
         (state: RootState) => state.department.departments);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
+  const [alert, setAlert] = useState<{
+      status: "success" | "error";
+      text: string;
+    } | null>(null);
 
   // useEffect(() => {
   //   dispatch(fetchPremiumUsers());
@@ -39,13 +43,18 @@ function Students() {
   };
 
   const handleSaveUser = async (newUser: TUser) => {
-    console.log("New User Data:", newUser);
     const resultAction = await dispatch(createUser(newUser));
     if (createUser.fulfilled.match(resultAction)) {
-      console.log("User added successfully:", resultAction.payload);
+      setAlert({
+        status: "success",
+        text: "User added successfully",
+      });
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
-      console.error("Failed to add user:", resultAction.payload);
+      setAlert({
+        status: "error",
+        text: "Failed to add user",
+      });
     }
   };
 

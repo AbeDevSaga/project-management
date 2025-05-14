@@ -131,7 +131,7 @@ export type TProject = {
   files?: TFile[];
   advisor?: TUser;
   submissions?: TFile[];
-  evaluation?: TEvaluation;
+  evaluation?: TEvaluation[];
   isApproved?: boolean;
   isRejected?: boolean;
   createdAt?: Date;

@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
 import { useRouter } from "next/navigation";
 import { fetchAllDepartments } from "@/app/redux/slices/deptSlice";
+import Alert from "@/app/components/AlertProp";
 
 function users() {
   const router = useRouter();
@@ -20,6 +21,10 @@ function users() {
   const departmentList = useSelector(
       (state: RootState) => state.department.departments);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State to control the modal
+  const [alert, setAlert] = useState<{
+      status: "success" | "error";
+      text: string;
+    } | null>(null);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -39,13 +44,18 @@ function users() {
   };
 
   const handleSaveUser = async (newUser: TUser) => {
-    console.log("New User Data:", newUser);
     const resultAction = await dispatch(createUser(newUser));
     if (createUser.fulfilled.match(resultAction)) {
-      console.log("User added successfully:", resultAction.payload);
+      setAlert({
+        status: "success",
+        text: "User added successfull",
+      });
       setIsAddUserOpen(false); // Close the modal after saving
     } else {
-      console.error("Failed to add user:", resultAction.payload);
+      setAlert({
+        status: "error",
+        text: "Failed to add user",
+      });
     }
   };
 
@@ -64,6 +74,13 @@ function users() {
       <UserTable onViewUser={handleViewUser} users = {usersList} px="4" py="4"/>
       {isAddUserOpen && (
         <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} role="User"/>
+      )}
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
+        />
       )}
     </div>
   );

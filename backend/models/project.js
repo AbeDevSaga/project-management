@@ -21,23 +21,21 @@ const projectSchema = new mongoose.Schema({
   submissions: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Submission" }, // Link to the submissions for this project
   ],
-  evaluation: [
-    {
-      evaluator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      status: {
-        type: String,
-        enum: ["not-evaluated", "evaluated"],
-        default: "not-evaluated",
-      },
-      date: { type: Date, default: Date.now },
-      form: {
-        type: Map, 
-        of: String,
-        default: {},
-      },
-      comment: { type: String },
+  evaluation: {
+    evaluator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    status: {
+      type: String,
+      enum: ["not-evaluated", "evaluated"],
+      default: "not-evaluated",
     },
-  ],
+    date: { type: Date, default: Date.now },
+    form: {
+      type: Map,
+      of: String,
+      default: {},
+    },
+    comment: { type: String },
+  },
   isApproved: { type: Boolean, default: false },
   isRejected: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },

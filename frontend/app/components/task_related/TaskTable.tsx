@@ -16,6 +16,7 @@ interface TaskTableProps {
 const TaskTable: React.FC<TaskTableProps> = ({ onViewTask, tasks, px, py }) => {
   const [deletedTask, setDeletedTask] = useState<TTask | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+   
   const tasksPerPage = 6;
 
   const handleView = (task: TTask) => {

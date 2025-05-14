@@ -7,6 +7,7 @@ const createDepartment = async (req, res) => {
   console.log("createDepartment");
   try {
     const { name, head, advisors, students } = req.body;
+    console.log("name, head, advisors, students", name, head, advisors, students)
 
     const department = new Department({
       name,
@@ -16,6 +17,10 @@ const createDepartment = async (req, res) => {
     });
 
     await department.save();
+
+    const user = User.findById(head)
+    user.department = department._id;
+    await user.save();
     res.status(201).json({ message: "Department created successfully", department });
   } catch (error) {
     res
