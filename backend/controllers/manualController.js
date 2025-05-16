@@ -1,4 +1,5 @@
 const Manual = require("../models/manual");
+const mongoose = require('mongoose');
 const fs = require("fs");
 const path = require("path");
 
@@ -12,6 +13,7 @@ const createManual = async (req, res) => {
   console.log("createManual");
   try {
     const { title, description, type, department } = req.body;
+    console.log(title, description, type, department)
     const createdBy = req.user.id;
 
     if (!req.file) {
@@ -143,9 +145,10 @@ const getAllManuals = async (req, res) => {
 };
 
 const getManualsByDepartment = async (req, res) => {
-  console.log("getProjectsByDepartmentId");
+  console.log("getManualsByDepartment");
   try {
     const { id } = req.params;
+    console.log("id: ", id)
     const manuals = await Manual.find({ department: id }).sort({ createdAt: -1 });
     res.status(200).json(manuals);
   } catch (error) {

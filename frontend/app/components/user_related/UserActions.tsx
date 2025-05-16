@@ -2,8 +2,6 @@
 
 import { TUser } from "@/app/constants/type";
 import { FaEye, FaTrash } from "react-icons/fa";
-
-
 type UserActionsProps = {
   user: TUser;
   onView: (user: TUser) => void; // Callback for view action
@@ -21,12 +19,12 @@ export const UserActions = ({ user, onView, onDelete }: UserActionsProps) => {
         <FaEye className="w-5 h-5" />
       </button>
       {/* Delete Button */}
-      <button
+      {user.role === "admin" && <button
         onClick={() => onDelete(user)} // Trigger the onDelete callback
         className="text-red-500 hover:text-red-700"
       >
         <FaTrash className="w-4 h-4" />
-      </button>
+      </button>}
     </div>
   );
 };

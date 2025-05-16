@@ -74,7 +74,12 @@ function users() {
       </div>
       <UserTable onViewUser={handleViewUser} users = {usersList} px="4" py="4"/>
       {isAddUserOpen && (
-        <AddUser closeAddUser={handleCloseAddUser} onAddUser={handleSaveUser} role="User"/>
+        <AddUser
+         closeAddUser={handleCloseAddUser}
+          onAddUser={handleSaveUser}
+          role="student"
+          departments={departmentList}
+        />
       )}
       {alert && (
         <Alert

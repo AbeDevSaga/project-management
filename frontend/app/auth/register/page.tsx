@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "@/app/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import {
-  FiUser,
+  FiUser, 
   FiMail,
   FiLock,
   FiEye,

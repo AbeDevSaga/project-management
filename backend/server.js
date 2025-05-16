@@ -25,6 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/chat", require("./routes/chatRoutes"));

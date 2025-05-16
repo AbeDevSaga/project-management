@@ -25,7 +25,7 @@ const Navbar = () => {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
-        EduProjectFlow
+        WSRPMS
       </div>
 
       <div className="hidden md:flex space-x-8">

@@ -29,10 +29,14 @@ function Schedule() {
   } | null>(null);
 
   useEffect(() => {
+    dispatch(fetchAllProjects());
+  }, [dispatch])
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         if (user) {
-          console.log("user role: ", user.role)
+          console.log("user role: ", user.role);
           if (user.role === "advisor") {
             await dispatch(fetchSchedulesByUser(user?._id || ""));
           } else {
@@ -42,7 +46,9 @@ function Schedule() {
                 (project) => project.isApproved
               );
               console.log("approvedProject: ", approvedProject[0]._id);
-            await dispatch(fetchSchedulesByProject(approvedProject[0]._id || ""));
+              await dispatch(
+                fetchSchedulesByProject(approvedProject[0]._id || "")
+              );
             } else if (fetchAllProjects.rejected.match(projectResponse)) {
               setAlert({ status: "error", text: "Failed to fetch user data" });
             }
@@ -65,8 +71,21 @@ function Schedule() {
   };
   const handleAddSchedule = async (scheduleData: any) => {
     try {
-      await dispatch(createSchedule(scheduleData)).unwrap();
-      // Handle success
+      const resultAction = await dispatch(
+        createSchedule(scheduleData)
+      ).unwrap();
+      if (createSchedule.fulfilled.match(resultAction)) {
+        setAlert({
+          status: "success",
+          text: "Schedule added successfully",
+        });
+        await dispatch(fetchSchedulesByUser(user?._id || ""));
+      } else {
+        setAlert({
+          status: "error",
+          text: "Failed to Add Schedule",
+        });
+      }
     } catch (error) {
       // Handle error
     }

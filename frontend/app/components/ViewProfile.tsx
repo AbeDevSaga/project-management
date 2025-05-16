@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "@/app/redux/slices/userSlice";
 import { AppDispatch } from "@/app/redux/store";
 import NotificationCard from "./NotificationCard";
+import Alert from "./AlertProp";
 
 interface ViewUserProps {
   user: TUser;
@@ -21,6 +22,7 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
   } | null>(null);
 
   // State for user details
+  const [department, setDepartment] = useState(user.department?.name ?? "");
   const [name, setName] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -31,6 +33,10 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // State for profile image upload
   const [profileImage, setProfileImage] = useState(user.profileImage);
@@ -104,8 +110,15 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+        setAlert({
+          status: "success",
+          text: "User added successfull",
+        });
       } else {
-        setPasswordError(resultAction.payload as string);
+        setAlert({
+          status: "error",
+          text: "Failed to add user",
+        });
       }
     } catch (error) {
       setPasswordError("Failed to update password");
@@ -168,11 +181,20 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
           </div>
 
           {/* User Role Badge */}
-          <span
-            className={`px-4 py-1 text-xs font-semibold rounded-full bg-gray-100`}
-          >
-            {user.role}
-          </span>
+          <div className="flex w-full space-x-2 item-center justify-center">
+            {department && (
+              <span
+                className={`px-4 py-1 text-xs font-semibold rounded-full bg-gray-100`}
+              >
+                {department}
+              </span>
+            )}
+            <span
+              className={`px-4 py-1 text-xs font-semibold rounded-full bg-gray-100`}
+            >
+              {user.role}
+            </span>
+          </div>
         </div>
 
         <div className="mt-6 space-y-4 flex space-x-4">
@@ -281,6 +303,13 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
                 setNotification(null);
                 notification.onCloseComplete?.();
               }}
+            />
+          )}
+          {alert && (
+            <Alert
+              status={alert.status}
+              text={alert.text}
+              onClose={() => setAlert(null)}
             />
           )}
         </div>

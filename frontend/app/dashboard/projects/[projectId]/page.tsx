@@ -544,7 +544,7 @@ const ProjectDetailPage = () => {
             setProjectProposal={setProjectProposal}
           />
           {project.projectStatus === "completed" &&
-            (project.evaluation ? (
+            (project.evaluation?.evaluator ? (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-gray-500">
                   Evaluator

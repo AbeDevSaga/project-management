@@ -27,6 +27,9 @@ function Manuals() {
     text: string;
   } | null>(null);
 
+  const department = user?.department ? user?.department._id : "";
+
+  console.log("manual list: ", manualList);
   useEffect(() => {
     dispatch(fetchManuals());
   }, [dispatch]);
@@ -42,7 +45,21 @@ function Manuals() {
 
   const handleAddManual = async (formData: FormData) => {
     try {
-      await dispatch(createManual(formData)).unwrap();
+      const resultAction = await dispatch(createManual(formData)).unwrap();
+      if (createManual.fulfilled.match(resultAction)) {
+        setAlert({
+          status: "success",
+          text: "Manual Added Successfull",
+        });
+        closeAddModal();
+      } else {
+        setAlert({
+          status: "success",
+          text: "Manual Added Successfull",
+        });
+      }
+
+      dispatch(fetchManuals());
       // Handle success
     } catch (error) {
       // Handle error
@@ -107,6 +124,7 @@ function Manuals() {
         <AddManual
           closeAddManual={closeAddModal}
           onAddManual={handleAddManual}
+          department={department}
         />
       )}
       {isUpdateManualOpen && selectedManual && (

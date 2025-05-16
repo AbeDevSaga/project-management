@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TFile, TProject } from "../../constants/type";
 import { FaTasks, FaFileAlt, FaDownload } from "react-icons/fa";
 import { HiOutlineCalendar } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { fetchAllProjects, fetchProjectById, updateProject } from "@/app/redux/slices/projectSlice";
+import {
+  fetchAllProjects,
+  fetchProjectById,
+  updateProject,
+} from "@/app/redux/slices/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { toast } from "react-toastify";
@@ -19,13 +23,33 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
   const API_URL = process.env.NEXT_PUBLIC_FILE_API;
   const user = useSelector((state: RootState) => state.auth.user);
   const [showActions, setShowActions] = useState(false);
+  const [projectAccess, setProjectAcces] = useState(false);
+  const [projectStat, setProjectStat] = useState("Project Pending");
+
   const [isUpdating, setIsUpdating] = useState<"approved" | "rejected" | null>(
     null
   );
   const [alert, setAlert] = useState<{
-      status: "success" | "error";
-      text: string;
-    } | null>(null);
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const accessControll = () => {
+    if (project.projectStatus === "completed") {
+      const access =
+        user?.role === "departmentHead" || user?.role === "evaluator"
+          ? true
+          : false;
+      setProjectStat("Project Completed");
+      return access;
+    }
+    const access = project.isApproved ? project.isApproved : false;
+    return access;
+  };
+
+  useEffect(() => {
+    setProjectAcces(accessControll());
+  }, [project.projectStatus, project.isApproved, user?.role]);
 
   const handleUpdateProject = async (status: "approved" | "rejected") => {
     setIsUpdating(status);
@@ -46,7 +70,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
           })
         ).unwrap(),
         new Promise((resolve) => setTimeout(resolve, 500)),
-        dispatch(fetchAllProjects())
+        dispatch(fetchAllProjects()),
       ]);
 
       toast.success(`Project ${status} successfully`, {
@@ -63,23 +87,33 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
     }
   };
 
-  const descriptionFile = project.files?.find((file: TFile) => file.property === 'description');
-   const handleDownload = async () => {
-      try {
-        await dispatch(downloadProjectFile({ projectId: project._id || "", fileId: descriptionFile?._id || "" })).unwrap();
-        setAlert({
-          status: "success",
-          text: "Download started successfully",
-        });
-        window.open(`${API_URL}/${project._id}/files/${descriptionFile?._id}/download`, "_blank");
-      } catch (error) {
-        setAlert({
-          status: "error",
-          text:
-            error instanceof Error ? error.message : "Failed to download manual",
-        });
-      }
-    };
+  const descriptionFile = project.files?.find(
+    (file: TFile) => file.property === "description"
+  );
+  const handleDownload = async () => {
+    try {
+      await dispatch(
+        downloadProjectFile({
+          projectId: project._id || "",
+          fileId: descriptionFile?._id || "",
+        })
+      ).unwrap();
+      setAlert({
+        status: "success",
+        text: "Download started successfully",
+      });
+      window.open(
+        `${API_URL}/${project._id}/files/${descriptionFile?._id}/download`,
+        "_blank"
+      );
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text:
+          error instanceof Error ? error.message : "Failed to download manual",
+      });
+    }
+  };
 
   return (
     <div
@@ -87,14 +121,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
         isUpdating ? "opacity-75" : ""
       }`}
     >
-      {user?.role === "departmentHead" && (<div className="absolute top-2 right-2">
-        <BsThreeDotsVertical
-          onClick={() => !isUpdating && setShowActions(!showActions)}
-          className={`text-gray-600 cursor-pointer ${
-            isUpdating ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        />
-      </div>)}
+      {user?.role === "departmentHead" && (
+        <div className="absolute top-2 right-2">
+          <BsThreeDotsVertical
+            onClick={() => !isUpdating && setShowActions(!showActions)}
+            className={`text-gray-600 cursor-pointer ${
+              isUpdating ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          />
+        </div>
+      )}
 
       {/* Actions Menu */}
       {showActions && user?.role === "departmentHead" && (
@@ -214,18 +250,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
       </div>
 
       {/* Download Button */}
-        {descriptionFile && (
-          <button
-            onClick={handleDownload}
-            className="w-full mb-4 flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-          >
-            <FaDownload className="text-gray-600" />
-            download attachment
-          </button>
-        )}
+      {descriptionFile && (
+        <button
+          onClick={handleDownload}
+          className="w-full mb-4 flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+        >
+          <FaDownload className="text-gray-600" />
+          download attachment
+        </button>
+      )}
       {/* Status Indicator */}
       <div className="mt-auto">
-        {project.isApproved ? (
+        {projectAccess ? (
           <button
             className="w-full py-2 px-4 text-green-500 rounded-md hover:text-blue-600 transition-colors duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={onCardClick}
@@ -251,7 +287,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
           </div>
         ) : (
           <div className="w-full py-2 px-4 text-yellow-600 rounded-md text-center">
-            {isUpdating ? "Updating status..." : "Project Pending"}
+            {isUpdating ? "Updating status..." : projectStat}
           </div>
         )}
       </div>

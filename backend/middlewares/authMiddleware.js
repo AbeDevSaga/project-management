@@ -10,7 +10,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   });
-};
+}; 
 
 const isAdmin = (req, res, next) => {
   if (req.user.role !== "admin")

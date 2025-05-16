@@ -12,8 +12,9 @@ const login = async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
-      return res.status(401).json({ error: "Invalid password" });
+      return res.status(401).json({ error: "Invalid user name or password" });
 
+    
     const tokenPayload = {
       id: user._id,
       role: user.role

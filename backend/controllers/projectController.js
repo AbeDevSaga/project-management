@@ -220,6 +220,7 @@ const getProjectsByAdvisorId = async (req, res) => {
   console.log("getProjectsByAdvisorId");
   try {
     const { id } = req.params;
+    console.log("id ", id)
     const projects = await Project.find({
       advisor: id, // Changed from department to advisor
     })

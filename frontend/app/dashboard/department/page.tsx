@@ -8,9 +8,13 @@ import { RootState, AppDispatch } from "@/app/redux/store";
 
 import { useRouter } from "next/navigation";
 import { fetchAllUsers } from "@/app/redux/slices/userSlice";
-import { createDepartment, fetchAllDepartments } from "@/app/redux/slices/deptSlice";
+import {
+  createDepartment,
+  fetchAllDepartments,
+} from "@/app/redux/slices/deptSlice";
 import DepartmentCard from "@/app/components/dept_related/DepartmentCard";
 import AddDepartment from "@/app/components/dept_related/AddDepartment";
+import Alert from "@/app/components/AlertProp";
 
 function Departments() {
   const router = useRouter();
@@ -21,6 +25,10 @@ function Departments() {
   );
   const user = useSelector((state: RootState) => state.auth.user);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Fetch departments and users on component mount
   useEffect(() => {
@@ -39,9 +47,17 @@ function Departments() {
     const resultAction = await dispatch(createDepartment(newDepartment));
     if (createDepartment.fulfilled.match(resultAction)) {
       console.log("Department added successfully:", resultAction.payload);
-    dispatch(fetchAllDepartments());
-      setIsAddModalOpen(false);
+      setAlert({
+        status: "success",
+        text: "Department Created successfully",
+      });
+      setTimeout(()=>setIsAddModalOpen(false), 500);
+      dispatch(fetchAllDepartments());
     } else {
+      setAlert({
+        status: "success",
+        text: "Failed to Create Department",
+      });
       console.error("Failed to add Department:", resultAction.payload);
     }
   };
@@ -83,6 +99,13 @@ function Departments() {
         ))}
       </div>
 
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
+        />
+      )}
       {/* TODO: Implement AddDepartment modal component */}
       {isAddModalOpen && (
         <AddDepartment

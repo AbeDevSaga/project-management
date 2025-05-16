@@ -63,7 +63,10 @@ const LoginPage: React.FC = () => {
           // Redirect after showing success message
           setTimeout(() => router.push("/dashboard"), 1500);
         } else {
-          throw new Error(resultAction.payload as string);
+          setAlert({
+            status: "error",
+            text: "User not found. Please try again.",
+          });
         }
       } catch (error) {
         setAlert({
@@ -180,14 +183,14 @@ const LoginPage: React.FC = () => {
                 </label>
               </div>
 
-              <div className="text-sm">
+              {/* <div className="text-sm">
                 <Link
                   href="/auth/forgot-password"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot password?
                 </Link>
-              </div>
+              </div> */}
             </div>
 
             <div>

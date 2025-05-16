@@ -26,6 +26,9 @@ const AddProject: React.FC<AddProjectProps> = ({
 
   const students = users.filter((user) => user.role === "student");
 
+  // useEffect(()=> {
+
+  // }, [])
   const toggleStudentSelection = (studentId: string) => {
     setSelectedStudents((prev) =>
       prev.includes(studentId)

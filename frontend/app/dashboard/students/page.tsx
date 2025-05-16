@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import { TUser } from "@/app/constants/type";
 import { useRouter } from "next/navigation";
 import { fetchAllDepartments } from "@/app/redux/slices/deptSlice";
+import Alert from "@/app/components/AlertProp";
 
 function Students() {
   const router = useRouter();
@@ -78,6 +79,13 @@ function Students() {
           onAddUser={handleSaveUser}
           role="student"
           departments={departmentList}
+        />
+      )}
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
         />
       )}
     </div>

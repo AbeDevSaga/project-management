@@ -13,10 +13,10 @@ const Hero = () => {
         {/* Text Content */}
         <div className="md:w-1/2 mt-10 md:mt-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
-            Streamline Final Year Projects for <span className="text-indigo-600">Schools</span>
+            Haramaya Univerisity undergraduate student  <span className="text-indigo-600">project monitoring</span>
           </h1>
           <p className="mt-4 text-lg md:text-xl text-gray-600">
-            From title submission to final defense—manage, track, and collaborate effortlessly.
+            From title submission to final defense manage, track, and collaborate effortlessly.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             {/* <button 

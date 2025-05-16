@@ -51,6 +51,11 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 10);
+    }
+
     const updatedUser = await User.findByIdAndUpdate(id, updates, {
       new: true,
     });
