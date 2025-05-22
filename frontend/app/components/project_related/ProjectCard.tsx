@@ -25,6 +25,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
   const [showActions, setShowActions] = useState(false);
   const [projectAccess, setProjectAcces] = useState(false);
   const [projectStat, setProjectStat] = useState("Project Pending");
+  const [projectAccessMessage, setProjectAccesMessage] = useState("View Project");
 
   const [isUpdating, setIsUpdating] = useState<"approved" | "rejected" | null>(
     null
@@ -36,12 +37,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
 
   const accessControll = () => {
     if (project.projectStatus === "completed") {
-      const access =
-        user?.role === "departmentHead" || user?.role === "evaluator"
-          ? true
-          : false;
+      let isAccess = false;
+      if (user?.role === "departmentHead") {
+        isAccess = true;
+      } else if (user?.role === "advisor" && project.evaluators) {
+        isAccess = project.evaluators.some(
+          (evaluator) =>
+            evaluator._id !== undefined &&
+            user._id !== undefined &&
+            evaluator._id.toString() === user._id.toString()
+        );
+      }
+      setProjectAccesMessage("Evaluate Project")
       setProjectStat("Project Completed");
-      return access;
+      return isAccess;
     }
     const access = project.isApproved ? project.isApproved : false;
     return access;
@@ -267,7 +276,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onCardClick }) => {
             onClick={onCardClick}
             disabled={isUpdating !== null}
           >
-            View Project
+            {projectAccessMessage}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"

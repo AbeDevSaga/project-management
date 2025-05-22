@@ -19,7 +19,7 @@ const AddAdvisor: React.FC<AddAdvisorProps> = ({
   const [selectedAdvisor, setSelectedAdvisor] = useState<string|null>(null);
   
   // Filter users to get only students
-  const students = users.filter(user => user.role === 'advisor');
+  const students = users.filter(user => user.role !=='student');
   
   // Toggle student selection
   const toggleStudentSelection = (advisorId: string) => {

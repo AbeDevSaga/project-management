@@ -4,13 +4,28 @@ type TSection = {
   headline: string;
 };
 
+// Updated type to match backend schema
 export type TEvaluation = {
-  evaluator: TUser;
-  status: string;
+  _id?: string;
+  evaluator: TUser | string;
   date: Date;
-  form: Map<string, string>;
-  comment: string;
+  presentation: number;
+  knowledgeDomain: number;
+  knowledgeMethodology: number;
+  questionConfidence: number;
+  contentClarity: number;
+  problemStatement: number;
+  objectivesSignificance: number;
+  projectMethodology: number;
+  useCaseDiagram: number;
+  sequenceActivityDiagram: number;
+  classDiagram: number;
+  persistenceDiagram: number;
+  totalMarks: number;
+  comments: string;
+  status?: string;
 };
+
 
 export type TProfile = {
   name: string;
@@ -131,7 +146,8 @@ export type TProject = {
   files?: TFile[];
   advisor?: TUser;
   submissions?: TFile[];
-  evaluation?: TEvaluation;
+  evaluators?: TUser[];
+  evaluations?: TEvaluation[];
   isApproved?: boolean;
   isRejected?: boolean;
   createdAt?: Date;

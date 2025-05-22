@@ -167,6 +167,62 @@ export const addStudentsToProject = createAsyncThunk(
     }
   }
 );
+export const addEvaluatorsToProject = createAsyncThunk(
+  "projects/addEvaluators",
+  async (
+    { projectId, evaluatorsIds }: { projectId: string; evaluatorsIds: string[] },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put<TProject>(
+        `${API_URL}/add-evaluators/${projectId}`,
+        { evaluatorsIds },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+      }
+      return rejectWithValue(error.response?.data || "Failed to add advisors");
+    }
+  }
+);
+export const addEvaluationToProject = createAsyncThunk(
+  "projects/addEvaluation",
+  async (
+    { evaluationData, projectId }: { evaluationData: string[], projectId: string; },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put<TProject>(
+        `${API_URL}/add-evaluation/${projectId}`,
+        { evaluationData },
+        {
+          headers: {
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem("token");
+        window.location.href = "/auth/login";
+      }
+      return rejectWithValue(error.response?.data || "Failed to add evaluation");
+    }
+  }
+);
 export const addUserToProject = createAsyncThunk(
   "projects/addUser",
   async (
@@ -312,6 +368,68 @@ const projectSlice = createSlice({
       )
       .addCase(
         addStudentsToProject.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
+      // Add Evaluators to Project cases
+      .addCase(addEvaluatorsToProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addEvaluatorsToProject.fulfilled,
+        (state, action: PayloadAction<TProject>) => {
+          state.loading = false;
+          
+          // Update the current project if it's the one being modified
+          if (state.currentProject?._id === action.payload._id) {
+            state.currentProject = action.payload;
+          }
+          
+          // Update the project in the projects array
+          const index = state.projects.findIndex(
+            (p) => p._id === action.payload._id
+          );
+          if (index !== -1) {
+            state.projects[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        addEvaluatorsToProject.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
+      // Add Evaluation to Project cases
+      .addCase(addEvaluationToProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addEvaluationToProject.fulfilled,
+        (state, action: PayloadAction<TProject>) => {
+          state.loading = false;
+          
+          // Update the current project if it's the one being modified
+          if (state.currentProject?._id === action.payload._id) {
+            state.currentProject = action.payload;
+          }
+          
+          // Update the project in the projects array
+          const index = state.projects.findIndex(
+            (p) => p._id === action.payload._id
+          );
+          if (index !== -1) {
+            state.projects[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        addEvaluationToProject.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

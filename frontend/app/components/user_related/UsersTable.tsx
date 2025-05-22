@@ -5,6 +5,7 @@ import DeleteUser from "./DeleteUser";
 import { UserActions } from "./UserActions";
 import { TUser } from "@/app/constants/type";
 import StatusBadge from "./StatusBadge";
+import { formatDate } from "@/app/utils/dateUtils";
 
 interface UserTableProps {
   onViewUser: (userData: TUser) => void;
@@ -99,7 +100,7 @@ const UserTable : React.FC<UserTableProps> = ({ onViewUser, users, px, py }) => 
                   {user.phone}
                 </td>
                 <td className={`hidden lg:table-cell px-${px} py-${py} whitespace-nowrap text-sm`}>
-                  {user.created_at}
+                  {user.created_at && formatDate(user.created_at)}
                 </td>
                 <td className="px-6 py-4 flex items-center justify-center whitespace-nowrap text-sm">
                   <UserActions

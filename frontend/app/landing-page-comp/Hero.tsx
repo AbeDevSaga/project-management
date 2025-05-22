@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import pms from "@/public/images/pms.webp"; 
+import pms from "@/public/images/pms.webp";
 import { useRouter } from "next/navigation";
 
 const Hero = () => {
@@ -12,11 +12,16 @@ const Hero = () => {
       <div className="container mx-auto px-6 md:px-12 flex flex-col-reverse md:flex-row items-center justify-between">
         {/* Text Content */}
         <div className="md:w-1/2 mt-10 md:mt-0">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
-            Haramaya Univerisity undergraduate student  <span className="text-indigo-600">project monitoring</span>
-          </h1>
+          <div className="flex flex-col text-5xl">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-800 leading-tight">
+              Haramaya Univerisity
+            </h1>
+            undergraduate student
+            <span className="text-indigo-600 text-6xl">project monitoring</span>
+          </div>
           <p className="mt-4 text-lg md:text-xl text-gray-600">
-            From title submission to final defense manage, track, and collaborate effortlessly.
+            From title submission to final defense manage, track, and
+            collaborate effortlessly.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             {/* <button 
@@ -37,8 +42,8 @@ const Hero = () => {
         {/* Image/Illustration */}
         <div className="md:w-1/2 flex justify-center">
           <div className="relative w-full max-w-md lg:max-w-lg aspect-square">
-            <Image 
-              src={pms} 
+            <Image
+              src={pms}
               alt="Project Management Dashboard"
               fill
               className="object-contain"
@@ -50,8 +55,18 @@ const Hero = () => {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer">
-        <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        <svg
+          className="w-8 h-8 text-indigo-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
         </svg>
       </div>
     </section>

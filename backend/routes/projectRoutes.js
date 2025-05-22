@@ -13,6 +13,8 @@ const {
   getProjectsByStatus,
   addStudentsToProject,
   addUserToProject,
+  addEvaluatorsToProject,
+  addEvaluationToProject,
 } = require("../controllers/projectController");
 const {
   verifyToken,
@@ -86,7 +88,7 @@ router.get("/", verifyToken, async (req, res, next) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      req.params.id = user.department;
+      req.params.id = user.department.toString();
       return getProjectsByDepartmentId(req, res, next);
     } else {
       return res.status(403).json({ message: "Unauthorized access" });
@@ -99,7 +101,9 @@ router.get("/", verifyToken, async (req, res, next) => {
 // Other routes
 router.post("/create", verifyToken, upload.single("description"), createProject);
 router.put("/update/:id", verifyToken, updateProject);
+router.put("/add-evaluation/:id", verifyToken, addEvaluationToProject);
 router.put("/add-students/:id", verifyToken, addStudentsToProject);
+router.put("/add-evaluators/:id", verifyToken, addEvaluatorsToProject);
 router.put("/add-user/:id", verifyToken, addUserToProject);
 router.delete("/delete/:id", verifyToken, deleteProject);
 router.get("/:id", verifyToken, getProjectById);

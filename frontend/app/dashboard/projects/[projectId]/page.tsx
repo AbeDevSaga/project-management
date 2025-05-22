@@ -5,6 +5,8 @@ import { TProject, TUser, TTask, TFile, TProposal } from "@/app/constants/type";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import {
+  addEvaluationToProject,
+  addEvaluatorsToProject,
   addStudentsToProject,
   addUserToProject,
   deleteProject,
@@ -43,6 +45,9 @@ import AddStudents from "@/app/components/project_related/AddStudents";
 import ProjectProposal from "@/app/components/project_related/ProjectProposal";
 import AddAdvisor from "@/app/components/project_related/AddAdvisor";
 import { formatDate } from "@/app/utils/dateUtils";
+import AddEvaluators from "@/app/components/project_related/AddEvaluator";
+import EvaluationForm from "@/app/components/project_related/EvaluationForm";
+import EvaluationCard from "@/app/components/project_related/EvaluationCard";
 
 const ProjectDetailPage = () => {
   const API_URL = process.env.NEXT_PUBLIC_PROPOSAL_API;
@@ -63,7 +68,9 @@ const ProjectDetailPage = () => {
   const [showActions, setShowActions] = useState(false);
   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
   const [addAdvisorModalOpen, setAddAdvisorModalOpen] = useState(false);
+  const [addEvaluatorsModalOpen, setAddEvaluatorsModalOpen] = useState(false);
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false);
+  const [addEvaluationModalOpen, setEvaluationModalOpen] = useState(false);
   const [addFileModalOpen, setAddFileModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isUpdateProposalOpen, setIsUpdateProposalOpen] = useState(false);
@@ -74,6 +81,16 @@ const ProjectDetailPage = () => {
     text: string;
   } | null>(null);
 
+  const isEvaluator =
+    project && Array.isArray(project.evaluators) && user
+      ? project.evaluators.some(
+          (evaluator) =>
+            evaluator._id !== undefined &&
+            user._id !== undefined &&
+            evaluator._id.toString() === user._id.toString()
+        )
+      : false;
+
   // Open the modals
 
   const openAddUserModal = () => {
@@ -82,8 +99,14 @@ const ProjectDetailPage = () => {
   const openAddAdvisorModal = () => {
     setAddAdvisorModalOpen(true);
   };
+  const openAddEvaluatorsModal = () => {
+    setAddEvaluatorsModalOpen(true);
+  };
   const openAddTaskModal = () => {
     setAddTaskModalOpen(true);
+  };
+  const openAddEvaluationModal = () => {
+    setEvaluationModalOpen(true);
   };
   const openAddFileModal = () => {
     setAddFileModalOpen(true);
@@ -104,11 +127,29 @@ const ProjectDetailPage = () => {
   const handleAddStudents = async (studentIds: string[], projectId: string) => {
     try {
       await dispatch(addStudentsToProject({ projectId, studentIds })).unwrap();
-      dispatch(fetchAllUsers())
+      dispatch(fetchAllUsers());
       toast.success("Students added successfully");
     } catch (error) {
       toast.error("Failed to add students");
     }
+  };
+  const handleAddEvaluation = async (evaluationData: string[]) => {
+    try {
+      await dispatch(
+        addEvaluationToProject({ projectId, evaluationData })
+      ).unwrap();
+      dispatch(fetchProjectById(projectId));
+      setAlert({
+        status: "success",
+        text: `Evaluation added successfully`,
+      });
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text: `Error addin evaluation`,
+      });
+    }
+    console.log("evaluationData: ", evaluationData);
   };
   const handleAddUser = async (
     userId: string,
@@ -117,7 +158,7 @@ const ProjectDetailPage = () => {
   ) => {
     try {
       await dispatch(addUserToProject({ projectId, userId, role })).unwrap();
-      dispatch(fetchAllProjects())
+      dispatch(fetchAllProjects());
       setAlert({
         status: "success",
         text: `${role} added successfully`,
@@ -126,6 +167,26 @@ const ProjectDetailPage = () => {
       setAlert({
         status: "error",
         text: `Failed to add ${role}`,
+      });
+    }
+  };
+  const handleAddEvaluators = async (
+    evaluatorsIds: string[],
+    projectId: string
+  ) => {
+    try {
+      await dispatch(
+        addEvaluatorsToProject({ projectId, evaluatorsIds })
+      ).unwrap();
+      dispatch(fetchAllProjects());
+      setAlert({
+        status: "success",
+        text: `Evaluators added successfully`,
+      });
+    } catch (error) {
+      setAlert({
+        status: "error",
+        text: `Failed to add Evaluators`,
       });
     }
   };
@@ -143,7 +204,7 @@ const ProjectDetailPage = () => {
 
         console.log("Tasks created successfully:", createdTasks);
         toast.success(`Successfully created ${createdTasks.length} task(s)`);
-        dispatch(fetchAllProjects())
+        dispatch(fetchAllProjects());
       } else if (createTasks.rejected.match(resultAction)) {
         // Error case
         console.error("Failed to create tasks:", resultAction.error);
@@ -179,7 +240,7 @@ const ProjectDetailPage = () => {
         })
       );
       if (updateProject.fulfilled.match(resultAction)) {
-        dispatch(fetchAllProjects())
+        dispatch(fetchAllProjects());
         console.log("Project updated successfully:", resultAction.payload);
         setIsUpdateModalOpen(false);
       } else {
@@ -195,7 +256,7 @@ const ProjectDetailPage = () => {
     );
     if (deleteProject.fulfilled.match(resultAction)) {
       console.log("Project deleted successfully:", resultAction.payload);
-      dispatch(fetchAllProjects())
+      dispatch(fetchAllProjects());
       setIsDeleteModalOpen(false);
       router.push("/projects"); // Redirect to projects page after deletion
     } else {
@@ -212,7 +273,7 @@ const ProjectDetailPage = () => {
           formData,
         })
       ).unwrap();
-      dispatch(fetchAllProjects())
+      dispatch(fetchAllProjects());
       setAlert({
         status: "success",
         text: "Proposal updated successfully",
@@ -323,8 +384,14 @@ const ProjectDetailPage = () => {
   const closeAddAdvisorModal = () => {
     setAddAdvisorModalOpen(false);
   };
+  const closeAddEvaluatorsModal = () => {
+    setAddEvaluatorsModalOpen(false);
+  };
   const closeAddTaskModal = () => {
     setAddTaskModalOpen(false);
+  };
+  const closeAddEvaluationModal = () => {
+    setEvaluationModalOpen(false);
   };
   const closeAddFileModal = () => {
     setAddFileModalOpen(false);
@@ -544,36 +611,27 @@ const ProjectDetailPage = () => {
             setProjectProposal={setProjectProposal}
           />
           {project.projectStatus === "completed" &&
-            (project.evaluation?.evaluator ? (
+            (project.evaluators && project.evaluators.length > 0 ? (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-gray-500">
-                  Evaluator
+                  Evaluators
                 </h2>
-                <p className="text-gray-800">
-                  {project.evaluation.evaluator.username}
-                </p>
-                <div className="flex items-center space-x-2 justify-end">
-                  <h2 className="text-sm font-semibold text-green-500">
-                    Date:
-                  </h2>
-                  <p className="text-gray-800">
-                    {project.evaluation?.date &&
-                      formatDate(project.evaluation?.date)}
-                  </p>
-                </div>
+                <p className="text-gray-800">{project.evaluators.length}</p>
               </div>
             ) : (
-              user?.role === "departmentHead" && (<div className="bg-gray-50 p-4 rounded-lg">
-                <h2 className="text-sm font-semibold text-red-400">
-                  Evaluator ?
-                </h2>
-                <p
-                  onClick={openAddAdvisorModal}
-                  className="text-blue-500 cursor-pointer hover:text-blue-700 transition-transform duration-300 ease-in-out"
-                >
-                  Assign Evaluator +
-                </p>
-              </div>)
+              user?.role === "departmentHead" && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h2 className="text-sm font-semibold text-red-400">
+                    Evaluator ?
+                  </h2>
+                  <p
+                    onClick={openAddEvaluatorsModal}
+                    className="text-blue-500 cursor-pointer hover:text-blue-700 transition-transform duration-300 ease-in-out"
+                  >
+                    Assign Evaluator +
+                  </p>
+                </div>
+              )
             ))}
         </div>
       </div>
@@ -599,19 +657,68 @@ const ProjectDetailPage = () => {
           />
         )}
       </div>
+      {/* Evaluator Section */}
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+        <div className="flex items-center pb-2">
+          <SectionHeader sectionKey="users" />
+          <div className="w-auto">
+            {user?.role === "departmentHead" && (
+              <ActionButton
+                label="Add Evaluator"
+                onClick={openAddEvaluatorsModal}
+                icon="user"
+              />
+            )}
+          </div>
+        </div>
+        {project.evaluators && (
+          <UserTable
+            onViewUser={handleViewUser}
+            users={project.evaluators}
+            px="4"
+            py="4"
+          />
+        )}
+      </div>
+      {/* Evaluation Form Section */}
+      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+        <div className="flex items-center pb-2">
+          <SectionHeader sectionKey="users" />
+          {isEvaluator && (
+            <div className="w-auto">
+              <ActionButton
+                label="Add Evaluation"
+                onClick={openAddEvaluationModal}
+                icon="user"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {project.evaluations &&
+            project.evaluations.map((evalutionData, index) => (
+              <div key={index} className="self-start">
+                <EvaluationCard evaluation={evalutionData} />
+              </div>
+            ))}
+        </div>
+      </div>
 
       {/* Tasks Section */}
       {hasApprovedProposal && (
         <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
           <div className="flex items-center pb-2">
             <SectionHeader sectionKey="tasks" />
-            {user?.role === "advisor" && (<div className="w-auto">
-              <ActionButton
-                label="Add Task"
-                onClick={openAddTaskModal}
-                icon="task"
-              />
-            </div>)}
+            {user?.role === "advisor" && (
+              <div className="w-auto">
+                <ActionButton
+                  label="Add Task"
+                  onClick={openAddTaskModal}
+                  icon="task"
+                />
+              </div>
+            )}
           </div>
           {tasksList && tasksList.length > 0 && (
             <TaskTable
@@ -625,7 +732,7 @@ const ProjectDetailPage = () => {
       )}
 
       {/* Files Section */}
-      {hasApprovedProposal && (
+      {/* {hasApprovedProposal && (
         <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
           <div className="flex items-center pb-2">
             <SectionHeader sectionKey="files" />
@@ -637,16 +744,16 @@ const ProjectDetailPage = () => {
               />
             </div>
           </div>
-          {/* {filesList && filesList.length > 0 && (
+          {filesList && filesList.length > 0 && (
           <FileTable
             onViewFile={handleViewFile}
             files={filesList}
             px="2"
             py="2"
           />
-        )} */}
+        )}
         </div>
-      )}
+      )} */}
       {/* Modals */}
       {addUserModalOpen && (
         <AddStudents
@@ -662,6 +769,25 @@ const ProjectDetailPage = () => {
           projectId={projectId}
           closeAddAdvisor={closeAddAdvisorModal}
           onAddAdvisor={handleAddUser}
+        />
+      )}
+      {addEvaluatorsModalOpen && project.advisor && (
+        <AddEvaluators
+          advisor={project.advisor}
+          evaluators={project.evaluators}
+          users={departmentUsers}
+          projectId={projectId}
+          closeAddEvaluators={closeAddEvaluatorsModal}
+          onAddEvaluators={handleAddEvaluators}
+        />
+      )}
+      {addEvaluationModalOpen && user && (
+        <EvaluationForm
+          project={project}
+          evaluator={user}
+          users={departmentUsers}
+          onClose={closeAddEvaluationModal}
+          onSubmitEvaluation={handleAddEvaluation}
         />
       )}
       {addTaskModalOpen && (
