@@ -17,6 +17,7 @@ import UserTable from "@/app/components/user_related/UsersTable";
 import StatusBadge from "@/app/components/user_related/StatusBadge";
 import UpdateTask from "@/app/components/task_related/UpdateTask";
 import DeleteTask from "@/app/components/task_related/DeleteTask";
+import Alert from "@/app/components/AlertProp";
 
 const TaskDetailPage = () => {
   const router = useRouter();
@@ -29,6 +30,10 @@ const TaskDetailPage = () => {
   const [showActions, setShowActions] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Fetch task and project data
   useEffect(() => {
@@ -82,23 +87,32 @@ const TaskDetailPage = () => {
   };
 
   const handleUpdateTask = async (updatedTask: TTask) => {
-    console.log("updating asj: ", updatedTask)
+    console.log("updating asj: ", updatedTask);
     if (!task) return;
+    const resultAction = await dispatch(
+      updateTask({
+        id: task._id,
+        taskData: updatedTask,
+      })
+    );
 
-    // const resultAction = await dispatch(
-    //   updateTask({
-    //     id: task._id,
-    //     taskData: updatedTask,
-    //   })
-    // );
-
-    // if (updateTask.fulfilled.match(resultAction)) {
-    //   setTask(resultAction.payload);
-    //   toast.success("Task updated successfully");
-    //   closeUpdateModal();
-    // } else {
-    //   toast.error("Failed to update task");
-    // }
+    if (updateTask.fulfilled.match(resultAction)) {
+      setTask(resultAction.payload);
+      setAlert({
+        status: "success",
+        text: `Task updated successfully`,
+      });
+      const taskResponse = await dispatch(fetchTaskById(taskId));
+      if (fetchTaskById.fulfilled.match(taskResponse)) {
+        setTask(taskResponse.payload);
+      }
+      closeUpdateModal();
+    } else {
+      setAlert({
+        status: "success",
+        text: `Failed to update task`,
+      });
+    }
   };
 
   const handleDeleteTask = async () => {
@@ -106,10 +120,16 @@ const TaskDetailPage = () => {
 
     const resultAction = await dispatch(deleteTask(task._id));
     if (deleteTask.fulfilled.match(resultAction)) {
-      toast.success("Task deleted successfully");
+      setAlert({
+        status: "success",
+        text: `Task deleted successfully`,
+      });
       router.push(`/projects/${task.projectId}/tasks`);
     } else {
-      toast.error("Failed to delete task");
+      setAlert({
+        status: "error",
+        text: `Failed to delete task`,
+      });
     }
   };
 
@@ -244,11 +264,22 @@ const TaskDetailPage = () => {
           closeUpdateTask={closeUpdateModal}
           onUpdateTask={handleUpdateTask}
           taskToUpdate={task}
-          projectUsers={project?.students || []}
         />
       )}
       {isDeleteModalOpen && (
-        <DeleteTask closeDeleteTask={closeDeleteModal} task={task} />
+        <DeleteTask
+          closeDeleteTask={closeDeleteModal}
+          onDeleteConfirm={handleDeleteTask}
+          task={task}
+        />
+      )}
+
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
+        />
       )}
 
       {/* Add DeleteTask modal component similarly */}

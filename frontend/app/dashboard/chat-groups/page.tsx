@@ -4,7 +4,11 @@ import ChatTab from "@/app/components/chat_related/ChatTab";
 import ChatWindow from "@/app/components/chat_related/ChatWindow";
 import MessageBox from "@/app/components/chat_related/MessageBox";
 import { TMessage, TUser } from "@/app/constants/type";
-import { fetchProjectMessages, markAsRead, sendMessage } from "@/app/redux/slices/messageSlice";
+import {
+  fetchProjectMessages,
+  markAsRead,
+  sendMessage,
+} from "@/app/redux/slices/messageSlice";
 import { fetchAllProjects } from "@/app/redux/slices/projectSlice";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import React, { useEffect, useState } from "react";
@@ -21,7 +25,6 @@ const ChatGroup: React.FC = () => {
   const [members, setMembers] = useState<TUser[]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
 
-
   const handleSendMessage = (message: TMessage) => {
     dispatch(sendMessage({ message }));
   };
@@ -36,8 +39,8 @@ const ChatGroup: React.FC = () => {
       .unwrap()
       .then((data) => {
         console.log("Projects fetched successfully:", data);
-        const project = data.filter(project=>project.isApproved)
-        console.log("project: ", project)
+        const project = data.filter((project) => project.isApproved);
+        console.log("project: ", project);
         setProjectId(project[0]._id || "");
         // fetch message for first project
         if (project) {
@@ -47,9 +50,6 @@ const ChatGroup: React.FC = () => {
       .catch((error) => {
         console.error("Failed to fetch projects:", error);
       });
-
-
-
   }, [dispatch]);
 
   useEffect(() => {
@@ -92,9 +92,14 @@ const ChatGroup: React.FC = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Area */}
         <div className="flex-1 flex flex-col h-full overflow-hidden">
-          <ChatWindow messages={messages} />
+          {/* ChatWindow should take all available space except for the MessageBox */}
+          <div className="flex-1 overflow-y-auto">
+            <ChatWindow messages={messages} />
+          </div>
+
+          {/* MessageBox stays fixed at the bottom */}
           <div className="p-4 border-t">
-            {user &&  (
+            {user && (
               <MessageBox
                 onSend={handleSendMessage}
                 project={projectId || ""}

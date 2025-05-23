@@ -1,6 +1,4 @@
 "use client";
-import ActionButton from "@/app/components/ActionButton";
-import SectionHeader from "@/app/components/SectionHeader";
 import React, { useEffect, useState } from "react";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +15,6 @@ import AddNotification from "@/app/components/notification_related/AddNotificati
 function Notifications() {
   const dispatch = useDispatch<AppDispatch>();
   const notificationList = useSelector((state: RootState) => state.notification.notifications);
-  const unreadCount = useSelector((state: RootState) => state.notification.unreadCount);
   const user = useSelector((state: RootState) => state.auth.user);
   const [isAddNotificationOpen, setIsAddNotificationOpen] = useState(false);
   const [alert, setAlert] = useState<{
@@ -76,7 +73,7 @@ function Notifications() {
 
   return (
     <div className="w-full h-full pb-2 relative mx-auto px-4 overflow-auto scrollbar-hide">
-      <div className="flex items-center justify-between pb-4">
+      {/* <div className="flex items-center justify-between pb-4">
         <SectionHeader sectionKey="notifications" />
         <div className="flex gap-2">
           {unreadCount > 0 && (
@@ -92,7 +89,7 @@ function Notifications() {
             />
           )}
         </div>
-      </div>
+      </div> */}
 
       {notificationList.length === 0 ? (
         <div className="text-center py-8 text-gray-500">

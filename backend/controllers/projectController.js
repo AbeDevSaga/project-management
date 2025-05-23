@@ -1,50 +1,14 @@
 const Project = require("../models/project");
 const File = require("../models/file");
+const Notification = require("../models/notification");
 const fs = require("fs");
 const { getFileType } = require("./fileController");
-
-// Create a new project
-// const createProject = async (req, res) => {
-//   console.log("createProject");
-//   try {
-//     const {
-//       title,
-//       description,
-//       department,
-//       projectStatus,
-//       tasks,
-//       proposals,
-//       students,
-//       advisor,
-//       submissions,
-//     } = req.body;
-
-//     const project = new Project({
-//       title,
-//       description,
-//       department,
-//       projectStatus,
-//       tasks,
-//       proposals,
-//       students,
-//       advisor,
-//       submissions,
-//     });
-
-//     await project.save();
-//     res.status(201).json({ message: "Project created successfully" });
-//   } catch (error) {
-//     res
-//       .status(400)
-//       .json({ error: "Project creation failed", details: error.message });
-//   }
-// };
 
 const createProject = async (req, res) => {
   console.log("createProject");
   try {
     const { title, description, department, students, advisor } = req.body;
-    console.log("req.body: ", req.body)
+    console.log("req.body: ", req.body);
     // Create project
     const project = new Project({
       title,
@@ -65,19 +29,35 @@ const createProject = async (req, res) => {
         path: req.file.path,
         property: "description",
         type: getFileType(req.file.mimetype),
-        uploadedBy: req.user.id
+        uploadedBy: req.user.id,
       });
 
       await file.save();
-      
+
       // Update project with proposal reference
-      project.files.push(file)
+      project.files.push(file);
       await project.save();
     }
 
+    const notificationRecipients = [...students, advisor]
+      .filter((id) => id)
+      .map((id) => id.toString()); // Convert all recipient IDs to strings
+
+    const notificationMessage = `New project "${title}" has been created with you as a participant`;
+
+    const notification = new Notification({
+      recipients: notificationRecipients,
+      type: "Project Update",
+      message: notificationMessage,
+      projectId: project._id.toString(), // Convert to string
+      sender: req.user.id.toString(), // Convert to string
+    });
+    console.log("notification: ", notification);
+    await notification.save();
+
     res.status(201).json({
       message: "Project created successfully",
-      project: await Project.findById(project._id).populate('proposal'),
+      project: await Project.findById(project._id).populate("proposal"),
     });
   } catch (error) {
     // Clean up uploaded file if project creation failed
@@ -97,18 +77,38 @@ const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+    const currentProject = await Project.findById(id)
+      .populate("students", "_id")
+      .populate("advisor", "_id")
+      .populate("evaluators", "_id"); //evaluators
+
+    if (!currentProject) {
+      return res.status(404).json({ message: "Project not found" });
+    }
     const updatedProject = await Project.findByIdAndUpdate(id, updates, {
       new: true,
     });
 
-    if (!updatedProject)
-      return res.status(404).json({ message: "Project not found" });
-    res
-      .status(200)
-      .json({
-        message: "Project updated successfully",
-        project: updatedProject,
+    // Prepare notification recipients (students + advisor)
+    const recipients = [
+      ...currentProject.students.map((s) => s._id),
+      currentProject.advisor?._id,
+    ].filter(Boolean); // Remove null/undefined
+
+    if (recipients.length > 0 && Object.keys(updates).length > 0) {
+      const notification = new Notification({
+        recipients,
+        type: "Project Update",
+        message: `Project "${currentProject.title}" has been updated`,
+        projectId: currentProject._id,
+        sender: req.user._id, // Assuming you have authenticated user
       });
+      await notification.save();
+    }
+    res.status(200).json({
+      message: "Project updated successfully",
+      project: updatedProject,
+    });
   } catch (error) {
     res.status(500).json({ message: "Failed to update project", error });
   }
@@ -226,23 +226,20 @@ const getProjectsByAdvisorId = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("id ", id);
-    
+
     // Find projects where the user is either the advisor OR an evaluator
     const projects = await Project.find({
-      $or: [
-        { advisor: id },
-        { evaluators: id }
-      ]
+      $or: [{ advisor: id }, { evaluators: id }],
     })
-    .populate("students")
-    .populate("advisor")
-    .populate("department")
-    .populate("evaluators")
-    .populate("files")
-    .populate({
-      path: 'evaluations.evaluator',
-      model: 'User'
-    });
+      .populate("students")
+      .populate("advisor")
+      .populate("department")
+      .populate("evaluators")
+      .populate("files")
+      .populate({
+        path: "evaluations.evaluator",
+        model: "User",
+      });
 
     if (!projects || projects.length === 0) {
       return res
@@ -326,24 +323,64 @@ const addEvaluatorsToProject = async (req, res) => {
     const { evaluatorsIds } = req.body;
 
     // Validate input
-    if (!evaluatorsIds || !Array.isArray(evaluatorsIds) || evaluatorsIds.length === 0) {
-      return res.status(400).json({ message: "Invalid evaluators IDs provided" });
+    if (
+      !evaluatorsIds ||
+      !Array.isArray(evaluatorsIds) ||
+      evaluatorsIds.length === 0
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid evaluators IDs provided" });
     }
 
+    // Get the project with all relevant members
+    const project = await Project.findById(id)
+      .populate("students", "_id")
+      .populate("advisor", "_id")
+      .populate("evaluators", "_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
     // Find the project and update it
-    const project = await Project.findByIdAndUpdate(
+    const updatedProject = await Project.findByIdAndUpdate(
       id,
       { $addToSet: { evaluators: { $each: evaluatorsIds } } }, // Using $addToSet to avoid duplicates
       { new: true }
     ).populate("evaluators");
 
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+    const newEvaluatorsNotification = new Notification({
+      recipients: evaluatorsIds,
+      type: "Project Update",
+      message: `You have been added as an evaluator for project "${project.title}"`,
+      projectId: project._id,
+      sender: req.user._id,
+    });
+    await newEvaluatorsNotification.save();
+
+    const existingMembers = [
+      ...project.students.map((s) => s._id),
+      project.advisor?._id,
+    ].filter(Boolean);
+
+    if (existingMembers.length > 0) {
+      const membersNotification = new Notification({
+        recipients: existingMembers,
+        type: "Project Update",
+        message: `New evaluators have been added to project "${project.title}"`,
+        projectId: project._id,
+        sender: req.user._id,
+      });
+      await membersNotification.save();
     }
 
     res.status(200).json({
       message: "Evaluators added to project successfully",
-      project,
+      project: updatedProject,
+      notifications: {
+        newEvaluators: evaluatorsIds.length,
+        existingMembers: existingMembers.length,
+      },
     });
   } catch (error) {
     console.error("Error adding evaluators to project:", error);
@@ -353,123 +390,52 @@ const addEvaluatorsToProject = async (req, res) => {
     });
   }
 };
-// Add evaluation to a project
-// const addEvaluationToProject = async (req, res) => {
-//   console.log("addEvaluationToProject body: ", req.body);
-//   try {
-//     const { id } = req.params;
-//     const {
-//       evaluatorId,
-//       presentation,
-//       knowledgeDomain,
-//       knowledgeMethodology,
-//       questionConfidence,
-//       contentClarity,
-//       problemStatement,
-//       objectivesSignificance,
-//       projectMethodology,
-//       useCaseDiagram,
-//       sequenceActivityDiagram,
-//       classDiagram,
-//       persistenceDiagram,
-//       comments
-//     } = req.body;
 
-//     // Validate required fields
-//     if (!evaluatorId) {
-//       return res.status(400).json({ message: "Evaluator ID is required" });
-//     }
-
-//     // Calculate total marks
-//     const totalMarks = 
-//       (presentation || 0) +
-//       (knowledgeDomain || 0) +
-//       (knowledgeMethodology || 0) +
-//       (questionConfidence || 0) +
-//       (contentClarity || 0) +
-//       (problemStatement || 0) +
-//       (objectivesSignificance || 0) +
-//       (projectMethodology || 0) +
-//       (useCaseDiagram || 0) +
-//       (sequenceActivityDiagram || 0) +
-//       (classDiagram || 0) +
-//       (persistenceDiagram || 0);
-
-//     // Create evaluation object
-//     const evaluation = {
-//       evaluator: evaluatorId,
-//       date: new Date(),
-//       presentation,
-//       knowledgeDomain,
-//       knowledgeMethodology,
-//       questionConfidence,
-//       contentClarity,
-//       problemStatement,
-//       objectivesSignificance,
-//       projectMethodology,
-//       useCaseDiagram,
-//       sequenceActivityDiagram,
-//       classDiagram,
-//       persistenceDiagram,
-//       totalMarks,
-//       comments
-//     };
-
-//     // Find the project and add the evaluation
-//     const project = await Project.findByIdAndUpdate(
-//       id,
-//       { $push: { evaluations: evaluation } },
-//       { new: true }
-//     )
-//     .populate("evaluations.evaluator")
-
-//     if (!project) {
-//       return res.status(404).json({ message: "Project not found" });
-//     }
-
-//     res.status(200).json({
-//       message: "Evaluation added to project successfully",
-//       project,
-//     });
-//   } catch (error) {
-//     console.error("Error adding evaluation to project:", error);
-//     res.status(500).json({
-//       message: "Failed to add evaluation to project",
-//       error: error.message,
-//     });
-//   }
-// };
 const addEvaluationToProject = async (req, res) => {
   console.log("addEvaluationToProject body: ", req.body);
   try {
     const { id } = req.params;
-    
+
     // Handle both nested evaluationData and flat body formats
     const evaluationInput = req.body.evaluationData || req.body;
     const projectId = evaluationInput.projectId || id;
-    
+
     // Destructure with fallbacks for both formats
     const {
       evaluatorId = evaluationInput.evaluatorId,
       form = {},
-      comments = evaluationInput.comments || '',
-      date = evaluationInput.date || new Date()
+      comments = evaluationInput.comments || "",
+      date = evaluationInput.date || new Date(),
     } = evaluationInput;
 
     // Extract evaluation criteria from form or root
     const evaluationCriteria = {
       presentation: form.presentation || evaluationInput.presentation || 0,
-      knowledgeDomain: form.knowledgeDomain || evaluationInput.knowledgeDomain || 0,
-      knowledgeMethodology: form.knowledgeMethodology || evaluationInput.knowledgeMethodology || 0,
-      questionConfidence: form.questionConfidence || evaluationInput.questionConfidence || 0,
-      contentClarity: form.contentClarity || evaluationInput.contentClarity || 0,
-      problemStatement: form.problemStatement || evaluationInput.problemStatement || 0,
-      objectivesSignificance: form.objectivesSignificance || evaluationInput.objectivesSignificance || 0,
-      projectMethodology: form.projectMethodology || evaluationInput.projectMethodology || 0,
-      useCaseDiagram: form.useCaseDiagram || evaluationInput.useCaseDiagram || 0,
-      sequenceActivityDiagram: form.sequenceActivityDiagram || evaluationInput.sequenceActivityDiagram || 0,
+      knowledgeDomain:
+        form.knowledgeDomain || evaluationInput.knowledgeDomain || 0,
+      knowledgeMethodology:
+        form.knowledgeMethodology || evaluationInput.knowledgeMethodology || 0,
+      questionConfidence:
+        form.questionConfidence || evaluationInput.questionConfidence || 0,
+      contentClarity:
+        form.contentClarity || evaluationInput.contentClarity || 0,
+      problemStatement:
+        form.problemStatement || evaluationInput.problemStatement || 0,
+      objectivesSignificance:
+        form.objectivesSignificance ||
+        evaluationInput.objectivesSignificance ||
+        0,
+      projectMethodology:
+        form.projectMethodology || evaluationInput.projectMethodology || 0,
+      useCaseDiagram:
+        form.useCaseDiagram || evaluationInput.useCaseDiagram || 0,
+      sequenceActivityDiagram:
+        form.sequenceActivityDiagram ||
+        evaluationInput.sequenceActivityDiagram ||
+        0,
       classDiagram: form.classDiagram || evaluationInput.classDiagram || 0,
-      persistenceDiagram: form.persistenceDiagram || evaluationInput.persistenceDiagram || 0,
+      persistenceDiagram:
+        form.persistenceDiagram || evaluationInput.persistenceDiagram || 0,
     };
 
     // Validate required fields
@@ -490,7 +456,7 @@ const addEvaluationToProject = async (req, res) => {
       ...evaluationCriteria,
       totalMarks,
       comments,
-      status: "completed" // Default status
+      status: "completed", // Default status
     };
 
     // Find the project and add the evaluation
@@ -499,9 +465,9 @@ const addEvaluationToProject = async (req, res) => {
       { $push: { evaluations: evaluation } },
       { new: true }
     )
-    .populate("evaluations.evaluator")
-    .populate("advisor")
-    .populate("students");
+      .populate("evaluations.evaluator")
+      .populate("advisor")
+      .populate("students");
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });

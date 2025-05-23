@@ -10,9 +10,7 @@ export const rolesPermissions: Record<TRole, string[]> = {
     "evaluators",
     "department-heads",
     "projects",
-    "manuals",
     "notifications",
-    "chat-groups",
     "manage-admins",
   ],
   "student": [

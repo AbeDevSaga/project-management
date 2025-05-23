@@ -30,7 +30,7 @@ function Schedule() {
 
   useEffect(() => {
     dispatch(fetchAllProjects());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,6 +70,7 @@ function Schedule() {
     setShowAddModal(true);
   };
   const handleAddSchedule = async (scheduleData: any) => {
+    // console.log("scheduleData: ", scheduleData)
     try {
       const resultAction = await dispatch(
         createSchedule(scheduleData)
@@ -80,6 +81,14 @@ function Schedule() {
           text: "Schedule added successfully",
         });
         await dispatch(fetchSchedulesByUser(user?._id || ""));
+        const projectResponse = await dispatch(fetchAllProjects());
+        if (fetchAllProjects.fulfilled.match(projectResponse)) {
+          const approvedProject = projectResponse.payload.filter(
+            (project) => project.isApproved
+          );
+          console.log("approvedProject: ", approvedProject[0]._id);
+          await dispatch(fetchSchedulesByProject(approvedProject[0]._id || ""));
+        }
       } else {
         setAlert({
           status: "error",
@@ -102,7 +111,7 @@ function Schedule() {
   return (
     <div className="w-full h-full pb-2 relative mx-auto px-4 overflow-auto scrollbar-hide">
       <div className="flex items-center pb-2">
-        <SectionHeader sectionKey="users" />
+        <SectionHeader sectionKey="schedules" />
         {user?.role === "advisor" && (
           <div className="w-auto">
             <ActionButton

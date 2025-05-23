@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TProject, TUser, TTask, TFile, TProposal } from "@/app/constants/type";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
@@ -30,6 +30,7 @@ import UpdateProject from "@/app/components/project_related/UpdateProject";
 import AddTask from "@/app/components/task_related/AddTask";
 import {
   createTasks,
+  fetchAllTasks,
   fetchTasksByProjectId,
 } from "@/app/redux/slices/taskSlice";
 import TaskTable from "@/app/components/task_related/TaskTable";
@@ -76,23 +77,25 @@ const ProjectDetailPage = () => {
   const [isUpdateProposalOpen, setIsUpdateProposalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<TProject | null>(null);
+  const [isEvaluator, setIsEvaluator] = useState(false);
   const [alert, setAlert] = useState<{
     status: "success" | "error";
     text: string;
   } | null>(null);
 
-  const isEvaluator =
-    project && Array.isArray(project.evaluators) && user
-      ? project.evaluators.some(
-          (evaluator) =>
-            evaluator._id !== undefined &&
-            user._id !== undefined &&
-            evaluator._id.toString() === user._id.toString()
-        )
-      : false;
+  const handleCheckEvaluator = useCallback(() => {
+    if (!project || !user) {
+      setIsEvaluator(false);
+      return;
+    }
 
-  // Open the modals
+    const isUserEvaluator =
+      project.evaluators?.some(
+        (evaluator) => evaluator._id?.toString() === user._id?.toString()
+      ) ?? false;
 
+    setIsEvaluator(isUserEvaluator);
+  }, [project, user]);
   const openAddUserModal = () => {
     setAddUserModalOpen(true);
   };
@@ -127,7 +130,7 @@ const ProjectDetailPage = () => {
   const handleAddStudents = async (studentIds: string[], projectId: string) => {
     try {
       await dispatch(addStudentsToProject({ projectId, studentIds })).unwrap();
-      dispatch(fetchAllUsers());
+      handleProjectUpdate();
       toast.success("Students added successfully");
     } catch (error) {
       toast.error("Failed to add students");
@@ -138,7 +141,7 @@ const ProjectDetailPage = () => {
       await dispatch(
         addEvaluationToProject({ projectId, evaluationData })
       ).unwrap();
-      dispatch(fetchProjectById(projectId));
+      handleProjectUpdate();
       setAlert({
         status: "success",
         text: `Evaluation added successfully`,
@@ -158,7 +161,7 @@ const ProjectDetailPage = () => {
   ) => {
     try {
       await dispatch(addUserToProject({ projectId, userId, role })).unwrap();
-      dispatch(fetchAllProjects());
+      handleProjectUpdate();
       setAlert({
         status: "success",
         text: `${role} added successfully`,
@@ -178,7 +181,7 @@ const ProjectDetailPage = () => {
       await dispatch(
         addEvaluatorsToProject({ projectId, evaluatorsIds })
       ).unwrap();
-      dispatch(fetchAllProjects());
+      handleProjectUpdate();
       setAlert({
         status: "success",
         text: `Evaluators added successfully`,
@@ -201,10 +204,13 @@ const ProjectDetailPage = () => {
         const createdTasks = Array.isArray(resultAction.payload)
           ? resultAction.payload
           : [resultAction.payload];
-
-        console.log("Tasks created successfully:", createdTasks);
-        toast.success(`Successfully created ${createdTasks.length} task(s)`);
-        dispatch(fetchAllProjects());
+        handleProjectUpdate();
+        // Fetch tasks for the project
+        const tasksResponse = await dispatch(fetchTasksByProjectId(projectId));
+        if (fetchTasksByProjectId.fulfilled.match(tasksResponse)) {
+          setTasksList(tasksResponse.payload);
+          console.log("Tasks List: ", tasksResponse.payload);
+        }
       } else if (createTasks.rejected.match(resultAction)) {
         // Error case
         console.error("Failed to create tasks:", resultAction.error);
@@ -240,7 +246,7 @@ const ProjectDetailPage = () => {
         })
       );
       if (updateProject.fulfilled.match(resultAction)) {
-        dispatch(fetchAllProjects());
+        handleProjectUpdate();
         console.log("Project updated successfully:", resultAction.payload);
         setIsUpdateModalOpen(false);
       } else {
@@ -273,7 +279,7 @@ const ProjectDetailPage = () => {
           formData,
         })
       ).unwrap();
-      dispatch(fetchAllProjects());
+      handleProjectUpdate();
       setAlert({
         status: "success",
         text: "Proposal updated successfully",
@@ -323,6 +329,7 @@ const ProjectDetailPage = () => {
           status: "success",
           text: "Proposal deleted successfully",
         });
+        handleProjectUpdate();
       } catch (error) {
         setAlert({
           status: "error",
@@ -401,11 +408,26 @@ const ProjectDetailPage = () => {
   };
   const closeUpdateProposal = () => {
     setIsUpdateProposalOpen(false);
+    handleProjectUpdate();
   };
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
+  const handleProjectUpdate = async () => {
+    const projectResponse = await dispatch(fetchProjectById(projectId));
+    if (fetchProjectById.fulfilled.match(projectResponse)) {
+      const fetchedProject = projectResponse.payload;
+      setProject(fetchedProject);
+      if (fetchedProject.proposal) {
+        setProjectProposal(fetchedProject.proposal);
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleCheckEvaluator();
+  }, [handleCheckEvaluator]);
   // Fetch project data on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -477,7 +499,6 @@ const ProjectDetailPage = () => {
         }
       }
     };
-
     fetchData();
   }, [dispatch, projectId]);
 
@@ -497,8 +518,6 @@ const ProjectDetailPage = () => {
   }
 
   console.log("project: ", project);
-  const hasApprovedProposal =
-    projectProposal && projectProposal.status === "approved";
   console.log("projectProposal: ", projectProposal);
 
   return (
@@ -639,7 +658,7 @@ const ProjectDetailPage = () => {
       {/* User Section */}
       <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
+          <SectionHeader sectionKey="students" />
           {/* <div className="w-auto">
             <ActionButton
               label="Add Student"
@@ -660,7 +679,7 @@ const ProjectDetailPage = () => {
       {/* Evaluator Section */}
       <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
         <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
+          <SectionHeader sectionKey="evaluators" />
           <div className="w-auto">
             {user?.role === "departmentHead" && (
               <ActionButton
@@ -681,32 +700,35 @@ const ProjectDetailPage = () => {
         )}
       </div>
       {/* Evaluation Form Section */}
-      <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
-        <div className="flex items-center pb-2">
-          <SectionHeader sectionKey="users" />
-          {isEvaluator && (
-            <div className="w-auto">
-              <ActionButton
-                label="Add Evaluation"
-                onClick={openAddEvaluationModal}
-                icon="user"
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {project.evaluations &&
-            project.evaluations.map((evalutionData, index) => (
-              <div key={index} className="self-start">
-                <EvaluationCard evaluation={evalutionData} />
+      {(isEvaluator || user?.role === "departmentHead") && (
+        <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
+          <div className="flex items-center pb-2">
+            <SectionHeader sectionKey="evaluations" />
+            {isEvaluator && (
+              <div className="w-auto">
+                <ActionButton
+                  label="Add Evaluation"
+                  onClick={openAddEvaluationModal}
+                  icon="user"
+                />
               </div>
-            ))}
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {project.evaluations &&
+              project.evaluations.length > 0 &&
+              project.evaluations.map((evalutionData, index) => (
+                <div key={index} className="self-start">
+                  <EvaluationCard evaluation={evalutionData} />
+                </div>
+              ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Tasks Section */}
-      {hasApprovedProposal && (
+      {projectProposal && projectProposal.status === "approved" && (
         <div className="px-6 py-2 w-full h-full overflow-hidden relative bg-white rounded-lg shadow-md">
           <div className="flex items-center pb-2">
             <SectionHeader sectionKey="tasks" />

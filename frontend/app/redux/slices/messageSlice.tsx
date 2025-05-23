@@ -200,7 +200,7 @@ const messageSlice = createSlice({
         sendMessage.fulfilled,
         (state, action: PayloadAction<TMessage>) => {
           state.loading = false;
-          state.messages.unshift(action.payload);
+          state.messages.push(action.payload);
         }
       )
       .addCase(sendMessage.rejected, (state, action: PayloadAction<any>) => {

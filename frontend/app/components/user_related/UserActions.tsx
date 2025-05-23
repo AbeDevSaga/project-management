@@ -1,7 +1,8 @@
 "use client";
-
 import { TUser } from "@/app/constants/type";
-import { FaEye, FaTrash } from "react-icons/fa";
+import { RootState } from "@/app/redux/store";
+import { FaEye, FaTrash, FaUserSlash } from "react-icons/fa";
+import { useSelector } from "react-redux";
 type UserActionsProps = {
   user: TUser;
   onView: (user: TUser) => void; // Callback for view action
@@ -9,6 +10,7 @@ type UserActionsProps = {
 };
 
 export const UserActions = ({ user, onView, onDelete }: UserActionsProps) => {
+  const systemUser = useSelector((state: RootState) => state.auth.user);
   return (
     <div className="flex space-x-6">
       {/* View Button */}
@@ -19,12 +21,14 @@ export const UserActions = ({ user, onView, onDelete }: UserActionsProps) => {
         <FaEye className="w-5 h-5" />
       </button>
       {/* Delete Button */}
-      {user.role === "admin" && <button
-        onClick={() => onDelete(user)} // Trigger the onDelete callback
-        className="text-red-500 hover:text-red-700"
-      >
-        <FaTrash className="w-4 h-4" />
-      </button>}
+      {systemUser?.role === "admin" && (
+        <button
+          onClick={() => onDelete(user)} // Trigger the onDelete callback
+          className="text-red-500 hover:text-red-700"
+        >
+          <FaUserSlash className="w-4 h-4" />
+        </button>
+      )}
     </div>
   );
 };

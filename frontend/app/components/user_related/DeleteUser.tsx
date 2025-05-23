@@ -72,7 +72,7 @@ const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
           </div>
           {/* User Date and Status */}
           <div className="flex-col items-center space-y-4">
-            <p>Are you sure you want to delete these user</p>
+            <p>Are you sure you want to deactivate these user</p>
             <div className="flex text-white space-x-2">
               <p className="w-full text-center cursor-pointer px-4 py-2 bg-primary rounded-lg hover:text-primary hover:bg-white transition-all duration-300 border border-primary shadow-xl">
                 Cancel
@@ -81,7 +81,7 @@ const DeleteUser: React.FC<ViewUserProps> = ({ user, closeDeleteUser }) => {
                 onClick={handleDelete}
                 className="w-full text-center cursor-pointer px-4 py-2 bg-red-500 rounded-lg hover:text-red-500 hover:bg-white transition transition-all duration-300 border border-red-500 shadow-xl"
               >
-                Delete
+                Deactivate
               </p>
             </div>
           </div>

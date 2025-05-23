@@ -20,12 +20,14 @@ export const fetchUserNotifications = createAsyncThunk(
   "notifications/fetchUserNotifications",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get<TNotification[]>(`${API_URL}`, {
+      const response = await axios.get<TNotification[]>(`${API_URL}/${userId}`, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
+      console.log("respone data: ", response.data)
       return response.data;
+
     } catch (error: any) {
       if (error.response?.status === 401) {
         localStorage.removeItem("token");

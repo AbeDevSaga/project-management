@@ -9,6 +9,26 @@ export const sections: TSections = {
     section: "All Users",
     headline: "Manage all users on the platform. View, edit, or delete user accounts.",
   },
+  students: {
+    section: "All Students",
+    headline: "Manage all Studets on the platform. View, edit, or delete user accounts.",
+  },
+  advisors: {
+    section: "All Advisors",
+    headline: "Manage all users on the platform. View, edit, or delete user accounts.",
+  },
+  evaluators: {
+    section: "All Evaluators",
+    headline: "Manage all users on the platform. View, edit, or delete user accounts.",
+  },
+  evaluations: {
+    section: "All Evaluations",
+    headline: "Manage all users on the platform. View, edit, or delete user accounts.",
+  },
+  schedules: {
+    section: "All Schedules",
+    headline: "Manage all users on the platform. View, edit, or delete user accounts.",
+  },
   premium_users: {
     section: "Premium Users",
     headline: "View and manage premium users. Track subscriptions and benefits.",

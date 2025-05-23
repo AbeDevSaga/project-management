@@ -20,15 +20,12 @@ export const fetchAllProjects = createAsyncThunk(
   "projects/fetchAllProjects",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get<TProject[]>(
-        `${API_URL}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getAuthToken()}`,
-          },
-        }
-      );
-      console.log("projects: ", response.data)
+      const response = await axios.get<TProject[]>(`${API_URL}`, {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      });
+      console.log("projects: ", response.data);
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -170,7 +167,10 @@ export const addStudentsToProject = createAsyncThunk(
 export const addEvaluatorsToProject = createAsyncThunk(
   "projects/addEvaluators",
   async (
-    { projectId, evaluatorsIds }: { projectId: string; evaluatorsIds: string[] },
+    {
+      projectId,
+      evaluatorsIds,
+    }: { projectId: string; evaluatorsIds: string[] },
     { rejectWithValue }
   ) => {
     try {
@@ -198,7 +198,10 @@ export const addEvaluatorsToProject = createAsyncThunk(
 export const addEvaluationToProject = createAsyncThunk(
   "projects/addEvaluation",
   async (
-    { evaluationData, projectId }: { evaluationData: string[], projectId: string; },
+    {
+      evaluationData,
+      projectId,
+    }: { evaluationData: string[]; projectId: string },
     { rejectWithValue }
   ) => {
     try {
@@ -219,14 +222,20 @@ export const addEvaluationToProject = createAsyncThunk(
         localStorage.removeItem("token");
         window.location.href = "/auth/login";
       }
-      return rejectWithValue(error.response?.data || "Failed to add evaluation");
+      return rejectWithValue(
+        error.response?.data || "Failed to add evaluation"
+      );
     }
   }
 );
 export const addUserToProject = createAsyncThunk(
   "projects/addUser",
   async (
-    { projectId, userId, role }: { projectId: string; userId: string, role: string },
+    {
+      projectId,
+      userId,
+      role,
+    }: { projectId: string; userId: string; role: string },
     { rejectWithValue }
   ) => {
     try {
@@ -262,7 +271,16 @@ const initialState: ProjectState = {
 const projectSlice = createSlice({
   name: "projects",
   initialState,
-  reducers: {},
+  reducers: {
+    updateProjectLocally: (state, action) => {
+      const index = state.projects.findIndex(
+        (p) => p._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.projects[index] = action.payload;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProjects.pending, (state) => {
@@ -276,10 +294,13 @@ const projectSlice = createSlice({
           state.projects = action.payload;
         }
       )
-      .addCase(fetchAllProjects.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        fetchAllProjects.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
       .addCase(fetchProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -351,12 +372,12 @@ const projectSlice = createSlice({
         addStudentsToProject.fulfilled,
         (state, action: PayloadAction<TProject>) => {
           state.loading = false;
-          
+
           // Update the current project if it's the one being modified
           if (state.currentProject?._id === action.payload._id) {
             state.currentProject = action.payload;
           }
-          
+
           // Update the project in the projects array
           const index = state.projects.findIndex(
             (p) => p._id === action.payload._id
@@ -382,12 +403,12 @@ const projectSlice = createSlice({
         addEvaluatorsToProject.fulfilled,
         (state, action: PayloadAction<TProject>) => {
           state.loading = false;
-          
+
           // Update the current project if it's the one being modified
           if (state.currentProject?._id === action.payload._id) {
             state.currentProject = action.payload;
           }
-          
+
           // Update the project in the projects array
           const index = state.projects.findIndex(
             (p) => p._id === action.payload._id
@@ -413,12 +434,12 @@ const projectSlice = createSlice({
         addEvaluationToProject.fulfilled,
         (state, action: PayloadAction<TProject>) => {
           state.loading = false;
-          
+
           // Update the current project if it's the one being modified
           if (state.currentProject?._id === action.payload._id) {
             state.currentProject = action.payload;
           }
-          
+
           // Update the project in the projects array
           const index = state.projects.findIndex(
             (p) => p._id === action.payload._id
@@ -444,12 +465,12 @@ const projectSlice = createSlice({
         addUserToProject.fulfilled,
         (state, action: PayloadAction<TProject>) => {
           state.loading = false;
-          
+
           // Update the current project if it's the one being modified
           if (state.currentProject?._id === action.payload._id) {
             state.currentProject = action.payload;
           }
-          
+
           // Update the project in the projects array
           const index = state.projects.findIndex(
             (p) => p._id === action.payload._id
@@ -465,8 +486,9 @@ const projectSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         }
-      )
+      );
   },
 });
 
 export default projectSlice.reducer;
+export const { updateProjectLocally } = projectSlice.actions;

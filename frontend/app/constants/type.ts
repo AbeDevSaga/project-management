@@ -26,7 +26,6 @@ export type TEvaluation = {
   status?: string;
 };
 
-
 export type TProfile = {
   name: string;
   email: string;
@@ -193,11 +192,11 @@ export type TNotification = {
   recipients: string[];
   type: string;
   message: string;
-  status: 'unread' | 'read';
+  status: "unread" | "read";
   timestamp: string;
   projectId?: string;
   sender?: string;
-}
+};
 
 export type TManual = {
   _id?: string;
@@ -226,6 +225,11 @@ export type TProposal = {
 export type TSections = {
   dashboard: TSection;
   users: TSection;
+  students: TSection;
+  advisors: TSection;
+  evaluators: TSection;
+  schedules: TSection;
+  evaluations: TSection;
   premium_users: TSection;
   organizations: TSection;
   projects: TSection;

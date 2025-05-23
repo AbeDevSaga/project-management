@@ -150,7 +150,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
         <form onSubmit={handleSubmit} className="p-6">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6">
             <h2 className="text-primary text-xl font-semibold mb-4 md:mb-0">
-              Student Research Project Phase–I Evaluation Form
+              Student Final Project Evaluation Form
             </h2>
             <div className="text-sm text-gray-600">
               <p>Evaluator: {evaluator.username}</p>

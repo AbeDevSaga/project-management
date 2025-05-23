@@ -238,7 +238,7 @@ const getProjectMessages = async (req, res) => {
     // Get messages sorted by timestamp (newest first)
     const messages = await Message.find({ project: projectId })
       .populate("sender", "username email profileImage")
-      .sort({ timestamp: -1 })  // Already sorts newest first (descending)
+      .sort({ timestamps: -1 })  // Already sorts newest first (descending)
       .exec();
 
     // No need to reverse since we're already sorting by -1

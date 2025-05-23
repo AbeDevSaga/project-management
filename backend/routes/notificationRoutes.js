@@ -11,10 +11,12 @@ const {
   updateNotificationStatus,
   deleteNotification,
   markAllAsRead,
+  getAllNotifications,
+
 } = require("../controllers/notificationController");
 
 // File routes
-router.get("/", verifyToken, getUserNotifications);
+router.get("/:id", verifyToken,   getUserNotifications);
 router.post("/create", verifyToken, createNotification);
 router.post("/:id/status", verifyToken, updateNotificationStatus);
 router.post("/:id/mark-all-read", verifyToken, markAllAsRead);

@@ -4,7 +4,7 @@ import React from "react";
 interface DeleteTaskProps {
   task: TTask;
   closeDeleteTask: () => void;
-  onDeleteConfirm?: (taskId: string) => void;
+  onDeleteConfirm?: () => void;
 }
 
 const DeleteTask: React.FC<DeleteTaskProps> = ({ 
@@ -14,7 +14,7 @@ const DeleteTask: React.FC<DeleteTaskProps> = ({
 }) => {
   const handleDelete = () => {
     if (onDeleteConfirm) {
-      onDeleteConfirm(task._id);
+      onDeleteConfirm();
     }
     closeDeleteTask();
   };

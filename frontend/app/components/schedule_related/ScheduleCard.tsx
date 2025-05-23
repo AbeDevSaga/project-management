@@ -49,6 +49,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   // Calculate days remaining
   const daysRemaining = schedule.date ? getDaysRemaining(new Date(schedule.date)) : null;
   const isPast = daysRemaining !== null && daysRemaining < 0;
+  console.log("shedule date: ", schedule.date);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">

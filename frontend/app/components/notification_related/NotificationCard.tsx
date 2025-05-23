@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from "react";
 import { TNotification } from "@/app/constants/type";
 import { FiTrash2, FiBell, FiCheckCircle, FiCircle } from "react-icons/fi";
@@ -9,7 +10,6 @@ import {
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { formatDate } from "@/app/utils/dateUtils";
 import Alert from "../AlertProp";
-import Link from "next/link";
 
 interface NotificationCardProps {
   notification: TNotification;
@@ -97,14 +97,6 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
               }`}>
                 {notification.status}
               </span>
-              {notification.projectId && (
-                <Link 
-                  href={`/projects/${notification.projectId}`}
-                  className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded hover:bg-green-200"
-                >
-                  View Project
-                </Link>
-              )}
             </div>
           </div>
         </div>

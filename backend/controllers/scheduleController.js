@@ -4,7 +4,7 @@ const Project = require("../models/project");
 const createSchedule = async (req, res) => {
   console.log("createSchedule");
   try {
-    const { title, project, description, type, link, place } = req.body;
+    const { title, project, description, type, link, location, date } = req.body;
     const createdBy = req.user.id;
 
     // Validate required fields
@@ -30,7 +30,8 @@ const createSchedule = async (req, res) => {
       type,
       link,
       createdBy,
-      place,
+      place: location,
+      date,
     });
 
     await schedule.save();
@@ -40,18 +41,7 @@ const createSchedule = async (req, res) => {
       $push: { schedules: schedule._id },
     });
 
-    res.status(201).json({
-      message: "Schedule created successfully",
-      schedule: {
-        id: schedule._id,
-        title: schedule.title,
-        project: schedule.project,
-        description: schedule.description,
-        type: schedule.type,
-        link: schedule.link,
-        createdBy: schedule.createdBy,
-      },
-    });
+    res.status(201).json(schedule);
   } catch (error) {
     console.error('Schedule creation error:', error);
     res.status(400).json({
@@ -138,7 +128,8 @@ const getAllSchedules = async (req, res) => {
   console.log("getAllSchedules");
   try {
     const schedules = await Schedule.find()
-      .populate("project createdBy")
+      .populate("project")
+      .populate("createdBy")
       .sort({ createdAt: -1 });
     res.status(200).json(schedules);
   } catch (error) {

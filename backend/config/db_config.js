@@ -6,6 +6,7 @@ const seedProjects = require('../seeds/seedProjects');
 const populateData = require('../seeds/populateData');
 const populateChatGroups = require('../seeds/populateChat');
 const seedDepartments = require('../seeds/seedDepartment');
+const seedNotification = require('../seeds/seedNotification');
 
 dotenv.config();
 const connectDB = async () => {
@@ -34,6 +35,7 @@ const connectDB = async () => {
     // await populateData();
     // await seedDepartments();
     // await populateChatGroups();
+    // await seedNotification();
 
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);

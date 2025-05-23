@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TProject, TUser, TFile } from "../../constants/type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -25,11 +25,17 @@ const AddProject: React.FC<AddProjectProps> = ({
     typeof user?.department === "object" ? user?.department._id : null;
 
   const students = users.filter((user) => user.role === "student");
+  console.log("studs: ", students);
 
-  // useEffect(()=> {
+  // Automatically select current user if they're a student
+  useEffect(() => {
+    if (user && user.role === "student" && user._id) {
+      setSelectedStudents([user._id]);
+    }
+  }, [user]);
 
-  // }, [])
   const toggleStudentSelection = (studentId: string) => {
+    if (studentId === user?._id) return; // Prevent deselecting self
     setSelectedStudents((prev) =>
       prev.includes(studentId)
         ? prev.filter((id) => id !== studentId)
@@ -100,19 +106,33 @@ const AddProject: React.FC<AddProjectProps> = ({
             onClick={closeAddProject}
             className="text-gray-500 hover:text-gray-700"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
-        
+
         {error && (
           <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
             {error}
           </div>
         )}
-        
-        <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col">
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-hidden flex flex-col"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 overflow-hidden">
             {/* Left side: Project details */}
             <div className="overflow-y-auto pr-2">

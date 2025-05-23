@@ -58,18 +58,18 @@ const DepartmentCard: React.FC<DepartmentCardProps> = ({
           >
             Edit
           </button>
-          <button
+          {/* <button
             onClick={handleManageUsers}
             className="w-full text-left px-4 py-2 hover:bg-gray-50 hover:text-green-500 border-t border-gray-100"
           >
             Manage Users
-          </button>
-          <button
+          </button> */}
+          {/* <button
             onClick={handleDelete}
             className="w-full text-left px-4 py-2 hover:bg-gray-50 hover:text-red-500 border-t border-gray-100"
           >
             Delete
-          </button>
+          </button> */}
         </div>
       )}
 
