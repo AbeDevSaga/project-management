@@ -1,11 +1,19 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TUser, TService, TChatGroups, TFile, TProject, TTask } from "@/app/constants/type";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/app/redux/store";
+import {
+  TUser,
+  TService,
+  TChatGroups,
+  TFile,
+  TProject,
+  TTask,
+} from "@/app/constants/type";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/redux/store";
 import {
   deleteUser,
+  fetchAllUsers,
   fetchUserById,
   updateUser,
 } from "@/app/redux/slices/userSlice";
@@ -14,6 +22,8 @@ import ActionButton from "@/app/components/ActionButton";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import DeleteUser from "@/app/components/user_related/DeleteUser";
 import UserTable from "@/app/components/user_related/UsersTable";
+import UpdateUser from "@/app/components/user_related/UpdateUser";
+import Alert from "@/app/components/AlertProp";
 
 const UserDetailsPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +42,14 @@ const UserDetailsPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<TUser | null>(null);
 
+  const departmentList = useSelector(
+    (state: RootState) => state.department.departments
+  );
+  const [alert, setAlert] = useState<{
+    status: "success" | "error";
+    text: string;
+  } | null>(null);
+
   // Open the modals
   const openUpdateModal = (user: TUser) => {
     setIsUpdateModalOpen(true);
@@ -44,6 +62,7 @@ const UserDetailsPage = () => {
 
   // Handle modal actions
   const handleUpdateUser = async (updatedUser: TUser) => {
+    console.log("updated user: ", updatedUser);
     if (selectedUser) {
       const resultAction = await dispatch(
         updateUser({
@@ -52,19 +71,24 @@ const UserDetailsPage = () => {
         })
       );
       if (updateUser.fulfilled.match(resultAction)) {
-        console.log("User updated successfully:", resultAction.payload);
+        setAlert({
+          status: "success",
+          text: "User updated successfully",
+        });
+        dispatch(fetchAllUsers());
         setIsUpdateModalOpen(false);
       } else {
-        console.error("Failed to update user:", resultAction.payload);
+        setAlert({
+          status: "error",
+          text: "Failed to update user",
+        });
       }
     }
   };
 
   const handleDeleteUser = async () => {
     if (selectedUser) {
-      const resultAction = await dispatch(
-        deleteUser(selectedUser._id || "")
-      );
+      const resultAction = await dispatch(deleteUser(selectedUser._id || ""));
       if (deleteUser.fulfilled.match(resultAction)) {
         console.log("User deleted successfully:", resultAction.payload);
         setIsDeleteModalOpen(false);
@@ -262,11 +286,7 @@ const UserDetailsPage = () => {
         <div className="flex items-center pb-2">
           <SectionHeader sectionKey="tasks" />
           <div className="w-auto">
-            <ActionButton
-              label="Add Task"
-              onClick={() => {}}
-              icon="task"
-            />
+            <ActionButton label="Add Task" onClick={() => {}} icon="task" />
           </div>
         </div>
         {tasks.length > 0 ? (
@@ -286,17 +306,22 @@ const UserDetailsPage = () => {
       </div>
 
       {/* Modals */}
-      {/* {isUpdateModalOpen && selectedUser && (
+      {isUpdateModalOpen && selectedUser && (
         <UpdateUser
           closeUpdateUser={closeUpdateModal}
-          onUpdateUser={handleUpdateUser}
-          userToUpdate={selectedUser}
-        />
-      )} */}
-      {isDeleteModalOpen && selectedUser && (
-        <DeleteUser
+          onUpdate={handleUpdateUser}
           user={selectedUser}
-          closeDeleteUser={closeDeleteModal}
+          departments={departmentList}
+        />
+      )}
+      {isDeleteModalOpen && selectedUser && (
+        <DeleteUser user={selectedUser} closeDeleteUser={closeDeleteModal} />
+      )}
+      {alert && (
+        <Alert
+          status={alert.status}
+          text={alert.text}
+          onClose={() => setAlert(null)}
         />
       )}
     </div>

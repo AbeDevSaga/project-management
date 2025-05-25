@@ -12,26 +12,38 @@ const path = require("path");
 // Configure multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../Uploads/ChatFiles"));
+    let uploadPath = path.join(__dirname, "../Uploads/ChatFiles");
+    if (req.params.id) {
+      uploadPath = path.join(uploadPath, req.params.id);
+    }
+    require("fs").mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
-  }
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['.pdf', '.doc', '.docx', '.txt', '.ppt', '.pptx'];
+    const allowedTypes = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".zip", ".jpg", ".png"];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowedTypes.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Only document files are allowed!'), false);
+      cb(new Error("Only document, image, and archive files are allowed!"), false);
     }
-  }
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
 });
+
 
 
 const { verifyToken } = require("../middlewares/authMiddleware");

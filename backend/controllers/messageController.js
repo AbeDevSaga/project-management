@@ -13,16 +13,17 @@ if (!fs.existsSync(fileDir)) {
 const sendMessage = async (req, res) => {
   console.log("Sending message...");
   try {
-    const { content, type, file } = req.body.message;
+    const { content, type } = req.body.message;
     const senderId = req.user.id;
     const projectId = req.body.message.project;
+    const file = req.file;
 
     console.log("Request data:", {
       content,
       type,
       senderId,
       projectId,
-      file,
+      file: file ? file.filename : null,
     });
     // Validate input
     if (!projectId || (!content && !file)) {
@@ -56,20 +57,17 @@ const sendMessage = async (req, res) => {
       project: projectId,
       sender: senderId,
       content: content || "",
-      type: type || (fileName ? "file" : "text"),
+      type: type || (file ? "file" : "text"),
     };
     console.log("message: ", messageData);
 
+    // Handle file upload if present
     // Create the message
-    if (type === "file" && file) {
+    if (file) {
       const fileDir = path.join(__dirname, "../Uploads/ChatFiles");
       if (!fs.existsSync(fileDir)) {
         fs.mkdirSync(fileDir, { recursive: true });
       }
-
-    
-
-      
       const originalFilename = file.originalname;
       const filePath = path.join('ChatFiles', originalFilename);
       const fullPath = path.join(fileDir, originalFilename);
