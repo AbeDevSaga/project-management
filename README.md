@@ -48,12 +48,15 @@ This MERN stack-based platform integrates modern features like live chat, real-t
 
 ## 📸 Screenshots
 
-![Screenshot 6](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235402.png)
-![Screenshot 5](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235320.png)
-![Screenshot 4](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235222.png)
-![Screenshot 3](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235202.png)
-![Screenshot 2](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235141.png)
+## 📸 Screenshots
+
 ![Screenshot 1](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235056.png)
+![Screenshot 2](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235141.png)
+![Screenshot 3](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235202.png)
+![Screenshot 4](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235222.png)
+![Screenshot 5](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235320.png)
+![Screenshot 6](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235402.png)
+
 
 
 
