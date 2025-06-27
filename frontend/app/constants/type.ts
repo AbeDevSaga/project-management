@@ -62,7 +62,7 @@ export type TUser = {
   role?: string;
   department?: TDepartment | string;
   project?: TProject[];
-  advisor: TUser;
+  advisor?: TUser;
   profileImage?: string;
   proposals?: string;
   submissions?: string;

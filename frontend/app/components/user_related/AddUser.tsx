@@ -1,4 +1,3 @@
-import { StaticImageData } from "next/image";
 import React, { useState } from "react";
 import ActionButton from "../ActionButton";
 import { TUser, TDepartment } from "@/app/constants/type";

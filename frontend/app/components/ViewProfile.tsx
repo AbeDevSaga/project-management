@@ -22,7 +22,11 @@ const ViewProfile: React.FC<ViewUserProps> = ({ user, closeViewUser }) => {
   } | null>(null);
 
   // State for user details
-  const [department, setDepartment] = useState(user.department?.name ?? "");
+  const [department, setDepartment] = useState(
+    typeof user.department === "object"
+      ? user.department?.name ?? ""
+      : user.department ?? ""
+  );
   const [name, setName] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [isUpdating, setIsUpdating] = useState(false);
