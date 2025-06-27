@@ -78,6 +78,17 @@ export type TUser = {
   created_at: string;
   status?: "active" | "inactive" | "banned" | "pending";
 };
+export type TLoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type TRegisterPayload = {
+  username: string;
+  email: string;
+  password: string;
+};
+
 
 export type TRole =
   | "admin"

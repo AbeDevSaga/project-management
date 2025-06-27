@@ -1,4 +1,4 @@
-import { TRole, TUser } from "@/app/constants/type";
+import { TLoginPayload, TRegisterPayload, TRole, TUser } from "@/app/constants/type";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -17,7 +17,7 @@ interface AuthState {
 // Async Thunks
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async (userData: TUser, { rejectWithValue }) => {
+  async (userData: TRegisterPayload, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/register`, userData);
       return response.data;
@@ -29,7 +29,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "auth/login",
-  async (userData: TUser, { rejectWithValue }) => {
+  async (userData: TLoginPayload, { rejectWithValue }) => {
     console.log("userData: ", userData);
     try {
       const response = await axios.post(`${API_URL}/login`, userData);
