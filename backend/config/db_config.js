@@ -30,7 +30,7 @@ const connectDB = async () => {
 
     // seed datas
     // await seedUsers(40);
-    // await seedAdmin();
+    await seedAdmin();
     // await seedProjects(); 
     // await populateData();
     // await seedDepartments();

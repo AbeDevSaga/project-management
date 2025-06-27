@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.5.0",
+    "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.1",
     "file-saver": "^2.0.5",

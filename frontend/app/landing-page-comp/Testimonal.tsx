@@ -9,7 +9,7 @@ const Testimonial = () => {
       id: 1,
       name: "Dr. Sarah Johnson",
       role: "Computer Science Department Head",
-      avatar: "/images/avatar-1.jpg",
+      avatar: "/images/logo.png",
       content: "This system reduced our project management workload by 60%. The automated reminders and progress tracking have been game-changers for our department.",
       rating: 5
     },

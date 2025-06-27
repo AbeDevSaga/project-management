@@ -9,28 +9,24 @@ import { RootState } from "../redux/store";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
+  onCollapseSidebar?: () => void;
 }
-function Navbar({ onToggleSidebar }: NavbarProps) {
+function Navbar({ onToggleSidebar, onCollapseSidebar }: NavbarProps) {
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
-    <div className="flex flex-col md:flex-row lg:flex-row items-center justify-between bg-navbarbg border border-blue-500 lg:py-4 px-2 md:px-6 lg:px-8 space-x-2 space-y-2">
-      <div className="absolute -left-0 p-2">
-        <button
-          className="lg:hidden text-gray-600 focus:outline-none"
-          onClick={onToggleSidebar}
-        >
-          ☰
-        </button>
-      </div>
+    <div className="box-shadow flex flex-col space-y-2 px-2 py-1 md:flex-row md:items-center md:justify-between md:space-y-0 md:py-2">
       <div className="w-full lg:w-1/3">
-        <SearchBar />
+        <SearchBar
+          onToggleSidebar={onToggleSidebar}
+          onCollapseSidebar={onCollapseSidebar}
+        />
       </div>
-      <div className="w-full flex items-center justify-between lg:w-auto space-x-2 lg:space-x-7">
+      <div className="hidden w-full sm:flex items-center justify-end gap-2 lg:gap-7 lg:w-auto">
         <LanguageSelection />
         <Notification />
         <Theme />
-        <UserCard user={user}/>
+        <UserCard user={user} />
       </div>
     </div>
   );

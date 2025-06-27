@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import SidebarSection from "../components/SidebarSection";
 import Navbar from "../components/Navbar";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { rolesPermissions } from "../constants/rolesPermission";
@@ -10,13 +10,32 @@ import { TRole } from "../constants/type";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const { loading, user } = useSelector((state: RootState) => state.auth);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen((prev) => !prev);
   };
+
+  const collabseSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(true);
+      } else if (window.innerWidth < 1024) {
+        setIsCollapsed(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -45,10 +64,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="dashboard-container">
-      <SidebarSection isOpen={isSidebarOpen} />
+      <SidebarSection
+        isOpen={isSidebarOpen}
+        onToggleSidebar={toggleSidebar}
+        isCollapsed={isCollapsed}
+      />
       <div className="main-content">
         {/* Navbar */}
-        <Navbar onToggleSidebar={toggleSidebar} />
+        <Navbar
+          onToggleSidebar={toggleSidebar}
+          onCollapseSidebar={collabseSidebar}
+        />
         <main className="dashboard-main">{children}</main>
       </div>
     </div>

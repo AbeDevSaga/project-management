@@ -45,8 +45,11 @@ export type TLanguage = {
 };
 
 export type TLogo = {
-  image: StaticImageData;
-  title: string;
+  src: string | StaticImageData;
+  alt: string;
+  width: number;
+  height: number;
+  className?: string;
 };
 
 export type TUser = {
