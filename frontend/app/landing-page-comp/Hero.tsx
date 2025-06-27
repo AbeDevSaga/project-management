@@ -14,7 +14,7 @@ const Hero = () => {
         <div className="md:w-1/2 mt-10 md:mt-0">
           <div className="flex flex-col text-5xl">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-800 leading-tight">
-              Haramaya Univerisity
+              Univerisities
             </h1>
             undergraduate student
             <span className="text-indigo-600 text-6xl">project monitoring</span>

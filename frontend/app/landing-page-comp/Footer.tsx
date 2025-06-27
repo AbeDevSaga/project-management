@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Info */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-white">WSRPMS</h3>
+            <h3 className="text-2xl font-bold text-white">UPMS</h3>
             <p className="text-gray-400">
               Streamlining academic project management for institutions worldwide.
             </p>
@@ -88,7 +88,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <FiMail className="w-5 h-5 mt-0.5 text-gray-400" />
-                <span className="text-gray-400">support@WSRPMS.com</span>
+                <span className="text-gray-400">support@UPMS.com</span>
               </div>
               <div className="flex items-start space-x-3">
                 <FiPhone className="w-5 h-5 mt-0.5 text-gray-400" />
@@ -108,7 +108,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-500 text-sm">
-            © {currentYear} WSRPMS. All rights reserved.
+            © {currentYear} UPMS. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">
