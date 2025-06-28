@@ -1,37 +1,38 @@
 const Project = require("../models/project");
-const User = require("../models/user");
+const Department = require("../models/department");
 
 const populateData = async () => {
   try {
-    // Fetch all projects and populate their related students and advisors
-    const projects = await Project.find().populate('students').populate('advisor');
+
+    // 1. Ensure each department's projects array contains all its projects
+    const departments = await Department.find().populate('projects');
     
-    // Iterate through each project to populate user data
-    for (let project of projects) {
-      // Populate students within the project
-      const populatedStudents = await User.find({ '_id': { $in: project.students } }).populate('project').populate('advisor');
+    // Update each department's projects array if needed
+    for (const dept of departments) {
+      // Find all projects that reference this department
+      const deptProjects = await Project.find({ department: dept._id });
       
-      // Set the project data in each student record
-      for (let student of populatedStudents) {
-        student.project = project._id;  // Assign this project to the student
-        student.department = project.department;  // Assign this project department to the student
-        student.advisor = project.advisor;  // Assign the advisor's ID to the student
-        await student.save();
-      }
+      // Get just the project IDs
+      const projectIds = deptProjects.map(p => p._id);
       
-      // Populate advisor within the project
-      const populatedAdvisor = await User.findById(project.advisor).populate('project').populate('advisor');
-      
-      if (populatedAdvisor) {
-        populatedAdvisor.project = project._id; // Assign the project to the advisor
-        await populatedAdvisor.save();
+      // Update if the department's projects array doesn't match
+      if (dept.projects.length !== projectIds.length || 
+          !projectIds.every(id => dept.projects.some(p => p.equals(id)))) {
+        
+        await Department.findByIdAndUpdate(
+          dept._id,
+          { $set: { projects: projectIds } },
+          { new: true }
+        );
+        console.log(`Updated projects for department ${dept.name}`);
       }
     }
 
-    console.log("Data populated successfully");
+    console.log("Data population and department-project synchronization complete");
 
   } catch (err) {
     console.error("Error populating data:", err);
+    throw err;
   }
 };
 

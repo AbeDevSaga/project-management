@@ -75,7 +75,8 @@ const getAllDepartments = async (req, res) => {
     const departments = await Department.find()
       .populate("head")
       .populate("advisors")
-      .populate("students");
+      .populate("students")
+      .populate("projects");
     res.status(200).json(departments);
   } catch (error) {
     res.status(500).json({ message: "Failed to get departments", error });
@@ -91,7 +92,8 @@ const getDepartmentById = async (req, res) => {
       .populate("head")
       .populate("advisors")
       .populate("students")
-      .populate("evaluators");
+      .populate("evaluators")
+      .populate("projects");
     if (!department) return res.status(404).json({ message: "Department not found" });
     res.status(200).json(department);
   } catch (error) {
@@ -107,7 +109,8 @@ const getDepartmentByHeadId = async (req, res) => {
     const department = await Department.findOne({ head: id })
       .populate("head")
       .populate("advisors")
-      .populate("students");
+      .populate("students")
+      .populate("projects");
 
     if (!department) {
       return res.status(404).json({ message: "Department not found for this head" });
@@ -129,7 +132,8 @@ const getDepartmentsByAdvisorId = async (req, res) => {
     const departments = await Department.find({ advisors: id })
       .populate("head")
       .populate("advisors")
-      .populate("students");
+      .populate("students")
+      .populate("projects");
 
     if (!departments || departments.length === 0) {
       return res.status(404).json({ message: "No departments found for this advisor" });
@@ -151,7 +155,8 @@ const getDepartmentsByStudentId = async (req, res) => {
     const departments = await Department.find({ students: id })
       .populate("head")
       .populate("advisors")
-      .populate("students");
+      .populate("students")
+      .populate("projects");
 
     if (!departments || departments.length === 0) {
       return res.status(404).json({ message: "No departments found for this student" });

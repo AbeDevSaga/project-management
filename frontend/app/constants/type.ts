@@ -172,6 +172,7 @@ export type TDepartment = {
   advisors?: TUser[];
   evaluators?: TUser[];
   students?: TUser[];
+  projects?: TProject[];
 };
 export type TSchedule = {
   _id: string;

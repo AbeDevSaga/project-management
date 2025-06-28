@@ -12,6 +12,9 @@ const departmentSchema = new mongoose.Schema({
     evaluators: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  // Evaluators in the department
     ],
+    projects: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Project' }  // Projects associated with the department
+    ],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   });

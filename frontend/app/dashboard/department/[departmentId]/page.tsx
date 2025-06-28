@@ -247,7 +247,7 @@ const DepartmentDetailPage = () => {
           {/* Projects Count */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Projects</h2>
-            <p className="text-gray-800">{departmentProjects.length}</p>
+            <p className="text-gray-800">{department.projects?.length}</p>
           </div>
         </div>
       </div>
