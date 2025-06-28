@@ -27,7 +27,10 @@ function Manuals() {
     text: string;
   } | null>(null);
 
-  const department = user?.department ? user?.department._id : "";
+  const department =
+    user?.department && typeof user.department !== "string"
+      ? user.department._id
+      : "";
 
   console.log("manual list: ", manualList);
   useEffect(() => {

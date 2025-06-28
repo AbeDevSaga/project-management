@@ -3,7 +3,6 @@ import ActionButton from "@/app/components/ActionButton";
 import AddSchedule from "@/app/components/schedule_related/AddSchedule";
 import ScheduleCard from "@/app/components/schedule_related/ScheduleCard";
 import SectionHeader from "@/app/components/SectionHeader";
-import { TProject } from "@/app/constants/type";
 import { fetchAllProjects } from "@/app/redux/slices/projectSlice";
 import {
   createSchedule,
