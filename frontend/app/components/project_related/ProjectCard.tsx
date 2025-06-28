@@ -5,7 +5,6 @@ import { HiOutlineCalendar } from "react-icons/hi2";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   fetchAllProjects,
-  fetchProjectById,
   updateProject,
 } from "@/app/redux/slices/projectSlice";
 import { useDispatch, useSelector } from "react-redux";

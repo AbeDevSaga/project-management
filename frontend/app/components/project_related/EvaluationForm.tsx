@@ -9,6 +9,37 @@ interface EvaluationFormProps {
   onClose: () => void;
 }
 
+type EvaluationField =
+  | "presentation"
+  | "knowledgeDomain"
+  | "knowledgeMethodology"
+  | "questionConfidence"
+  | "contentClarity"
+  | "problemStatement"
+  | "objectivesSignificance"
+  | "projectMethodology"
+  | "useCaseDiagram"
+  | "sequenceActivityDiagram"
+  | "classDiagram"
+  | "persistenceDiagram"
+  | "comments";
+
+type Evaluation = {
+  presentation: number;
+  knowledgeDomain: number;
+  knowledgeMethodology: number;
+  questionConfidence: number;
+  contentClarity: number;
+  problemStatement: number;
+  objectivesSignificance: number;
+  projectMethodology: number;
+  useCaseDiagram: number;
+  sequenceActivityDiagram: number;
+  classDiagram: number;
+  persistenceDiagram: number;
+  comments: string;
+};
+
 const EvaluationForm: React.FC<EvaluationFormProps> = ({
   project,
   users,
@@ -17,7 +48,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
   onClose,
 }) => {
   const students = users.filter((user) => user.role === "student");
-  const [evaluation, setEvaluation] = useState({
+  const [evaluation, setEvaluation] = useState<Evaluation>({
     presentation: 0,
     knowledgeDomain: 0,
     knowledgeMethodology: 0,
@@ -48,7 +79,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
 
   const validateForm = () => {
     // Check if all required fields are filled
-    const requiredFields = [
+    const requiredFields: EvaluationField[] = [
       "presentation",
       "knowledgeDomain",
       "knowledgeMethodology",
@@ -64,7 +95,7 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
     ];
 
     for (const field of requiredFields) {
-      if (evaluation[field] === undefined || evaluation[field] === null) {
+      if (evaluation[field as keyof Evaluation] === undefined || evaluation[field as keyof Evaluation] === null) {
         return `Please fill in all evaluation criteria`;
       }
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ActionButton from "../ActionButton";
-import { FiCalendar, FiX, FiLink, FiBook, FiMapPin } from "react-icons/fi";
+import { FiX, FiLink, FiBook, FiMapPin } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { TProject } from "@/app/constants/type";

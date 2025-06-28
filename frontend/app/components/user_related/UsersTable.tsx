@@ -4,7 +4,6 @@ import Pagination from "../Pagination";
 import DeleteUser from "./DeleteUser";
 import { UserActions } from "./UserActions";
 import { TUser } from "@/app/constants/type";
-import StatusBadge from "./StatusBadge";
 import { formatDate } from "@/app/utils/dateUtils";
 
 interface UserTableProps {

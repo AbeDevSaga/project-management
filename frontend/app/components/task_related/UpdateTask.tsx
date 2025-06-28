@@ -1,7 +1,7 @@
 // app/components/task_related/UpdateTask.tsx
 "use client";
 import React, { useState } from "react";
-import { TTask, TUser } from "@/app/constants/type";
+import { TTask } from "@/app/constants/type";
 
 interface UpdateTaskProps {
   taskToUpdate: TTask;

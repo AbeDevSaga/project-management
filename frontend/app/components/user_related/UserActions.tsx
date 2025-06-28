@@ -1,7 +1,7 @@
 "use client";
 import { TUser } from "@/app/constants/type";
 import { RootState } from "@/app/redux/store";
-import { FaEye, FaTrash, FaUserSlash } from "react-icons/fa";
+import { FaEye, FaUserSlash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 type UserActionsProps = {
   user: TUser;

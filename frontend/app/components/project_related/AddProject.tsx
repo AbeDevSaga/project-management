@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TProject, TUser, TFile } from "../../constants/type";
+import {  TUser } from "../../constants/type";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 

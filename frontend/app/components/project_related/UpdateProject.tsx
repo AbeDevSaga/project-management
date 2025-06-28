@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ActionButton from "../ActionButton";
-import { TDepartment, TProject, TUser } from "../../constants/type";
+import { TProject, TUser } from "../../constants/type";
 
 interface UpdateProjectProps {
   closeUpdateProject: () => void; // Function to close the modal

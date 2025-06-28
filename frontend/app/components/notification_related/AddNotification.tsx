@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import Alert from "@/app/components/AlertProp";
 import MultiSelectUsers from "./MultiSelectUsers";
+import { createNotification } from "@/app/redux/slices/notificationSlice";
 
 interface AddNotificationProps {
   closeModal: () => void;

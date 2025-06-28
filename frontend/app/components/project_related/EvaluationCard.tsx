@@ -1,6 +1,6 @@
 import React from 'react';
 import { TProject, TEvaluation } from "../../constants/type";
-import { HiOutlineCalendar, HiOutlineUser } from "react-icons/hi2";
+import { HiOutlineUser } from "react-icons/hi2";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 interface EvaluationCardProps {

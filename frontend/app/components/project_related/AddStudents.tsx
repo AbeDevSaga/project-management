@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ActionButton from "../ActionButton";
 import { TUser } from "@/app/constants/type";
 
