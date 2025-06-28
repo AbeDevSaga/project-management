@@ -29,7 +29,7 @@ const connectDB = async () => {
     require("../models/schedule");
 
     // seed datas
-    // await seedUsers(40);
+    // await seedUsers(10);
     // await seedAdmin();
     // await seedProjects(); 
     // await populateData();
