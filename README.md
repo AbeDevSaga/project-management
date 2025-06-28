@@ -46,10 +46,6 @@ This MERN stack-based platform integrates modern features like live chat, real-t
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
-## 📸 Screenshots
-
 ![Screenshot 1](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235056.png)
 ![Screenshot 2](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235141.png)
 ![Screenshot 3](https://raw.githubusercontent.com/AbeDevSaga/project-management/refs/heads/main/frontend/public/images/Screenshot%202025-05-26%20235202.png)
@@ -84,14 +80,44 @@ Accessible via the **Documentation** section inside the system.
 
 ---
 
-## 🚀 Live Preview
+## 🌐 Live Demo
+👉 [project-management](https://project-management-pi-roan.vercel.app/)
 
-*Coming Soon…*
+Admin Login
+📧 admin@example.com
+🔑 admin123
 
+---
+## 📥 Installation
+
+```bash
+git clone https://github.com/AbeDevSaga/project-management
+cd project-management
+cd backend
+npm install
+npm start server.js
+cd frontend
+npm install
+npm run dev
+
+```
 ---
 
 ## 📌 License
 
 This project is open-source and available for academic and portfolio demonstration purposes.
 
+
+## 👨‍💻 About the Developer
+Amanuel Daniel (aka AbeDevSaga) — a passionate full-stack developer from Addis Ababa, Ethiopia 🇪🇹. Specializing in scalable, secure web applications with strong API integrations and role-based architectures.
+
+If you cloned this project and you're hiring, collaborating, or just want to connect:
+
+[🌐 Portfolio](https://personal-portfolio-ruddy-three.vercel.app/)
+
+[💼 LinkedIn](https://linkedin.com/in/amanuel-daniel-4573b1309/)
+
+[🐙 GitHub](https://github.com/AbeDevSaga)
+
+[📧 2000amandanm@gmail.com](mailto:2000amandanm@gmail.com)
 
