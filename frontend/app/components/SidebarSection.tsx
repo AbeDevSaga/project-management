@@ -23,7 +23,7 @@ export default function SidebarSection({
   const handleLogOut = () => {
     dispatch(logout());
     setTimeout(() => {
-      router.push("/auth/login");
+      router.push("/");
     }, 100);
   };
 
