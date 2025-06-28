@@ -1,5 +1,5 @@
 "use client";
-import { TProject, TUser } from "@/app/constants/type";
+import { TUser } from "@/app/constants/type";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
