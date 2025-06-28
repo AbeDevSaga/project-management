@@ -211,7 +211,11 @@ const UserDetailsPage = () => {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Department</h2>
             <p className="text-gray-800">
-              {user.department ? user.department.name : "N/A"}
+              {typeof user.department === "object" && user.department !== null && "name" in user.department
+                ? user.department.name
+                : typeof user.department === "string"
+                ? user.department
+                : "N/A"}
             </p>
           </div>
 

@@ -1,7 +1,14 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TUser, TService, TChatGroups, TFile, TProject, TTask } from "@/app/constants/type";
+import {
+  TUser,
+  TService,
+  TChatGroups,
+  TFile,
+  TProject,
+  TTask,
+} from "@/app/constants/type";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
 import {
@@ -62,9 +69,7 @@ const UserDetailsPage = () => {
 
   const handleDeleteUser = async () => {
     if (selectedUser) {
-      const resultAction = await dispatch(
-        deleteUser(selectedUser._id || "")
-      );
+      const resultAction = await dispatch(deleteUser(selectedUser._id || ""));
       if (deleteUser.fulfilled.match(resultAction)) {
         console.log("User deleted successfully:", resultAction.payload);
         setIsDeleteModalOpen(false);
@@ -187,7 +192,13 @@ const UserDetailsPage = () => {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h2 className="text-sm font-semibold text-gray-500">Department</h2>
             <p className="text-gray-800">
-              {user.department ? user.department.name : "N/A"}
+              {typeof user.department === "object" &&
+              user.department !== null &&
+              "name" in user.department
+                ? user.department.name
+                : typeof user.department === "string"
+                ? user.department
+                : "N/A"}
             </p>
           </div>
 
@@ -262,11 +273,7 @@ const UserDetailsPage = () => {
         <div className="flex items-center pb-2">
           <SectionHeader sectionKey="tasks" />
           <div className="w-auto">
-            <ActionButton
-              label="Add Task"
-              onClick={() => {}}
-              icon="task"
-            />
+            <ActionButton label="Add Task" onClick={() => {}} icon="task" />
           </div>
         </div>
         {tasks.length > 0 ? (
@@ -294,10 +301,7 @@ const UserDetailsPage = () => {
         />
       )} */}
       {isDeleteModalOpen && selectedUser && (
-        <DeleteUser
-          user={selectedUser}
-          closeDeleteUser={closeDeleteModal}
-        />
+        <DeleteUser user={selectedUser} closeDeleteUser={closeDeleteModal} />
       )}
     </div>
   );
