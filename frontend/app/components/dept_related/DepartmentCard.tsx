@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TDepartment } from "../../constants/type";
-import { FaUsers, FaUserTie, FaGraduationCap } from "react-icons/fa";
+import { FaUserTie, FaGraduationCap } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 

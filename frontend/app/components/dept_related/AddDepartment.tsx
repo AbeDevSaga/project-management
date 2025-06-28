@@ -59,7 +59,7 @@ const AddDepartment: React.FC<AddDepartmentProps> = ({
     if (validateForm()) {
       onAddDepartment({
         name: departmentData.name,
-        head: departmentData.head, // This is now a string ID
+        head: users.find(user => user._id === departmentData.head), // Pass the full TUser object
         advisors: [],
         students: [],
       });

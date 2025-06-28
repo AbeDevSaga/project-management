@@ -4,13 +4,10 @@ import {
   FiDownload,
   FiEdit,
   FiTrash2,
-  FiEye,
   FiFileText,
 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteManual, downloadManual } from "@/app/redux/slices/manualSlice";
-import Link from "next/link";
-import { toast } from "react-toastify";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { formatDate } from "@/app/utils/dateUtils";
 import Alert from "../AlertProp";

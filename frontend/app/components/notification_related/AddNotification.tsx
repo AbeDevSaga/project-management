@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FiX, FiSend, FiUser, FiType, FiMessageSquare } from "react-icons/fi";
+import { FiX, FiSend} from "react-icons/fi";
 import { TNotification } from "@/app/constants/type";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";

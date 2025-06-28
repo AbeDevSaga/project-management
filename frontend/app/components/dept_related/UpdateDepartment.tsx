@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { TDepartment, TUser } from "@/app/constants/type";
+import { TDepartment } from "@/app/constants/type";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/redux/store";
 import { updateDepartment } from "@/app/redux/slices/deptSlice";
