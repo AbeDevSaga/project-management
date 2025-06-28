@@ -88,6 +88,12 @@ body {
   flex-grow: 1; /* This will make the main content take up the remaining width */
   display: flex;
   flex-direction: column;
+  z-index: 1;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+  z-index: 1000; /* Ensure sidebar section is above other content */
 }
 
 /* Navbar area */

@@ -29,7 +29,7 @@ export default function SidebarSection({
 
   return (
     <div
-      className={`z-1000 bg-sidebarcolor fixed lg:static w-4/5 max-w-[246px] inset-y-0 left-0 h-screen flex flex-col 
+      className={`z-100 bg-sidebarcolor fixed lg:static w-4/5 max-w-[246px] inset-y-0 left-0 h-screen flex flex-col 
          transition-all duration-300 ease-in-out 
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} 
         ${isCollapsed ? "flex lg:w-[70px]" : "w-3/4 lg:w-[246px]"}

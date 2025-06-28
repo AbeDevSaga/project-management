@@ -64,11 +64,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="dashboard-container">
-      <SidebarSection
-        isOpen={isSidebarOpen}
-        onToggleSidebar={toggleSidebar}
-        isCollapsed={isCollapsed}
-      />
+      <div className="sidebar-section">
+        <SidebarSection
+          isOpen={isSidebarOpen}
+          onToggleSidebar={toggleSidebar}
+          isCollapsed={isCollapsed}
+        />
+      </div>
       <div className="main-content">
         {/* Navbar */}
         <Navbar
